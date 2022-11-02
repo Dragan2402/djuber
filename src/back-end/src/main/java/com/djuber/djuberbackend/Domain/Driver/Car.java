@@ -1,51 +1,48 @@
 package com.djuber.djuberbackend.Domain.Driver;
 
-import com.djuber.djuberbackend.Domain._Common.Coordinates;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import lombok.*;
+import lombok.experimental.FieldDefaults;
 import org.hibernate.annotations.SQLDelete;
 import org.hibernate.annotations.Where;
-import org.springframework.data.util.Pair;
 
 import javax.persistence.*;
 import java.io.Serializable;
-import java.util.List;
 import java.util.Set;
 
 @Entity
-@Getter
-@Setter
+@Data
 @NoArgsConstructor
+@AllArgsConstructor
+@FieldDefaults(level = AccessLevel.PRIVATE)
 @Where(clause = "deleted = false")
 @SQLDelete(sql = "UPDATE car SET deleted = true WHERE id = ?")
-public class Car implements Serializable {
+public class Car {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
+    Long id;
 
     @Column(name = "carType", nullable = false)
-    private CarType carType;
+    CarType carType;
 
 //    @OneToOne
 //    @JoinColumn(name = "coordinatesId")
 //    private Coordinates coordinates;
 
     @OneToOne(mappedBy = "car")
-    private Driver driver;
+    Driver driver;
 
     @Column(name = "x", nullable = false)
-    public Double x;
+    Double x;
 
     @Column(name = "y", nullable = false)
-    public Double y;
+    Double y;
 
     @Column(name = "additionalServices", nullable = false)
     @ElementCollection(targetClass = String.class)
-    private Set<String> additionalServices;
+    Set<String> additionalServices;
 
     @Column(name = "deleted", nullable = false)
-    private Boolean deleted;
+    Boolean deleted;
 }
 

@@ -1,58 +1,45 @@
 package com.djuber.djuberbackend.Domain.Admin;
 
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import com.djuber.djuberbackend.Domain.Authentication.Identity;
+import lombok.*;
+import lombok.experimental.FieldDefaults;
 import org.hibernate.annotations.SQLDelete;
 import org.hibernate.annotations.Where;
 
 import javax.persistence.*;
 
 @Entity
-@Getter
-@Setter
+@Data
 @NoArgsConstructor
+@AllArgsConstructor
+@FieldDefaults(level = AccessLevel.PRIVATE)
 @Where(clause = "deleted = false")
 @SQLDelete(sql = "UPDATE admin SET deleted = true WHERE id = ?")
 public class Admin {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
+    Long id;
 
-    @Column(name = "email", unique = true, nullable = false)
-    private String email;
+    @OneToOne
+    @JoinColumn(name = "identityId")
+    Identity identity;
 
     @Column(name = "firstName", nullable = false)
-    private String firstName;
+    String firstName;
 
     @Column(name = "lastName", nullable = false)
-    private String lastName;
-
-    @Column(name = "password", nullable = false)
-    private String password;
+    String lastName;
 
     @Column(name = "city", nullable = false)
-    private String city;
+    String city;
 
     @Column(name = "phoneNumber", nullable = false)
-    private String phoneNumber;
+    String phoneNumber;
 
     @Column(name = "picture", nullable = false)
-    private String picture;
+    String picture;
 
     @Column(name = "deleted", nullable = false)
-    private Boolean deleted;
-
-    public Admin(Long id, String email, String firstName, String lastName, String password, String city, String phoneNumber, String picture, Boolean deleted) {
-        this.id = id;
-        this.email = email;
-        this.firstName = firstName;
-        this.lastName = lastName;
-        this.password = password;
-        this.city = city;
-        this.phoneNumber = phoneNumber;
-        this.picture = picture;
-        this.deleted = deleted;
-    }
+    Boolean deleted;
 }

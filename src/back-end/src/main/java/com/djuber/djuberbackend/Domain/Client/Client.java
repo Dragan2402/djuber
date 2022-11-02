@@ -1,9 +1,11 @@
 package com.djuber.djuberbackend.Domain.Client;
 
+import com.djuber.djuberbackend.Domain.Authentication.Identity;
+import com.djuber.djuberbackend.Domain.Review.Review;
+import com.djuber.djuberbackend.Domain.Ride.Reservation;
 import com.djuber.djuberbackend.Domain.Ride.Ride;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import lombok.*;
+import lombok.experimental.FieldDefaults;
 import org.hibernate.annotations.SQLDelete;
 import org.hibernate.annotations.Where;
 
@@ -12,52 +14,57 @@ import java.util.HashSet;
 import java.util.Set;
 
 @Entity
-@Getter
-@Setter
+@Data
 @NoArgsConstructor
+@AllArgsConstructor
+@FieldDefaults(level = AccessLevel.PRIVATE)
 @Where(clause = "deleted = false")
 @SQLDelete(sql = "UPDATE client SET deleted = true WHERE id = ?")
 public class Client {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
+    Long id;
 
-    @Column(name = "email", unique = true, nullable = false)
-    private String email;
+    @OneToOne
+    @JoinColumn(name = "identityId")
+    Identity identity;
 
     @Column(name = "firstName", nullable = false)
-    private String firstName;
+    String firstName;
 
     @Column(name = "lastName", nullable = false)
-    private String lastName;
-
-    @Column(name = "password", nullable = false)
-    private String password;
+    String lastName;
 
     @Column(name = "city", nullable = false)
-    private String city;
+    String city;
 
     @Column(name = "phoneNumber", nullable = false)
-    private String phoneNumber;
+    String phoneNumber;
 
     @Column(name = "picture", nullable = false)
-    private String picture;
+    String picture;
 
     @Column(name = "verified", nullable = false)
-    private Boolean verified;
+    Boolean verified;
+
+    @ManyToMany(mappedBy = "clients_ride")
+    Set<Ride> rides = new HashSet<>();
 
     @ManyToMany(mappedBy = "clients")
-    private Set<Ride> rides = new HashSet<>();
+    Set<Reservation> reservations = new HashSet<>();
+
+    @OneToMany(mappedBy = "client", fetch = FetchType.LAZY, cascade = CascadeType.DETACH)
+    Set<Review> reviews = new HashSet<>();
 
     @Column(name = "blocked", nullable = false)
-    private Boolean blocked;
+    Boolean blocked;
 
     @Column(name = "inRide", nullable = false)
-    private Boolean inRide;
+    Boolean inRide;
 
     @Column(name = "deleted", nullable = false)
-    private Boolean deleted;
+    Boolean deleted;
 
 
 }
