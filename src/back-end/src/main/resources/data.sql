@@ -1,18 +1,32 @@
+--ROLES
+INSERT INTO role (id, name, deleted) VALUES (1, 'ROLE_ADMIN', false);
+INSERT INTO role (id, name, deleted) VALUES (2, 'ROLE_CLIENT', false);
+INSERT INTO role (id, name, deleted) VALUES (3, 'ROLE_DRIVER', false);
+
 --IDENTITIES
 INSERT INTO identity (id, email, user_type, password, deleted)
-VALUES (1, 'asi@gmaildrop.cc', 1, 'asi123', false);
+VALUES (1, 'asi@maildrop.cc', 0, '$2a$12$20EPQtCU8q4D.7/nRReWae5XaEJV0tOGRHats8mHWOAOzeT.bO7vW', false);
 INSERT INTO identity (id, email, user_type, password, deleted)
-VALUES (2, 'dmitar@gmaildrop.cc', 1, 'dmitar123', false);
+VALUES (2, 'dmitar@maildrop.cc', 0, '$2a$12$UGtCSbOYCDC1WHKJl.u.2uqufpBSmFApXpHMM8s2HlyTxUnlsSpoC', false);
+
+INSERT INTO identity_roles(identity_id, roles_id) VALUES (1,1);
+INSERT INTO identity_roles(identity_id, roles_id) VALUES (2,1);
 
 INSERT INTO identity (id, email, user_type, password, deleted)
-VALUES (3, 'pero@gmaildrop.cc', 2, 'pero123', false);
+VALUES (3, 'pero@maildrop.cc', 1, '$2a$12$Nd.axxCA/EUTgVpE6JU7yu1m0FbazoNKQSlh2p.b1dy.W1EfUzEwi', false);
 INSERT INTO identity (id, email, user_type, password, deleted)
-VALUES (4, 'jovo@gmaildrop.cc', 2, 'jovo123', false);
+VALUES (4, 'jovo@maildrop.cc', 1, '$2a$12$pW0AC2EKW0sqMgERfj3ojuuD67cSKLwClksdhEOzZrIvdu8JWvqVW', false);
+
+INSERT INTO identity_roles(identity_id, roles_id) VALUES (3,2);
+INSERT INTO identity_roles(identity_id, roles_id) VALUES (4,2);
 
 INSERT INTO identity (id, email, user_type, password, deleted)
-VALUES (5, 'haso@gmaildrop.cc', 3, 'haso123', false);
+VALUES (5, 'haso@maildrop.cc', 2, '$2a$12$B0M7RM24WZYet.lqGrIVWOGUKEaNCFgTAcT95qMIeua5/M0Tnzc6y', false);
 INSERT INTO identity (id, email, user_type, password, deleted)
-VALUES (6, 'mujo@gmaildrop.cc', 3, 'mujo123', false);
+VALUES (6, 'mujo@maildrop.cc', 2, '$2a$12$bP24xyfnbEhigBAMI0cKOeJ.hng3f4kBYx/puFYeXzStIrSo5m/JK', false);
+
+INSERT INTO identity_roles(identity_id, roles_id) VALUES (5,3);
+INSERT INTO identity_roles(identity_id, roles_id) VALUES (6,3);
 
 --ADMINS
 INSERT INTO admin (id, identity_id, first_name, last_name, city, phone_number, picture, deleted)
