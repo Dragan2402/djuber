@@ -9,8 +9,6 @@ import org.hibernate.annotations.SQLDelete;
 import org.hibernate.annotations.Where;
 
 import javax.persistence.*;
-import java.util.ArrayList;
-import java.util.List;
 
 @Entity
 @Data
@@ -18,24 +16,15 @@ import java.util.List;
 @AllArgsConstructor
 @FieldDefaults(level = AccessLevel.PRIVATE)
 @Where(clause = "deleted = false")
-@SQLDelete(sql = "UPDATE identity SET deleted = true WHERE id = ?")
-public class Identity {
+@SQLDelete(sql = "UPDATE role SET deleted = true WHERE id = ?")
+public class Role {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     Long id;
 
-    @Column(name = "email", nullable = false, unique = true)
-    String email;
-
-    @Column(name = "password", nullable = false)
-    String password;
-
-    @Column(name = "userType", nullable = false)
-    UserType userType;
-
-    @ManyToMany(fetch = FetchType.EAGER)
-    List<Role> roles = new ArrayList<>();
+    @Column(name = "name", nullable = false)
+    String name;
 
     @Column(name = "deleted", nullable = false)
     Boolean deleted;
