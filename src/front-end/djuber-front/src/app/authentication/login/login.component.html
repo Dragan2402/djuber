@@ -1,0 +1,18 @@
+<div class="login-div">
+  <mat-form-field appearance="fill" class="input-field-80">
+    <input matInput placeholder="E-mail" [formControl]="email" required>
+    <mat-error *ngIf="email.invalid">{{getEmailErrorMessage()}}</mat-error>
+  </mat-form-field>
+
+  <mat-form-field appearance="fill" class="input-field-80">
+    <input matInput placeholder="Password" [formControl]="password" type="password" required>
+    <mat-error *ngIf="password.invalid">{{getPasswordErrorMessage()}}</mat-error>
+  </mat-form-field>
+
+  <button mat-raised-button color="primary" (click)="login()" class="continue-action-button">Login</button>
+
+  <div class="options-login-div">
+    <a routerLink="/authentication/register" class="help-link">Don't have an account? Register Now!</a>
+    <a routerLink="/authentication/password-reset" class="help-link">Forgot password?</a>
+  </div>
+</div>
