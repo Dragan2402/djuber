@@ -1,0 +1,22 @@
+<div class="main-div">
+  <div class="nav-bar-div">
+    <mat-toolbar color="primary">
+        <div class="nav-bar-row">
+          <div class="home-div" routerLink="/">
+            <mat-icon>home</mat-icon> <span style="margin-left: 5%;">Home</span>
+          </div>
+          <div class="login-div" routerLink="authentication/login">
+            Login
+          </div>
+        </div>
+    </mat-toolbar>
+  </div>
+  <div class="content-div">
+    <router-outlet></router-outlet>
+  </div>
+  <div class="footer-div">
+    <mat-toolbar color="primary">
+      <span>footer</span>
+  </mat-toolbar>
+  </div>
+</div>

@@ -1,0 +1,38 @@
+.main-div{
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+}
+
+.nav-bar-div{
+  flex-shrink: 2;
+}
+
+.content-div{
+  flex-grow: 12;
+}
+
+.footer-div{
+  background-color: brown;
+}
+
+
+.nav-bar-row{
+  display: flex;
+  flex-direction: row;
+  align-items: flex-start;
+  width: 100%;
+}
+
+.login-div{
+  margin-left: auto;
+  cursor: pointer;
+}
+
+.home-div{
+  justify-self: start;
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  cursor: pointer;
+}
