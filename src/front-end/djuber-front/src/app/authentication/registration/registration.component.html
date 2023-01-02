@@ -1,1 +1,78 @@
-<p>registration works!</p>
+<div class="registration-div">
+  <mat-stepper orientation="vertical" [linear]="false" #stepper>
+    <mat-step [stepControl]="firstFormGroup" [errorMessage]="getErrorMessage(1)">
+      <form [formGroup]="firstFormGroup">
+        <ng-template matStepLabel>Fill out your credentials</ng-template>
+        <div class="registration-items-div">
+          <mat-form-field appearance="fill">
+            <mat-label>E-mail</mat-label>
+            <input matInput formControlName="email" required>
+          </mat-form-field>
+          <mat-form-field appearance="fill">
+            <mat-label>Password</mat-label>
+            <input matInput placeholder="Password" formControlName="password" type="password" required>
+          </mat-form-field>
+          <mat-form-field appearance="fill">
+            <mat-label>Confirm password</mat-label>
+            <input matInput placeholder="Password" formControlName="confirmPassword" type="password" required>
+          </mat-form-field>
+          <div style="align-self: flex-end;">
+            <button mat-button matStepperNext>Next</button>
+          </div>
+        </div>
+      </form>
+    </mat-step>
+
+    <mat-step [stepControl]="secondFormGroup" [errorMessage]="getErrorMessage(2)">
+      <form [formGroup]="secondFormGroup">
+        <ng-template matStepLabel>Fill out your basic information</ng-template>
+        <div class="registration-items-div">
+          <mat-form-field appearance="fill">
+            <mat-label>First name</mat-label>
+            <input matInput formControlName="firstName" required>
+          </mat-form-field>
+          <mat-form-field appearance="fill">
+            <mat-label>Last name</mat-label>
+            <input matInput formControlName="lastName" required>
+          </mat-form-field>
+          <mat-form-field appearance="fill">
+            <mat-label>Phone number</mat-label>
+            <input matInput formControlName="phoneNumber" required>
+          </mat-form-field>
+          <mat-form-field appearance="fill">
+            <mat-label>City</mat-label>
+            <mat-select [(value)]="selectedCity">
+              <mat-option *ngFor="let city of cities" [value]="city">
+                {{city}}
+              </mat-option>
+            </mat-select>
+          </mat-form-field>
+          <div style="display: flex; flex-direction: row;">
+            <div style="margin-right: auto;">
+              <button mat-button matStepperPrevious>Back</button>
+            </div>
+            <div style="margin-left: auto;">
+              <button mat-button matStepperNext>Next</button>
+            </div>
+          </div>
+        </div>
+      </form>
+    </mat-step>
+
+    <mat-step>
+      <ng-template matStepLabel>Done</ng-template>
+      <p style="margin-top:5%;">You are now done.</p>
+      <div class="buttons-div">
+        <div >
+          <button mat-button matStepperPrevious>Back</button>
+        </div>
+        <div >
+          <button mat-raised-button color="primary"  (click)="signUp()">Sign up!</button>
+        </div>
+        <div >
+          <button mat-button (click)="stepper.reset()">Reset</button>
+        </div>
+      </div>
+    </mat-step>
+  </mat-stepper>
+</div>

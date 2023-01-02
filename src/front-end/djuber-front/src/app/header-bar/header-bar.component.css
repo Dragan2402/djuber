@@ -1,0 +1,31 @@
+.nav-bar-row{
+  display: flex;
+  flex-direction: row;
+  align-items: flex-start;
+  width: 100%;
+}
+
+.login-div{
+  margin-left: auto;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+}
+
+.home-div{
+  justify-self: start;
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  cursor: pointer;
+}
+
+.nav-bar-div{
+  flex-shrink: 2;
+}
+
+.user-info-div{
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}

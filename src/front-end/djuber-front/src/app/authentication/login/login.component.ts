@@ -31,10 +31,8 @@ export class LoginComponent implements OnInit {
 
   public login():void{
     if(this.email.valid && this.password.valid){
-      this.authenticationService.login(<string>this.email.value, <string>this.password.value).subscribe((response) =>{
-        console.log(response);
-      });
+      this.authenticationService.login(<string>this.email.value, <string>this.password.value).subscribe();
     }
-
   }
+
 }

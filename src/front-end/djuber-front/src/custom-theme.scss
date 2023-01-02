@@ -18,6 +18,41 @@ $djuber-front-accent: mat.define-palette(mat.$pink-palette, A200, A100, A400);
 // The warn palette is optional (defaults to red).
 $djuber-front-warn: mat.define-palette(mat.$red-palette);
 
+$md-weak: (
+    50 : #e8ecf0,
+    100 : #c6d0d9,
+    200 : #a0b1c0,
+    300 : #7992a6,
+    400 : #5d7a93,
+    500 : #406380,
+    600 : #3a5b78,
+    700 : #32516d,
+    800 : #2a4763,
+    900 : #1c3550,
+    A100 : #90c3ff,
+    A200 : #5da8ff,
+    A400 : #2a8cff,
+    A700 : #117eff,
+    contrast: (
+        50 : #000000,
+        100 : #000000,
+        200 : #000000,
+        300 : #000000,
+        400 : #ffffff,
+        500 : #ffffff,
+        600 : #ffffff,
+        700 : #ffffff,
+        800 : #ffffff,
+        900 : #ffffff,
+        A100 : #000000,
+        A200 : #000000,
+        A400 : #ffffff,
+        A700 : #ffffff,
+    )
+);
+
+$djuber-front-weak: mat.define-palette($md-weak);
+
 // Create the theme object. A theme consists of configurations for individual
 // theming systems such as "color" or "typography".
 $djuber-front-theme: mat.define-light-theme((
@@ -25,6 +60,7 @@ $djuber-front-theme: mat.define-light-theme((
     primary: $djuber-front-primary,
     accent: $djuber-front-accent,
     warn: $djuber-front-warn,
+    weak: $djuber-front-weak
   )
 ));
 
