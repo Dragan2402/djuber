@@ -72,7 +72,7 @@
   margin: 0 10px;
   text-decoration: none;
   border: 2px solid white;
-  background-color: #004661;
+  background-color: #0d6efd;
   color: white;
   font-weight: 500;
   padding: 10px 25px;
@@ -81,7 +81,7 @@
   transition: all 0.3s ease;
 }
 .content .btns a:hover{
-  background: #196887;
+  background: #1A237E;
   cursor:pointer;
   color: #fff;
 }
