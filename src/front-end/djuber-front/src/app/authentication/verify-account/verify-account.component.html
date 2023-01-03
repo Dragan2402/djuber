@@ -1,1 +1,18 @@
-<p>verify-account works!</p>
+<div class="verification-div">
+  <div *ngIf="verified">
+    <div class="image-div">
+      <img src="../../../assets/verified.png" height="200" width="200">
+    </div>
+    <div class="text-div" style="color: lightgreen;">
+      Welcome to Djuber
+    </div>
+  </div>
+  <div *ngIf="!verified">
+    <div class="image-div">
+      <img src="../../../assets/confused.png"  height="300" width="300">
+    </div>
+    <div class="text-div" style="color: red;">
+      Error.....
+    </div>
+  </div>
+</div>

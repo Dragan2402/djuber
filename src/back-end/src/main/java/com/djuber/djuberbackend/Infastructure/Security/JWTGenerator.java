@@ -1,8 +1,12 @@
 package com.djuber.djuberbackend.Infastructure.Security;
 
+import com.djuber.djuberbackend.Infastructure.Util.DateCalculator;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
+import lombok.AccessLevel;
+import lombok.RequiredArgsConstructor;
+import lombok.experimental.FieldDefaults;
 import org.springframework.data.util.Pair;
 import org.springframework.security.authentication.AuthenticationCredentialsNotFoundException;
 import org.springframework.security.core.Authentication;
@@ -11,7 +15,11 @@ import org.springframework.stereotype.Component;
 import java.util.Date;
 
 @Component
+@RequiredArgsConstructor
+@FieldDefaults(level = AccessLevel.PRIVATE)
 public class JWTGenerator {
+
+    final DateCalculator dateCalculator;
 
     public Pair<String, Date> generateToken(Authentication authentication) {
         String username = authentication.getName();
@@ -50,7 +58,6 @@ public class JWTGenerator {
     }
 
     private Date getExpiringDate() {
-        Date currentDate = new Date();
-        return new Date(currentDate.getTime() + SecurityConstants.JWT_EXPIRATION);
+        return dateCalculator.getDate2HoursFromNow();
     }
 }

@@ -38,12 +38,12 @@ VALUES (200000, 200000, 'Dimitrije', 'Petrov', 'Novi Sad', '067123456', 'slikaTO
 --CLIENTS
 INSERT INTO client (id, identity_id, first_name, last_name, city, phone_number, picture, verified, signing_type, blocked, in_ride,
                     deleted)
-VALUES (100000, 300000, 'Pero', 'Peric', 'Novi Sad', '0691777778', 'slikaTODO', true, 0, false, false,
+VALUES (100000, 300000, 'Pero', 'Peric', 'Novi Sad', '0691777778', 'slikaTODO', true, 0, false , false,
         false);
 
 INSERT INTO client (id, identity_id, first_name, last_name, city, phone_number, picture, verified, signing_type, blocked, in_ride,
                     deleted)
-VALUES (200000, 400000, 'Jovo', 'Jovic', 'Novi Sad', '067123423', 'slikaTODO', true, 0, false, false,
+VALUES (200000, 400000, 'Jovo', 'Jovic', 'Novi Sad', '067123423', 'slikaTODO', true , 0, false , false,
         false);
 
 --CARS
@@ -66,7 +66,7 @@ VALUES (100000, 500000, 'Haso', 'Hasic', 'Novi Sad', '0691777778', 'slikaTODO', 
 INSERT INTO driver (id, identity_id, first_name, last_name, city, phone_number, picture, active, car_id,
                     duration_active, blocked, in_ride,
                     deleted)
-VALUES (200000, 600000, 'Jovo', 'Jovic', 'Novi Sad', '067123423', 'slikaTODO', true, 200000, 0, false,
+VALUES (200000, 600000, 'Mujo', 'Mujic', 'Novi Sad', '067123423', 'slikaTODO', true, 200000, 0, false,
         false, false);
 
 --ROUTES

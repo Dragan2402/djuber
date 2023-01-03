@@ -1,12 +1,11 @@
 package com.djuber.djuberbackend.Infastructure.Exceptions;
 
-import com.djuber.djuberbackend.Infastructure.Exceptions.CustomExceptions.DifferentSocialSigningProvidersException;
-import com.djuber.djuberbackend.Infastructure.Exceptions.CustomExceptions.EmailAlreadyExistsException;
-import com.djuber.djuberbackend.Infastructure.Exceptions.CustomExceptions.UnsupportedSocialProviderExcetpion;
-import com.djuber.djuberbackend.Infastructure.Exceptions.CustomExceptions.UserNotFoundException;
+import com.djuber.djuberbackend.Infastructure.Exceptions.CustomExceptions.*;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.validation.FieldError;
+import org.springframework.security.authentication.BadCredentialsException;
+import org.springframework.security.authentication.DisabledException;
+import org.springframework.security.authentication.LockedException;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
@@ -28,6 +27,21 @@ public class GlobalExceptionHandler {
         return new ResponseEntity<>(getErrorObject(ex.getMessage(), HttpStatus.BAD_REQUEST), HttpStatus.BAD_REQUEST);
     }
 
+    @ExceptionHandler({LockedException.class})
+    public ResponseEntity<ErrorObject> handleLockedException(LockedException ex, WebRequest request){
+        return new ResponseEntity<>(getErrorObject(ex.getMessage(), HttpStatus.UNAUTHORIZED), HttpStatus.UNAUTHORIZED);
+    }
+
+    @ExceptionHandler({BadCredentialsException.class})
+    public ResponseEntity<ErrorObject> handleBadCredentialsException(BadCredentialsException ex, WebRequest request){
+        return new ResponseEntity<>(getErrorObject(ex.getMessage(), HttpStatus.BAD_REQUEST), HttpStatus.BAD_REQUEST);
+    }
+
+    @ExceptionHandler({DisabledException.class})
+    public ResponseEntity<ErrorObject> handleDisabledException(DisabledException ex, WebRequest request){
+        return new ResponseEntity<>(getErrorObject("Client account is not verified.", HttpStatus.BAD_REQUEST), HttpStatus.BAD_REQUEST);
+    }
+
     @ExceptionHandler({UnsupportedSocialProviderExcetpion.class})
     public ResponseEntity<ErrorObject> handleUnsupportedSocialProviderExcetpion(UnsupportedSocialProviderExcetpion ex, WebRequest request){
         return new ResponseEntity<>(getErrorObject(ex.getMessage(), HttpStatus.BAD_REQUEST), HttpStatus.BAD_REQUEST);
@@ -36,6 +50,16 @@ public class GlobalExceptionHandler {
     @ExceptionHandler({DifferentSocialSigningProvidersException.class})
     public ResponseEntity<ErrorObject> handleDifferentSocialSigningProvidersException(DifferentSocialSigningProvidersException ex, WebRequest request){
         return new ResponseEntity<>(getErrorObject(ex.getMessage(), HttpStatus.BAD_REQUEST), HttpStatus.BAD_REQUEST);
+    }
+
+    @ExceptionHandler({InvalidTokenException.class})
+    public ResponseEntity<ErrorObject> handleInvalidTokenException(InvalidTokenException ex, WebRequest request){
+        return new ResponseEntity<>(getErrorObject(ex.getMessage(), HttpStatus.BAD_REQUEST), HttpStatus.BAD_REQUEST);
+    }
+
+    @ExceptionHandler({TokenExpiredException.class})
+    public ResponseEntity<ErrorObject> handleITokenExpiredException(TokenExpiredException ex, WebRequest request){
+        return new ResponseEntity<>(getErrorObject(ex.getMessage(), HttpStatus.EXPECTATION_FAILED), HttpStatus.EXPECTATION_FAILED);
     }
 
     @ResponseStatus(HttpStatus.BAD_REQUEST)

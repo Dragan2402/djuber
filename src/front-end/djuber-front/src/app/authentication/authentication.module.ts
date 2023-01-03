@@ -16,12 +16,18 @@ import {
   GoogleLoginProvider,
   FacebookLoginProvider
 } from '@abacritt/angularx-social-login';
+import { VerifyAccountComponent } from './verify-account/verify-account.component';
+import { PasswordResetComponent } from './password-reset/password-reset.component';
+import { PasswordResetRequestComponent } from './password-reset/password-resset-request/password-reset-request.component';
 
 @NgModule({
   declarations: [
     LoginComponent,
     RegistrationComponent,
-    SpinnerComponent
+    SpinnerComponent,
+    VerifyAccountComponent,
+    PasswordResetComponent,
+    PasswordResetRequestComponent
   ],
   imports: [
     CommonModule,

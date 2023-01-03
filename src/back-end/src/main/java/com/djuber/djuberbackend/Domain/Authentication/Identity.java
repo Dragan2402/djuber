@@ -10,6 +10,7 @@ import org.hibernate.annotations.Where;
 
 import javax.persistence.*;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 @Entity
@@ -36,6 +37,12 @@ public class Identity {
 
     @ManyToMany(fetch = FetchType.EAGER)
     List<Role> roles = new ArrayList<>();
+
+    @Column(name = "passwordResetToken")
+    String passwordResetToken;
+
+    @Column(name = "passwordResetTokenExpirationDate")
+    Date passwordResetTokenExpirationDate;
 
     @Column(name = "deleted", nullable = false)
     Boolean deleted;

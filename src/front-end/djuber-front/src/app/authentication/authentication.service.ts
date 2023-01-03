@@ -15,6 +15,7 @@ import { FacebookLoginProvider, SocialAuthService, SocialUser } from '@abacritt/
 })
 export class AuthenticationService {
 
+
   loading$ = new BehaviorSubject<boolean>(false);
 
   logged$ = new BehaviorSubject<boolean>(this.isLoggedIn());
@@ -25,9 +26,7 @@ export class AuthenticationService {
     @Inject(localStorageToken) private localStorage : Storage,
     private route: Router,
     private socialAuthService: SocialAuthService) {
-
     this.socialAuthService.authState.subscribe((user) => {this.socialLogin(user)});
-
     }
 
 
@@ -65,6 +64,10 @@ export class AuthenticationService {
     this.socialAuthService.signIn(FacebookLoginProvider.PROVIDER_ID);
   }
 
+  public verifyClientAccount(token: string) {
+    return this.http.put("api/auth/verifyClientAccount",{"token":token});
+  }
+
 
   private async setToken(token : any){
     this.loading$.next(true);
@@ -95,7 +98,6 @@ export class AuthenticationService {
   public refreshToken():void{
     const dateExpiring = new Date(this.localStorage.getItem("jwt-expiringDate"));
     const dateNow = new Date();
-    dateExpiring.setTime(dateExpiring.getTime()-3600000);
     if((dateNow.getTime()+360000)>dateExpiring.getTime()){
       this.http.get("/api/auth/refreshToken").subscribe((response) =>{
         console.log(response);
@@ -105,12 +107,19 @@ export class AuthenticationService {
     }
   }
 
+  public resetPassword(body){
+    return this.http.put("/api/auth/passwordReset",body);
+  }
+
+  public requestPasswordReset(email:string){
+    return this.http.get("/api/auth/passwordResetToken?email="+email);
+  }
+
   private isLoggedIn():boolean{
     if(this.localStorage.getItem("jwt")=== null){
       return false;
     }else{
       const dateExpiring = new Date(this.localStorage.getItem("jwt-expiringDate"));
-      dateExpiring.setTime(dateExpiring.getTime()-3600000);
       const dateNow = new Date();
       return dateExpiring > dateNow;
     }

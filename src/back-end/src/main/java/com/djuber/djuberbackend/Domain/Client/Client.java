@@ -10,6 +10,7 @@ import org.hibernate.annotations.SQLDelete;
 import org.hibernate.annotations.Where;
 
 import javax.persistence.*;
+import java.util.Date;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -65,6 +66,12 @@ public class Client {
 
     @Column(name = "inRide", nullable = false)
     Boolean inRide;
+
+    @Column(name = "verificationToken")
+    String verificationToken;
+
+    @Column(name = "verificationTokenExpirationDate")
+    Date verificationTokenExpirationDate;
 
     @Column(name = "deleted", nullable = false)
     Boolean deleted;

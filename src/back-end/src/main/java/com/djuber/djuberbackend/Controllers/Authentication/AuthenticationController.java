@@ -2,9 +2,7 @@ package com.djuber.djuberbackend.Controllers.Authentication;
 
 import com.djuber.djuberbackend.Application.Authentication.IAuthenticationService;
 import com.djuber.djuberbackend.Application.Authentication.Implementation.AuthenticationService;
-import com.djuber.djuberbackend.Controllers.Authentication.Request.LoginRequest;
-import com.djuber.djuberbackend.Controllers.Authentication.Request.SignUpRequest;
-import com.djuber.djuberbackend.Controllers.Authentication.Request.SocialUserRequest;
+import com.djuber.djuberbackend.Controllers.Authentication.Request.*;
 import com.djuber.djuberbackend.Controllers.Authentication.Responses.LoggedUserInfoResponse;
 import com.djuber.djuberbackend.Controllers.Authentication.Responses.LoginResponse;
 import com.djuber.djuberbackend.Infastructure.Security.JWTGenerator;
@@ -65,4 +63,20 @@ public class AuthenticationController {
     public ResponseEntity<LoginResponse> socialSignIn(@RequestBody SocialUserRequest request){
         return new ResponseEntity<>(new LoginResponse(jwtGenerator.generateRefreshToken(authenticationService.socialSignIn(request))),HttpStatus.OK);
     }
+
+    @PutMapping(value = "verifyClientAccount")
+    public void verify(@RequestBody VerifyClientAccountRequest request){
+        authenticationService.verifyClientAccount(request.getToken());
+    }
+
+    @PutMapping(value = "passwordReset")
+    public void passwordReset(@RequestBody @Valid PasswordResetRequest request){
+        authenticationService.resetPassword(request);
+    }
+
+    @GetMapping(value = "passwordResetToken")
+    public void getPasswordResetToken(@RequestParam String email){
+        authenticationService.sendPasswordResetToken(email);
+    }
+
 }
