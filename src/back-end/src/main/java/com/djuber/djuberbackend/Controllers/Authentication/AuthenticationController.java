@@ -4,6 +4,7 @@ import com.djuber.djuberbackend.Application.Authentication.IAuthenticationServic
 import com.djuber.djuberbackend.Application.Authentication.Implementation.AuthenticationService;
 import com.djuber.djuberbackend.Controllers.Authentication.Request.LoginRequest;
 import com.djuber.djuberbackend.Controllers.Authentication.Request.SignUpRequest;
+import com.djuber.djuberbackend.Controllers.Authentication.Request.SocialUserRequest;
 import com.djuber.djuberbackend.Controllers.Authentication.Responses.LoggedUserInfoResponse;
 import com.djuber.djuberbackend.Controllers.Authentication.Responses.LoginResponse;
 import com.djuber.djuberbackend.Infastructure.Security.JWTGenerator;
@@ -19,6 +20,8 @@ import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
 import java.security.Principal;
+import java.util.Date;
+import java.util.Map;
 
 @Tag(name="Authentication API",description = "Provides authentication logic.")
 @RestController
@@ -33,11 +36,6 @@ public class AuthenticationController {
 
     private final IAuthenticationService authenticationService;
 
-    @GetMapping
-    public ResponseEntity<String> login(){
-        return new ResponseEntity<String>("OK", HttpStatus.OK);
-    }
-
     @PostMapping("login")
     public ResponseEntity<LoginResponse> login(@RequestBody @Valid LoginRequest loginRequest){
         Authentication authentication = authenticationManager.authenticate(
@@ -45,8 +43,12 @@ public class AuthenticationController {
                         loginRequest.getEmail(),
                         loginRequest.getPassword()));
         SecurityContextHolder.getContext().setAuthentication(authentication);
-        String token = jwtGenerator.generateToken(authentication);
-        return new ResponseEntity<>(new LoginResponse(token), HttpStatus.OK);
+        return new ResponseEntity<>(new LoginResponse(jwtGenerator.generateToken(authentication)), HttpStatus.OK);
+    }
+
+    @GetMapping(value = "refreshToken")
+    public ResponseEntity<LoginResponse> refreshJwtToken(Principal user){
+        return new ResponseEntity<>(new LoginResponse(jwtGenerator.generateRefreshToken(user.getName())), HttpStatus.OK);
     }
 
     @GetMapping(value = "getLoggedUserInfo")
@@ -57,5 +59,10 @@ public class AuthenticationController {
     @PostMapping(value = "signUp")
     public ResponseEntity<Long> signUp(@RequestBody @Valid SignUpRequest request){
         return new ResponseEntity<>(authenticationService.signUpClient(request),HttpStatus.CREATED);
+    }
+
+    @PostMapping(value = "socialSignIn")
+    public ResponseEntity<LoginResponse> socialSignIn(@RequestBody SocialUserRequest request){
+        return new ResponseEntity<>(new LoginResponse(jwtGenerator.generateRefreshToken(authenticationService.socialSignIn(request))),HttpStatus.OK);
     }
 }

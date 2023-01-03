@@ -13,6 +13,7 @@ import {GlobalErroHandler} from "./utility/errorhandler.service"
 import {RequestInterceptor} from "./utility/request.interceptor";
 import { HeaderBarComponent } from './header-bar/header-bar.component';
 import {MatMenuModule} from '@angular/material/menu';
+import { FacebookLoginProvider, GoogleLoginProvider, SocialAuthServiceConfig } from '@abacritt/angularx-social-login';
 
 @NgModule({
   declarations: [
@@ -28,11 +29,33 @@ import {MatMenuModule} from '@angular/material/menu';
     MatToolbarModule,
     MatIconModule,
     HttpClientModule,
-    MatMenuModule
+    MatMenuModule,
+
   ],
   providers: [
     { provide: ErrorHandler, useClass: GlobalErroHandler },
-    { provide: HTTP_INTERCEPTORS, useClass: RequestInterceptor, multi: true}
+    { provide: HTTP_INTERCEPTORS, useClass: RequestInterceptor, multi: true},
+    {
+      provide: 'SocialAuthServiceConfig',
+      useValue: {
+        autoLogin: false,
+        providers: [
+          {
+            id: GoogleLoginProvider.PROVIDER_ID,
+            provider: new GoogleLoginProvider(
+              '100277748544-laavrf4esjhhhqa4i0kt8lkqlupbgpnj.apps.googleusercontent.com'
+            )
+          },
+          {
+            id: FacebookLoginProvider.PROVIDER_ID,
+            provider: new FacebookLoginProvider('2743619645775662')
+          }
+        ],
+        onError: (err) => {
+          console.error(err);
+        }
+      } as SocialAuthServiceConfig,
+    }
   ],
   bootstrap: [AppComponent]
 })

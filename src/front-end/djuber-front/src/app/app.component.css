@@ -5,12 +5,12 @@
 }
 
 .content-div{
-  flex-grow: 12;
+  flex-grow: 20;
+
 }
 
 .footer-div{
-  background-color: brown;
+  flex-shrink: 1;
+
 }
-
-
 

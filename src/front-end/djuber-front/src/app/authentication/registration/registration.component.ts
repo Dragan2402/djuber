@@ -1,6 +1,8 @@
 import { STEPPER_GLOBAL_OPTIONS } from '@angular/cdk/stepper';
-import { Component, OnInit } from '@angular/core';
+import { Component, OnDestroy, OnInit } from '@angular/core';
 import {AbstractControl, FormBuilder, ValidationErrors, ValidatorFn, Validators} from '@angular/forms';
+import { Observable } from 'rxjs';
+import { tap } from 'rxjs-compat/operators/tap';
 import CustomValidators from 'src/app/utility/customValidators';
 import { AuthenticationService } from '../authentication.service';
 import { RegistrationSubmit } from '../registrationSubmit';
@@ -23,7 +25,6 @@ export class RegistrationComponent implements OnInit {
   cities:string[] = ['Novi Sad','Beograd']
 
 
-
   firstFormGroup = this._formBuilder.group({
     email : ['', [Validators.required, Validators.email]],
     password : ['',Validators.required],
@@ -36,7 +37,9 @@ export class RegistrationComponent implements OnInit {
   });
 
 
-  constructor(private _formBuilder: FormBuilder, private authenticationService:AuthenticationService) { }
+  constructor(private _formBuilder: FormBuilder, private authenticationService:AuthenticationService) {
+  }
+
 
   ngOnInit(): void {
   }
@@ -46,7 +49,7 @@ export class RegistrationComponent implements OnInit {
       const request = {email:this.firstFormGroup.controls["email"].value, "password":this.firstFormGroup.controls["password"].value,
       "confirmPassword":this.firstFormGroup.controls["confirmPassword"].value, "firstName":this.secondFormGroup.controls.firstName.value,
       "lastName":this.secondFormGroup.controls.lastName.value, "city":this.selectedCity,"phoneNumber":this.secondFormGroup.controls.phoneNumber.value} as RegistrationSubmit;
-      this.authenticationService.signUp(request).subscribe((resposne) => {console.log(resposne)});
+      this.authenticationService.signUp(request).subscribe();
     }
   }
 

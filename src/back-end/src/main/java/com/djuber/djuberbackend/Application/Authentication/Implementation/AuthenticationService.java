@@ -2,14 +2,19 @@ package com.djuber.djuberbackend.Application.Authentication.Implementation;
 
 import com.djuber.djuberbackend.Application.Authentication.IAuthenticationService;
 import com.djuber.djuberbackend.Controllers.Authentication.Request.SignUpRequest;
+import com.djuber.djuberbackend.Controllers.Authentication.Request.SocialUserRequest;
 import com.djuber.djuberbackend.Controllers.Authentication.Responses.LoggedUserInfoResponse;
+import com.djuber.djuberbackend.Controllers.Authentication.Responses.LoginResponse;
 import com.djuber.djuberbackend.Domain.Admin.Admin;
 import com.djuber.djuberbackend.Domain.Authentication.Identity;
 import com.djuber.djuberbackend.Domain.Authentication.Role;
 import com.djuber.djuberbackend.Domain.Authentication.UserType;
 import com.djuber.djuberbackend.Domain.Client.Client;
+import com.djuber.djuberbackend.Domain.Client.ClientSigningType;
 import com.djuber.djuberbackend.Domain.Driver.Driver;
+import com.djuber.djuberbackend.Infastructure.Exceptions.CustomExceptions.DifferentSocialSigningProvidersException;
 import com.djuber.djuberbackend.Infastructure.Exceptions.CustomExceptions.EmailAlreadyExistsException;
+import com.djuber.djuberbackend.Infastructure.Exceptions.CustomExceptions.UnsupportedSocialProviderExcetpion;
 import com.djuber.djuberbackend.Infastructure.Repositories.Admin.IAdminRepository;
 import com.djuber.djuberbackend.Infastructure.Repositories.Authentication.IIdentityRepository;
 import com.djuber.djuberbackend.Infastructure.Repositories.Authentication.RoleRepository;
@@ -111,6 +116,7 @@ public class AuthenticationService implements IAuthenticationService, UserDetail
         clientToSave.setCity(request.getCity());
         clientToSave.setPhoneNumber(request.getPhoneNumber());
         clientToSave.setVerified(true);
+        clientToSave.setClientSigningType(ClientSigningType.DEFAULT);
         clientToSave.setDeleted(false);
         clientToSave.setInRide(false);
         clientToSave.setBlocked(false);
@@ -119,5 +125,56 @@ public class AuthenticationService implements IAuthenticationService, UserDetail
         Client saved = clientRepository.save(clientToSave);
 
         return saved.getId();
+    }
+
+    @Override
+    public String socialSignIn(SocialUserRequest request) {
+        Identity identity = identityRepository.findByEmail(request.getEmail());
+        if(identity == null){
+            return this.signUpSocialClient(request);
+        }
+        Client client = clientRepository.findByIdentityId(identity.getId());
+        if(client.getClientSigningType() != this.getClientSigningType(request.getProvider())){
+            throw new DifferentSocialSigningProvidersException("Not same provider as one that is already registered with provided email address.");
+        }
+        return identity.getEmail();
+    }
+
+    @Override
+    public String signUpSocialClient(SocialUserRequest request) {
+        Identity identityToSave = new Identity();
+
+        identityToSave.setEmail(request.getEmail());
+        identityToSave.setPassword(passwordEncoder.encode(request.getId()));
+        List<Role> roles = new ArrayList<>();
+        roles.add(roleRepository.findByName("ROLE_CLIENT"));
+        identityToSave.setRoles(roles);
+        identityToSave.setDeleted(false);
+        identityToSave.setUserType(UserType.CLIENT);
+
+        Identity identitySaved = identityRepository.save(identityToSave);
+
+        Client clientToSave = new Client();
+        clientToSave.setFirstName(request.getFirstName());
+        clientToSave.setLastName(request.getLastName());
+        clientToSave.setCity("Novi Sad");
+        clientToSave.setPhoneNumber("");
+        clientToSave.setVerified(true);
+        clientToSave.setClientSigningType(this.getClientSigningType(request.getProvider()));
+        clientToSave.setDeleted(false);
+        clientToSave.setInRide(false);
+        clientToSave.setBlocked(false);
+        clientToSave.setPicture(request.getPhotoUrl());
+        clientToSave.setIdentity(identitySaved);
+        clientRepository.save(clientToSave);
+        return identitySaved.getEmail();
+    }
+
+    private ClientSigningType getClientSigningType(String type){
+        try {
+            return ClientSigningType.valueOf(type);
+        }catch (Exception ex){
+            throw new UnsupportedSocialProviderExcetpion("The provided social provider is not supported.");
+        }
     }
 }

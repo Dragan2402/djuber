@@ -28,3 +28,28 @@ mat-stepper {
 form{
   margin-top: 5%;
 }
+
+
+
+.social-login-div{
+  display: flex;
+  flex-direction: row;
+  margin-top: 4%;
+  margin-bottom: 2%;
+  width: 35%;
+}
+
+.facebook-icon{
+  height: 38px;
+  width: 38px;
+  margin-right: 2%;
+  cursor: pointer;
+}
+
+
+.social-sing-in-text{
+  justify-self: center;
+  align-self: center;
+  margin-left: 30%;
+  margin-right: 3%;
+}

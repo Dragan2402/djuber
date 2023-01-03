@@ -11,6 +11,11 @@ import { SpinnerComponent } from '../animations/spinner/spinner.component';
 import {MatStepperModule} from '@angular/material/stepper';
 import { RegistrationComponent } from './registration/registration.component';
 import {MatSelectModule} from '@angular/material/select';
+import { SocialLoginModule, SocialAuthServiceConfig } from '@abacritt/angularx-social-login';
+import {
+  GoogleLoginProvider,
+  FacebookLoginProvider
+} from '@abacritt/angularx-social-login';
 
 @NgModule({
   declarations: [
@@ -27,7 +32,31 @@ import {MatSelectModule} from '@angular/material/select';
     MatInputModule,
     MatButtonModule,
     MatStepperModule,
-    MatSelectModule
+    MatSelectModule,
+    SocialLoginModule
+  ],
+  providers:[
+    // {
+    //   provide: 'SocialAuthServiceConfig',
+    //   useValue: {
+    //     autoLogin: false,
+    //     providers: [
+    //       {
+    //         id: GoogleLoginProvider.PROVIDER_ID,
+    //         provider: new GoogleLoginProvider(
+    //           '100277748544-laavrf4esjhhhqa4i0kt8lkqlupbgpnj.apps.googleusercontent.com'
+    //         )
+    //       },
+    //       {
+    //         id: FacebookLoginProvider.PROVIDER_ID,
+    //         provider: new FacebookLoginProvider('2743619645775662')
+    //       }
+    //     ],
+    //     onError: (err) => {
+    //       console.error(err);
+    //     }
+    //   } as SocialAuthServiceConfig,
+    // }
   ]
 })
 export class AuthenticationModule { }

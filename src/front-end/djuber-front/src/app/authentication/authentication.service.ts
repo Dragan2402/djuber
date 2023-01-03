@@ -7,6 +7,7 @@ import { BehaviorSubject, Observable, of } from 'rxjs';
 import { Router } from '@angular/router';
 import { LoggedUser } from './loggedUser';
 import { RegistrationSubmit } from './registrationSubmit';
+import { FacebookLoginProvider, SocialAuthService, SocialUser } from '@abacritt/angularx-social-login';
 
 
 @Injectable({
@@ -22,7 +23,22 @@ export class AuthenticationService {
 
   constructor(private http:HttpClient,
     @Inject(localStorageToken) private localStorage : Storage,
-    private route: Router) { }
+    private route: Router,
+    private socialAuthService: SocialAuthService) {
+
+    this.socialAuthService.authState.subscribe((user) => {this.socialLogin(user)});
+
+    }
+
+
+  public socialLogin(socialUser: SocialUser){
+    console.log(socialUser)
+    this.http.post("/api/auth/socialSignIn",socialUser).pipe(tap(res => this.setToken(res)),
+    catchError((error : HttpErrorResponse): Observable<any> => {
+      this.handleError(error);
+      return of(null);
+    })).subscribe();
+  }
 
   public login(email:string, password:string){
     const body = {
@@ -37,15 +53,23 @@ export class AuthenticationService {
   }
 
   public signUp(request:RegistrationSubmit){
-    return this.http.post<number>("api/auth/signUp",request);
+    return this.http.post<number>("api/auth/signUp",request).pipe(tap( res => {
+      this.reportSuccessfulRegistration();
+    }),catchError((error : HttpErrorResponse): Observable<any> => {
+      this.handleError(error);
+      return of(null);
+    }));
+  }
+
+  public facebookSignIn(){
+    this.socialAuthService.signIn(FacebookLoginProvider.PROVIDER_ID);
   }
 
 
   private async setToken(token : any){
     this.loading$.next(true);
-
     this.localStorage.setItem("jwt", token["accessToken"])
-
+    this.localStorage.setItem("jwt-expiringDate", token["expiringDate"]);
     this.http.get<LoggedUser>("/api/auth/getLoggedUserInfo").pipe(tap(res => {
       this.localStorage.setItem("user-email",res.email);
       this.localStorage.setItem("user-first-name",res.firstName);
@@ -64,11 +88,32 @@ export class AuthenticationService {
     this.localStorage.removeItem("user-email");
     this.localStorage.removeItem("user-first-name");
     this.localStorage.removeItem("user-last-name");
+    this.localStorage.removeItem("jwt-expiringDate");
     this.logged$.next(this.isLoggedIn());
   }
 
-  private isLoggedIn(){
-    return this.localStorage.getItem("jwt")!== null;
+  public refreshToken():void{
+    const dateExpiring = new Date(this.localStorage.getItem("jwt-expiringDate"));
+    const dateNow = new Date();
+    dateExpiring.setTime(dateExpiring.getTime()-3600000);
+    if((dateNow.getTime()+360000)>dateExpiring.getTime()){
+      this.http.get("/api/auth/refreshToken").subscribe((response) =>{
+        console.log(response);
+        this.localStorage.setItem("jwt", response["accessToken"])
+        this.localStorage.setItem("jwt-expiringDate", response["expiringDate"]);
+      })
+    }
+  }
+
+  private isLoggedIn():boolean{
+    if(this.localStorage.getItem("jwt")=== null){
+      return false;
+    }else{
+      const dateExpiring = new Date(this.localStorage.getItem("jwt-expiringDate"));
+      dateExpiring.setTime(dateExpiring.getTime()-3600000);
+      const dateNow = new Date();
+      return dateExpiring > dateNow;
+    }
   }
 
   private getLoggedUserInfo():LoggedUser{
@@ -79,6 +124,13 @@ export class AuthenticationService {
     this.loading$.next(true);
     await new Promise(r => setTimeout(r, 1000));
     this.loading$.next(false);
+  }
+
+  private async reportSuccessfulRegistration(){
+    this.loading$.next(true);
+    await new Promise(r => setTimeout(r, 1000));
+    this.loading$.next(false);
+    this.route.navigate(['/'])
   }
 
 }

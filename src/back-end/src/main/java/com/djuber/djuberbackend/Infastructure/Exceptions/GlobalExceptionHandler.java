@@ -1,6 +1,8 @@
 package com.djuber.djuberbackend.Infastructure.Exceptions;
 
+import com.djuber.djuberbackend.Infastructure.Exceptions.CustomExceptions.DifferentSocialSigningProvidersException;
 import com.djuber.djuberbackend.Infastructure.Exceptions.CustomExceptions.EmailAlreadyExistsException;
+import com.djuber.djuberbackend.Infastructure.Exceptions.CustomExceptions.UnsupportedSocialProviderExcetpion;
 import com.djuber.djuberbackend.Infastructure.Exceptions.CustomExceptions.UserNotFoundException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -26,6 +28,15 @@ public class GlobalExceptionHandler {
         return new ResponseEntity<>(getErrorObject(ex.getMessage(), HttpStatus.BAD_REQUEST), HttpStatus.BAD_REQUEST);
     }
 
+    @ExceptionHandler({UnsupportedSocialProviderExcetpion.class})
+    public ResponseEntity<ErrorObject> handleUnsupportedSocialProviderExcetpion(UnsupportedSocialProviderExcetpion ex, WebRequest request){
+        return new ResponseEntity<>(getErrorObject(ex.getMessage(), HttpStatus.BAD_REQUEST), HttpStatus.BAD_REQUEST);
+    }
+
+    @ExceptionHandler({DifferentSocialSigningProvidersException.class})
+    public ResponseEntity<ErrorObject> handleDifferentSocialSigningProvidersException(DifferentSocialSigningProvidersException ex, WebRequest request){
+        return new ResponseEntity<>(getErrorObject(ex.getMessage(), HttpStatus.BAD_REQUEST), HttpStatus.BAD_REQUEST);
+    }
 
     @ResponseStatus(HttpStatus.BAD_REQUEST)
     @ExceptionHandler(MethodArgumentNotValidException.class)

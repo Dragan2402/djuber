@@ -1,5 +1,5 @@
 <div class="login-div">
-  <mat-form-field appearance="fill" class="input-field-80">
+ <mat-form-field appearance="fill" class="input-field-80">
     <input matInput placeholder="E-mail" [formControl]="email" required>
     <mat-error *ngIf="email.invalid">{{getEmailErrorMessage()}}</mat-error>
   </mat-form-field>
@@ -11,10 +11,22 @@
 
   <button mat-raised-button color="primary" (click)="login()" class="continue-action-button">Login</button>
 
+  <div class="social-login-div">
+    <div class="social-sing-in-text">
+      Or
+    </div>
+    <img src="../../../assets/facebook-button.jpg" alt="Facebook sign in" (click)="facebookSignin()" class="facebook-icon">
+
+    <asl-google-signin-button theme="filled_blue" size="medium" shape="pill" type="standard" text="continue_with"></asl-google-signin-button>
+
+  </div>
+
   <div class="options-login-div">
     <a routerLink="/authentication/register" class="help-link">Don't have an account? Sign up!</a>
     <a routerLink="/authentication/password-reset" class="help-link">Forgot password?</a>
   </div>
+
+
 
   <djuber-spinner></djuber-spinner>
 </div>

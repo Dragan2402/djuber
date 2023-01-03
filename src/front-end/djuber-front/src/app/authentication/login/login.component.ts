@@ -1,5 +1,7 @@
-import { Component, OnInit } from '@angular/core';
+import { FacebookLoginProvider, GoogleLoginProvider, SocialAuthService, SocialUser } from '@abacritt/angularx-social-login';
+import { Component, OnDestroy, OnInit } from '@angular/core';
 import {FormControl, Validators} from '@angular/forms';
+import { Observable } from 'rxjs';
 import { AuthenticationService } from '../authentication.service';
 
 @Component({
@@ -7,17 +9,14 @@ import { AuthenticationService } from '../authentication.service';
   templateUrl: './login.component.html',
   styleUrls: ['./login.component.css']
 })
-export class LoginComponent implements OnInit {
+export class LoginComponent   {
 
   email = new FormControl('', [Validators.required, Validators.email]);
 
   password = new FormControl('',[Validators.required]);
 
 
-  constructor(private authenticationService:AuthenticationService) { }
-
-  ngOnInit(): void {
-  }
+  constructor(private authenticationService:AuthenticationService) {}
 
   getEmailErrorMessage() {
     return this.email.hasError('required') ? '' :
@@ -33,6 +32,10 @@ export class LoginComponent implements OnInit {
     if(this.email.valid && this.password.valid){
       this.authenticationService.login(<string>this.email.value, <string>this.password.value).subscribe();
     }
+  }
+
+  facebookSignin(): void {
+    this.authenticationService.facebookSignIn();
   }
 
 }

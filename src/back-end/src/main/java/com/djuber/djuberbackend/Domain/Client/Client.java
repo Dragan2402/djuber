@@ -48,6 +48,9 @@ public class Client {
     @Column(name = "verified", nullable = false)
     Boolean verified;
 
+    @Column(name = "signingType", nullable = false)
+    ClientSigningType clientSigningType;
+
     @ManyToMany(mappedBy = "clients_ride")
     Set<Ride> rides = new HashSet<>();
 
@@ -65,6 +68,4 @@ public class Client {
 
     @Column(name = "deleted", nullable = false)
     Boolean deleted;
-
-
 }
