@@ -82,18 +82,13 @@ export class AuthenticationService {
       this.localStorage.setItem("user-first-name",res.firstName);
       this.localStorage.setItem("user-last-name",res.lastName);
       this.localStorage.setItem("user-picture",res.picture);
-      //this.setRole(res.role);
+      this.localStorage.setItem("user-role",this.hashService.hashString(res.role));
+      this.loggedUserInfo$.next(res);
     })).subscribe();
     await new Promise(r => setTimeout(r, 1000));
     this.logged$.next(true);
     this.loading$.next(false);
     this.route.navigate(['/'])
-  }
-
-  private setRole(role:string){
-    this.hashService.hashString(role).then(hashedRole =>{
-      this.localStorage.setItem("user-role",hashedRole)
-    })
   }
 
   public logout():void {

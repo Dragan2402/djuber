@@ -1,4 +1,5 @@
 import { Component, OnInit , OnChanges, SimpleChanges} from '@angular/core';
+import { Router } from '@angular/router';
 import {AuthenticationService} from "../authentication/authentication.service";
 import { LoggedUser } from '../authentication/loggedUser';
 
@@ -7,13 +8,13 @@ import { LoggedUser } from '../authentication/loggedUser';
   templateUrl: './header-bar.component.html',
   styleUrls: ['./header-bar.component.css']
 })
-export class HeaderBarComponent implements OnInit , OnChanges{
+export class HeaderBarComponent implements OnInit {
 
   logged! : boolean;
 
   userInfo! : LoggedUser;
 
-  constructor(private authenticationService : AuthenticationService) {
+  constructor(private authenticationService : AuthenticationService, private router:Router) {
     this.authenticationService.logged$.subscribe((attr:boolean) =>{
       this.logged = attr;
     });
@@ -21,11 +22,11 @@ export class HeaderBarComponent implements OnInit , OnChanges{
       this.userInfo = loggedUser;
     })
    }
-  ngOnChanges(changes: SimpleChanges): void {
-    console.log(changes);
-  }
 
   ngOnInit(): void {
+    if(this.logged){
+
+    }
   }
 
   logout():void{
@@ -33,7 +34,7 @@ export class HeaderBarComponent implements OnInit , OnChanges{
   }
 
   navigateToProfile(){
-    console.log("navigate");
+    this.router.navigate(["/admin"]);
   }
 
 

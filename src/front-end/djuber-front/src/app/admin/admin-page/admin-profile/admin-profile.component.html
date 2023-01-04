@@ -1,0 +1,61 @@
+<div class="profile-div">
+
+    <div class="picture-div">
+      <mat-label style="margin-bottom:5%">Upload profile picture</mat-label>
+      <div class="profile-picture-div">
+        <div *ngIf="profilePicture !== undefined">
+          <img [src]="profilePicture" width="120" height="100">
+        </div>
+        <div class="image-upload-div">
+          <div>
+            <button type="button" mat-raised-button color="primary" (click)="fileInput.click()">Choose File</button>
+            <input type="file" hidden #fileInput (change)="uploadFile($event.target.files)" accept="image/*">
+          </div>
+          <div *ngIf="profilePicture !== undefined">
+            <button type="button" mat-raised-button color="warn" (click)="clearPicture()">Clear picture</button>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="admin-info">
+      <div style="margin-bottom: 5%;">
+        <mat-label>Info:</mat-label>
+      </div>
+      <form [formGroup]="controlGroup">
+        <div clas="form-things-div">
+          <div>
+            <mat-form-field >
+              <mat-label>First name</mat-label>
+              <input matInput disabled formControlName="firstName" required>
+            </mat-form-field>
+          </div>
+          <div>
+            <mat-form-field >
+              <mat-label>Last name</mat-label>
+              <input matInput formControlName="lastName" required>
+            </mat-form-field>
+          </div>
+          <div>
+            <mat-form-field >
+              <mat-label>Phone number</mat-label>
+              <input matInput formControlName="phoneNumber" required>
+            </mat-form-field>
+          </div>
+
+          <div>
+            <mat-form-field >
+              <mat-label>City</mat-label>
+              <mat-select [(value)]="selectedCity">
+                <mat-option *ngFor="let city of cities" [value]="city">
+                  {{city}}
+                </mat-option>
+              </mat-select>
+            </mat-form-field>
+          </div>
+        </div>
+      </form>
+      <div class="edit-button">
+        <button mat-raised-button color="primary">Edit information</button>
+      </div>
+    </div>
+</div>

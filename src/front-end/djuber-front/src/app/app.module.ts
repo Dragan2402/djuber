@@ -30,7 +30,6 @@ import { FacebookLoginProvider, GoogleLoginProvider, SocialAuthServiceConfig } f
     MatIconModule,
     HttpClientModule,
     MatMenuModule,
-
   ],
   providers: [
     { provide: ErrorHandler, useClass: GlobalErroHandler },
