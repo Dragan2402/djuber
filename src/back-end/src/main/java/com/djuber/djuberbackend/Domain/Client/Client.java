@@ -43,9 +43,6 @@ public class Client {
     @Column(name = "phoneNumber", nullable = false)
     String phoneNumber;
 
-    @Column(name = "picture", nullable = false)
-    String picture;
-
     @Column(name = "verified", nullable = false)
     Boolean verified;
 

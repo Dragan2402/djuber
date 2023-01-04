@@ -6,4 +6,5 @@ export interface RegistrationSubmit{
   lastName:string;
   city:string;
   phoneNumber:string;
+  picture?:string;
 }

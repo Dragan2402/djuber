@@ -12,4 +12,5 @@ public class LoggedUserInfoResponse {
     String firstName;
     String lastName;
     String email;
+    String picture;
 }

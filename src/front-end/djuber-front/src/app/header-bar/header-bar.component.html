@@ -19,12 +19,12 @@
         </div>
         <div class="login-div" *ngIf="logged">
           <mat-icon [matMenuTriggerFor]="menu">apps</mat-icon>
-          <mat-menu #menu="matMenu">
+          <mat-menu #menu="matMenu" >
             <div class="user-info-div">
-              <div>
-                <img src="https://simg.nicepng.com/png/small/933-9332131_profile-picture-default-png.png" style="height: 30px; width: 35px;" alt="Profile picture">
+              <div style="align-self: center;">
+                <img [src]="'data:image/png;base64,' + userInfo.picture" style="border-radius: 20%;padding-left: 10px;padding-right: 10px;height: 80;width: 90px;" alt="Profile picture">
               </div>
-              <div style="margin-top: 10%;margin-bottom: 5%;">
+              <div style="margin-top: 10%;margin-bottom: 5%;align-self: center;">
                 <span>{{userInfo.firstName}} {{userInfo.lastName}}</span>
               </div>
             </div>
@@ -37,7 +37,6 @@
               <span>Logout</span>
             </button>
           </mat-menu>
-
         </div>
       </div>
     </div>

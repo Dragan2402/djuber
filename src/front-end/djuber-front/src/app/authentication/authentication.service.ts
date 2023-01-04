@@ -31,12 +31,13 @@ export class AuthenticationService {
 
 
   public socialLogin(socialUser: SocialUser){
-    console.log(socialUser)
+
+
     this.http.post("/api/auth/socialSignIn",socialUser).pipe(tap(res => this.setToken(res)),
-    catchError((error : HttpErrorResponse): Observable<any> => {
-      this.handleError(error);
-      return of(null);
-    })).subscribe();
+      catchError((error : HttpErrorResponse): Observable<any> => {
+        this.handleError(error);
+        return of(null);
+      })).subscribe();
   }
 
   public login(email:string, password:string){
@@ -77,6 +78,7 @@ export class AuthenticationService {
       this.localStorage.setItem("user-email",res.email);
       this.localStorage.setItem("user-first-name",res.firstName);
       this.localStorage.setItem("user-last-name",res.lastName);
+      this.localStorage.setItem("user-picture",res.picture);
       this.loggedUserInfo$.next(res);
     })).subscribe();
     await new Promise(r => setTimeout(r, 1000));
@@ -92,6 +94,7 @@ export class AuthenticationService {
     this.localStorage.removeItem("user-first-name");
     this.localStorage.removeItem("user-last-name");
     this.localStorage.removeItem("jwt-expiringDate");
+    this.localStorage.removeItem("user-picture");
     this.logged$.next(this.isLoggedIn());
   }
 
@@ -126,7 +129,7 @@ export class AuthenticationService {
   }
 
   private getLoggedUserInfo():LoggedUser{
-    return {email: this.localStorage.getItem("user-email"), firstName: this.localStorage.getItem("user-first-name"), lastName: this.localStorage.getItem("user-last-name")} as LoggedUser;
+    return {email: this.localStorage.getItem("user-email"), firstName: this.localStorage.getItem("user-first-name"), lastName: this.localStorage.getItem("user-last-name"), picture: this.localStorage.getItem("user-picture")} as LoggedUser;
   }
 
   private async handleError(error : HttpErrorResponse){

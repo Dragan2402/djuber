@@ -1,4 +1,5 @@
 import { STEPPER_GLOBAL_OPTIONS } from '@angular/cdk/stepper';
+import { HttpClient } from '@angular/common/http';
 import { Component, OnDestroy, OnInit } from '@angular/core';
 import {AbstractControl, FormBuilder, ValidationErrors, ValidatorFn, Validators} from '@angular/forms';
 import { Observable } from 'rxjs';
@@ -24,6 +25,7 @@ export class RegistrationComponent implements OnInit {
 
   cities:string[] = ['Novi Sad','Beograd']
 
+  profilePicture;
 
   firstFormGroup = this._formBuilder.group({
     email : ['', [Validators.required, Validators.email]],
@@ -48,9 +50,30 @@ export class RegistrationComponent implements OnInit {
     if(this.firstFormGroup.status === "VALID" && this.secondFormGroup.status==="VALID" ){
       const request = {email:this.firstFormGroup.controls["email"].value, "password":this.firstFormGroup.controls["password"].value,
       "confirmPassword":this.firstFormGroup.controls["confirmPassword"].value, "firstName":this.secondFormGroup.controls.firstName.value,
-      "lastName":this.secondFormGroup.controls.lastName.value, "city":this.selectedCity,"phoneNumber":this.secondFormGroup.controls.phoneNumber.value} as RegistrationSubmit;
+      "lastName":this.secondFormGroup.controls.lastName.value,
+      "city":this.selectedCity,"phoneNumber":this.secondFormGroup.controls.phoneNumber.value,
+      } as RegistrationSubmit;
+      if(this.profilePicture !== undefined){
+        request.picture = this.profilePicture;
+      }
       this.authenticationService.signUp(request).subscribe();
     }
+  }
+
+  uploadFile(files: FileList) {
+    const file = files.item(0);
+    const reader = new FileReader();
+
+    reader.readAsDataURL(file);
+    reader.onload = () => {
+      this.profilePicture = reader.result;
+      const base64String = reader.result as string;
+    };
+
+  }
+
+  clearPicture(){
+    this.profilePicture = undefined;
   }
 
   getErrorMessage(num : number): string{

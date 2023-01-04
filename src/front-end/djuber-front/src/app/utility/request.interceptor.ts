@@ -19,6 +19,10 @@ export class RequestInterceptor implements HttpInterceptor {
     next: HttpHandler
   ): Observable<HttpEvent<unknown>> {
 
+    if(request.url.includes("googleusercontent")){
+      console.log(request);
+      return next.handle(request);
+    }
     if(request.url.includes("passwordResetToken")){
       return next.handle(request);
     }

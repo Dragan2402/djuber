@@ -5,13 +5,11 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import lombok.experimental.FieldDefaults;
+import org.springframework.lang.Nullable;
 
 import javax.persistence.Entity;
 import javax.validation.ValidationException;
-import javax.validation.constraints.Email;
-import javax.validation.constraints.NotEmpty;
-import javax.validation.constraints.NotNull;
-import javax.validation.constraints.Pattern;
+import javax.validation.constraints.*;
 
 @Data
 @FieldDefaults(level = AccessLevel.PRIVATE)
@@ -40,7 +38,10 @@ public class SignUpRequest {
     @Pattern(regexp = "^[+]?[0-9]{8,13}$", message = "The phone number does not match the required pattern.")
     String phoneNumber;
 
-    public SignUpRequest(String email, String password, String confirmPassword, String firstName, String lastName, String city, String phoneNumber) {
+    String picture;
+
+    public SignUpRequest(String email, String password, String confirmPassword, String firstName, String lastName,
+                         String city, String phoneNumber, String picture) {
         if(!confirmPassword.equals(password)){
             throw new ValidationException("Passwords must match");
         }
@@ -51,5 +52,7 @@ public class SignUpRequest {
         this.lastName = lastName;
         this.city = city;
         this.phoneNumber = phoneNumber;
+        this.picture = picture;
     }
+
 }

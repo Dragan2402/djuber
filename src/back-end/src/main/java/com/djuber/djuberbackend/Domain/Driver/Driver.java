@@ -44,9 +44,6 @@ public class Driver {
     @Column(name = "phoneNumber", nullable = false)
     String phoneNumber;
 
-    @Column(name = "picture", nullable = false)
-    String picture;
-
     @Column(name = "active", nullable = false)
     Boolean active;
 

@@ -20,6 +20,7 @@ import com.djuber.djuberbackend.Infastructure.Repositories.Client.IClientReposit
 import com.djuber.djuberbackend.Infastructure.Repositories.Driver.IDriverRepository;
 import com.djuber.djuberbackend.Infastructure.Util.DateCalculator;
 import com.djuber.djuberbackend.Infastructure.Util.EmailSenderService;
+import com.djuber.djuberbackend.Infastructure.Util.MediaService;
 import com.djuber.djuberbackend.Infastructure.Util.RandomStringGenerator;
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
@@ -58,6 +59,8 @@ public class AuthenticationService implements IAuthenticationService, UserDetail
     final DateCalculator dateCalculator;
 
     final EmailSenderService emailSenderService;
+
+    final MediaService mediaService;
 
     @Override
     public UserDetails loadUserByUsername(String email) throws UsernameNotFoundException {
@@ -102,16 +105,19 @@ public class AuthenticationService implements IAuthenticationService, UserDetail
                 Admin admin = adminRepository.findByIdentityId(identity.getId());
                 loggedUserInfoResponse.setFirstName(admin.getFirstName());
                 loggedUserInfoResponse.setLastName(admin.getLastName());
+                loggedUserInfoResponse.setPicture(mediaService.readUserPictureAsBase64String(admin.getId(),UserType.ADMIN));
             }
             case CLIENT -> {
                 Client client = clientRepository.findByIdentityId(identity.getId());
                 loggedUserInfoResponse.setFirstName(client.getFirstName());
                 loggedUserInfoResponse.setLastName(client.getLastName());
+                loggedUserInfoResponse.setPicture(mediaService.readUserPictureAsBase64String(client.getId(),UserType.CLIENT));
             }
             case DRIVER -> {
                 Driver driver = driverRepository.findByIdentityId(identity.getId());
                 loggedUserInfoResponse.setFirstName(driver.getFirstName());
                 loggedUserInfoResponse.setLastName(driver.getLastName());
+                loggedUserInfoResponse.setPicture(mediaService.readUserPictureAsBase64String(driver.getId(),UserType.DRIVER));
             }
             default -> {
                 throw new UsernameNotFoundException("User does not exist");
@@ -146,12 +152,18 @@ public class AuthenticationService implements IAuthenticationService, UserDetail
         clientToSave.setDeleted(false);
         clientToSave.setInRide(false);
         clientToSave.setBlocked(false);
-        clientToSave.setPicture("TO-DO");
         clientToSave.setIdentity(identitySaved);
         String verificationToken = randomStringGenerator.generate(50);
         clientToSave.setVerificationToken(verificationToken);
         clientToSave.setVerificationTokenExpirationDate(dateCalculator.getDate24HoursFromNow());
         Client saved = clientRepository.save(clientToSave);
+
+
+        if(request.getPicture()!=null){
+            mediaService.saveBase64AsPicture(saved.getId(),identitySaved.getUserType(),request.getPicture());
+        }else{
+            mediaService.setUserDefaultPicture(saved.getId(),identitySaved.getUserType());
+        }
 
         emailSenderService.sendClientVerificationEmail(identitySaved.getEmail(),verificationToken);
 
@@ -196,9 +208,12 @@ public class AuthenticationService implements IAuthenticationService, UserDetail
         clientToSave.setDeleted(false);
         clientToSave.setInRide(false);
         clientToSave.setBlocked(false);
-        clientToSave.setPicture(request.getPhotoUrl());
         clientToSave.setIdentity(identitySaved);
-        clientRepository.save(clientToSave);
+
+
+
+        Client saved = clientRepository.save(clientToSave);
+        mediaService.setUserDefaultPicture(saved.getId(),UserType.CLIENT);
         return identitySaved.getEmail();
     }
 
