@@ -8,6 +8,7 @@ import { Router } from '@angular/router';
 import { LoggedUser } from './loggedUser';
 import { RegistrationSubmit } from './registrationSubmit';
 import { FacebookLoginProvider, SocialAuthService, SocialUser } from '@abacritt/angularx-social-login';
+import { HashService } from '../utility/hash-service.service';
 
 
 @Injectable({
@@ -25,7 +26,8 @@ export class AuthenticationService {
   constructor(private http:HttpClient,
     @Inject(localStorageToken) private localStorage : Storage,
     private route: Router,
-    private socialAuthService: SocialAuthService) {
+    private socialAuthService: SocialAuthService,
+    private hashService: HashService) {
     this.socialAuthService.authState.subscribe((user) => {this.socialLogin(user)});
     }
 
@@ -75,11 +77,12 @@ export class AuthenticationService {
     this.localStorage.setItem("jwt", token["accessToken"])
     this.localStorage.setItem("jwt-expiringDate", token["expiringDate"]);
     this.http.get<LoggedUser>("/api/auth/getLoggedUserInfo").pipe(tap(res => {
+      console.log(res);
       this.localStorage.setItem("user-email",res.email);
       this.localStorage.setItem("user-first-name",res.firstName);
       this.localStorage.setItem("user-last-name",res.lastName);
       this.localStorage.setItem("user-picture",res.picture);
-      this.loggedUserInfo$.next(res);
+      //this.setRole(res.role);
     })).subscribe();
     await new Promise(r => setTimeout(r, 1000));
     this.logged$.next(true);
@@ -87,6 +90,11 @@ export class AuthenticationService {
     this.route.navigate(['/'])
   }
 
+  private setRole(role:string){
+    this.hashService.hashString(role).then(hashedRole =>{
+      this.localStorage.setItem("user-role",hashedRole)
+    })
+  }
 
   public logout():void {
     this.localStorage.removeItem("jwt");
@@ -118,6 +126,10 @@ export class AuthenticationService {
     return this.http.get("/api/auth/passwordResetToken?email="+email);
   }
 
+  public getLoggedUserRole():string{
+    return this.localStorage.getItem("user-role");
+  }
+
   private isLoggedIn():boolean{
     if(this.localStorage.getItem("jwt")=== null){
       return false;
@@ -131,6 +143,7 @@ export class AuthenticationService {
   private getLoggedUserInfo():LoggedUser{
     return {email: this.localStorage.getItem("user-email"), firstName: this.localStorage.getItem("user-first-name"), lastName: this.localStorage.getItem("user-last-name"), picture: this.localStorage.getItem("user-picture")} as LoggedUser;
   }
+
 
   private async handleError(error : HttpErrorResponse){
     this.loading$.next(true);

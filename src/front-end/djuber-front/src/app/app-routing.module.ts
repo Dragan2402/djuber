@@ -1,5 +1,7 @@
 import { NgModule } from '@angular/core';
 import { RouterModule, Routes } from '@angular/router';
+import { LoginGuard } from './guards/login.guard';
+import { RolesGuard } from './guards/roles.guard';
 import { HomePageComponent } from './home-page/home-page.component';
 import { NotFoundComponent } from './not-found/not-found.component';
 
@@ -7,6 +9,9 @@ const routes: Routes = [
   {path:"homePage", component: HomePageComponent},
   {path:"authentication", loadChildren: ()=>
         import('./authentication/authentication.module').then((m) => m.AuthenticationModule)},
+  {path:"admin", loadChildren: ()=>
+        import('./admin/admin.module').then((m) => m.AdminModule), canActivate: [LoginGuard, RolesGuard], canActivateChild: [LoginGuard,RolesGuard], canLoad: [LoginGuard,RolesGuard],
+      data: {role:"ADMIN"}},
   {path: '' , redirectTo : '/homePage', pathMatch : 'full'},
   {path: "**", component: NotFoundComponent}
 

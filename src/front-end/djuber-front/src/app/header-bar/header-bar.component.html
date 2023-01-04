@@ -28,7 +28,7 @@
                 <span>{{userInfo.firstName}} {{userInfo.lastName}}</span>
               </div>
             </div>
-            <button mat-menu-item>
+            <button mat-menu-item (click)="navigateToProfile()">
               <mat-icon>account_box</mat-icon>
               <span>Profile</span>
             </button>

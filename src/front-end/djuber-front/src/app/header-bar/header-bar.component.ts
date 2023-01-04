@@ -32,5 +32,9 @@ export class HeaderBarComponent implements OnInit , OnChanges{
     this.authenticationService.logout();
   }
 
+  navigateToProfile(){
+    console.log("navigate");
+  }
+
 
 }
