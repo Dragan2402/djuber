@@ -99,6 +99,7 @@ export class AuthenticationService {
     this.localStorage.removeItem("jwt-expiringDate");
     this.localStorage.removeItem("user-picture");
     this.logged$.next(this.isLoggedIn());
+    this.route.navigate(["/"]);
   }
 
   public refreshToken():void{

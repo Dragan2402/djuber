@@ -15,12 +15,14 @@ import {MatFormFieldModule} from '@angular/material/form-field';
 import {MatSelectModule} from '@angular/material/select';
 import { MatInputModule } from '@angular/material/input';
 import {FormsModule, ReactiveFormsModule} from '@angular/forms';
+import { AdminService } from './admin.service';
 
 @NgModule({
   declarations: [
     AdminPageComponent,
     AdminProfileComponent
   ],
+  providers: [AdminService],
   imports: [
     CommonModule,
     AdminRoutingModule,

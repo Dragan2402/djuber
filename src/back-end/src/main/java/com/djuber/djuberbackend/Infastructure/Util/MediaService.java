@@ -23,7 +23,7 @@ public class MediaService {
         };
         //convert base64 string to binary data
         byte[] data = DatatypeConverter.parseBase64Binary(strings[1]);
-        String path = "src/main/resources/pictures/"+userType.toString()+"/id"+id.toString()+"."+ extension;
+        String path = "src/main/resources/pictures/"+userType.toString()+"/id"+id.toString()+"id."+ extension;
         File file = new File(path);
         try (OutputStream outputStream = new BufferedOutputStream(new FileOutputStream(file))) {
             outputStream.write(data);
@@ -35,7 +35,7 @@ public class MediaService {
     @Async
     public void setUserDefaultPicture(Long id, UserType userType){
         String inputFilePath ="src/main/resources/pictures/default.png";
-        String outputFilePath = "src/main/resources/pictures/"+userType.toString()+"/id"+id.toString()+".png";
+        String outputFilePath = "src/main/resources/pictures/"+userType.toString()+"/id"+id.toString()+"id.png";
 
         try {
             File inputFile = new File(inputFilePath);
@@ -52,9 +52,27 @@ public class MediaService {
         }
     }
 
+    public void deleteUserPreviousPicture(Long id, UserType userType){
+
+        String folderName="src/main/resources/pictures/"+userType.toString();
+        String imageName = "id"+id.toString()+"id";
+
+        File folder = new File(folderName);
+
+        File[] files = folder.listFiles();
+
+        for (File file : files) {
+            // If the file name starts with the provided name, delete it
+            if (file.getName().startsWith(imageName)) {
+                file.delete();
+            }
+        }
+
+    }
+
     public String readUserPictureAsBase64String(Long id, UserType userType){
         File directory = new File("src/main/resources/pictures/"+userType.toString()+"/");
-        String fileName="id"+id.toString();
+        String fileName="id"+id.toString()+"id";
         File[] files = directory.listFiles((dir, name) -> name.startsWith(fileName));
         assert files != null;
         if (files.length == 0) {

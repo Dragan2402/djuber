@@ -1,5 +1,4 @@
 .profile-div{
-  background-color: cadetblue;
   display: flex;
   flex-direction: row;
   justify-content: space-evenly;
@@ -14,14 +13,24 @@
 
 }
 
+.cancel-save-buttons-div{
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+}
+
 .picture-div{
-  margin-top: 10%;
+  margin-top: 5%;
+  width: 25%;
 }
 
 .profile-picture-div{
   display: flex;
-
   flex-direction: column;
+}
+
+.image-upload-div{
+  margin-top: 5%;
 }
 
 .form-things-div{
@@ -41,4 +50,6 @@
 .image-upload-div{
   display: flex;
   flex-direction: row;
+  margin-left: auto;
+  margin-right: 10%;
 }
