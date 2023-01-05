@@ -100,6 +100,8 @@ public class AuthenticationService implements IAuthenticationService, UserDetail
         if(identity == null) throw new UsernameNotFoundException("User does not exist");
         LoggedUserInfoResponse loggedUserInfoResponse = new LoggedUserInfoResponse();
         loggedUserInfoResponse.setEmail(identity.getEmail());
+        String[] roleParts=identity.getRoles().get(0).getName().split("_");
+        loggedUserInfoResponse.setRole(roleParts[1]);
         switch (identity.getUserType()){
             case ADMIN -> {
                 Admin admin = adminRepository.findByIdentityId(identity.getId());
@@ -209,8 +211,6 @@ public class AuthenticationService implements IAuthenticationService, UserDetail
         clientToSave.setInRide(false);
         clientToSave.setBlocked(false);
         clientToSave.setIdentity(identitySaved);
-
-
 
         Client saved = clientRepository.save(clientToSave);
         mediaService.setUserDefaultPicture(saved.getId(),UserType.CLIENT);

@@ -19,6 +19,10 @@ export class RequestInterceptor implements HttpInterceptor {
     next: HttpHandler
   ): Observable<HttpEvent<unknown>> {
 
+    if(request.url.includes("api/admin")){
+      return this.handleAdminRequests(request, next);
+    }
+
     if(request.url.includes("googleusercontent")){
       console.log(request);
       return next.handle(request);
@@ -35,6 +39,19 @@ export class RequestInterceptor implements HttpInterceptor {
       return next.handle(request);
     }
     if(request.url.startsWith("/api/auth") && request.method == 'GET'){
+      this.authenticationService.refreshToken();
+      request = request.clone({
+        setHeaders: {
+          Authorization: `Bearer ${this.localStorage.getItem("jwt")}`
+        }
+      });
+      return next.handle(request);
+    }
+    return next.handle(request);
+  }
+
+  private handleAdminRequests(request: HttpRequest<unknown>, next: HttpHandler): Observable<HttpEvent<unknown>> {
+    if(request.method==='GET' || request.method==="PUT"){
       this.authenticationService.refreshToken();
       request = request.clone({
         setHeaders: {

@@ -4,4 +4,5 @@ export interface LoggedUser{
   lastName : string;
   email : string;
   picture:string;
+  role:string;
 }
