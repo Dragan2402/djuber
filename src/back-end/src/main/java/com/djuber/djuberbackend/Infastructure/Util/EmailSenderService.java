@@ -1,9 +1,7 @@
 package com.djuber.djuberbackend.Infastructure.Util;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.mail.SimpleMailMessage;
 import org.springframework.mail.javamail.JavaMailSender;
-import org.springframework.mail.javamail.MimeMailMessage;
 import org.springframework.mail.javamail.MimeMessageHelper;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
@@ -58,6 +56,27 @@ public class EmailSenderService {
                     + "<p>The Djuber Support Team</p>";
             helper.setText(emailBody,true);
             mailSender.send(message);
+        } catch (MessagingException ignored) {
+        }
+    }
+
+    @Async
+    public void sendDriverRegistrationEmail(String email, String fullName) {
+        try {
+            MimeMessage message = mailSender.createMimeMessage();
+            MimeMessageHelper helper = new MimeMessageHelper(message, true);
+            helper.setTo(email);
+            helper.setFrom("djuber.drives@gmail.com");
+            helper.setSubject("Djuber driver registration");
+            String emailBody = "Dear "+fullName+",<br><br>We are pleased to inform you that your account has been " +
+                    "registered and is now active.<br><br>You can now log in to your account and start taking advantage of " +
+                    "all the benefits we offer to our drivers. These include access to a wide range of destinations, flexible " +
+                    "scheduling, and a supportive community of fellow drivers.<br><br>Thank you for choosing Djuber " +
+                    "as your driving partner. " +
+                    "We look forward to supporting you on the road.<br><br>Sincerely,<br>Djuber Team";
+            helper.setText(emailBody,true);
+            mailSender.send(message);
+
         } catch (MessagingException ignored) {
         }
     }

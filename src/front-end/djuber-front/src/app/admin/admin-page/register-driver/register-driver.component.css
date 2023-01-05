@@ -1,0 +1,33 @@
+.page-div{
+  display: flex;
+
+  height: 100%;
+}
+.registration-items-div{
+  display: flex;
+  flex-direction: column;
+}
+
+.buttons-div{
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  width: 100%;
+}
+
+.profile-picture-div{
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  align-content: center;
+  min-height: 150px;
+}
+
+mat-stepper {
+  height: 100%;
+  width: 40%;
+}
+
+form{
+  margin-top: 5%;
+}

@@ -47,11 +47,11 @@ VALUES (200000, 400000, 'Jovo', 'Jovic', 'Novi Sad', '067123423', true , 0, fals
         false);
 
 --CARS
-INSERT INTO car (id, car_type, x, y, deleted)
-VALUES (100000, 0, 45.24533662754101, 19.8430497771721, false);
+INSERT INTO car (id, car_type, license_plate, x, y, deleted)
+VALUES (100000, 0, 'NS24423J', 45.24533662754101, 19.8430497771721, false);
 
-INSERT INTO car (id, car_type, x, y, deleted)
-VALUES (200000, 0, 45.24533662754101, 19.8430497771721, false);
+INSERT INTO car (id, car_type, license_plate, x, y, deleted)
+VALUES (200000, 0, 'NS99892J', 45.24533662754101, 19.8430497771721, false);
 
 INSERT INTO CAR_ADDITIONAL_SERVICES (car_id, ADDITIONAL_SERVICES)
 VALUES (100000, 'Ljubimci do 15kg');

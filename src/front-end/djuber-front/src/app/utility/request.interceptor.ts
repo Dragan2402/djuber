@@ -51,7 +51,7 @@ export class RequestInterceptor implements HttpInterceptor {
   }
 
   private handleAdminRequests(request: HttpRequest<unknown>, next: HttpHandler): Observable<HttpEvent<unknown>> {
-    if(request.method==='GET' || request.method==="PUT"){
+    if(request.method==='GET' || request.method==="PUT" || request.method==='POST'){
       this.authenticationService.refreshToken();
       request = request.clone({
         setHeaders: {

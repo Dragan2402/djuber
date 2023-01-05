@@ -6,8 +6,8 @@
           Profile
         </button>
         <mat-divider></mat-divider>
-        <button (click)="toggleNestoPage()" mat-menu-item>
-          Kolac
+        <button (click)="toggleRegisterNewDriverPage()" mat-menu-item>
+          Register a new driver
         </button>
       </div>
     </mat-drawer>
@@ -15,7 +15,7 @@
     <div class="sidenav-content">
       <div class="main-content">
         <djuber-admin-profile *ngIf="page===1"></djuber-admin-profile>
-        <div *ngIf="page===2">kolac</div>
+        <djuber-register-driver *ngIf="page===2"></djuber-register-driver>
       </div>
       <div class="toggle-button">
         <button type="button" mat-raised-button color="primary" (click)="drawer.toggle()" (click)="toggleChange()">

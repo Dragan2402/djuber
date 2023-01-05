@@ -27,6 +27,11 @@ public class GlobalExceptionHandler {
         return new ResponseEntity<>(getErrorObject(ex.getMessage(), HttpStatus.BAD_REQUEST), HttpStatus.BAD_REQUEST);
     }
 
+    @ExceptionHandler({CarWithLicensePlateAlreadyExistsException.class})
+    public ResponseEntity<ErrorObject> handleCarWithLicensePlateAlreadyExistsException(CarWithLicensePlateAlreadyExistsException ex, WebRequest request){
+        return new ResponseEntity<>(getErrorObject(ex.getMessage(), HttpStatus.BAD_REQUEST), HttpStatus.BAD_REQUEST);
+    }
+
     @ExceptionHandler({LockedException.class})
     public ResponseEntity<ErrorObject> handleLockedException(LockedException ex, WebRequest request){
         return new ResponseEntity<>(getErrorObject(ex.getMessage(), HttpStatus.UNAUTHORIZED), HttpStatus.UNAUTHORIZED);
@@ -43,7 +48,12 @@ public class GlobalExceptionHandler {
     }
 
     @ExceptionHandler({UnsupportedSocialProviderExcetpion.class})
-    public ResponseEntity<ErrorObject> handleUnsupportedSocialProviderExcetpion(UnsupportedSocialProviderExcetpion ex, WebRequest request){
+    public ResponseEntity<ErrorObject> handleUnsupportedSocialProviderException(UnsupportedSocialProviderExcetpion ex, WebRequest request){
+        return new ResponseEntity<>(getErrorObject(ex.getMessage(), HttpStatus.BAD_REQUEST), HttpStatus.BAD_REQUEST);
+    }
+
+    @ExceptionHandler({UnsupportedCarTypeException.class})
+    public ResponseEntity<ErrorObject> handleUnsupportedCarTypeException(UnsupportedCarTypeException ex, WebRequest request){
         return new ResponseEntity<>(getErrorObject(ex.getMessage(), HttpStatus.BAD_REQUEST), HttpStatus.BAD_REQUEST);
     }
 

@@ -25,6 +25,9 @@ public class Car {
     @Column(name = "carType", nullable = false)
     CarType carType;
 
+    @Column(name = "licensePlate" , unique = true, nullable = false)
+    String licensePlate;
+
 //    @OneToOne
 //    @JoinColumn(name = "coordinatesId")
 //    private Coordinates coordinates;

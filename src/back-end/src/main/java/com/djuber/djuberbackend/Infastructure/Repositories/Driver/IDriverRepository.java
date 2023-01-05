@@ -6,6 +6,6 @@ import org.springframework.data.jpa.repository.Query;
 
 public interface IDriverRepository extends JpaRepository<Driver, Long> {
 
-    @Query("select d from Driver d where d.identity.id = ?1")
+    @Query("select d from Driver d where d.identity.id = ?1 and d.deleted = false")
     Driver findByIdentityId(Long identityId);
 }

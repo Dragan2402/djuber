@@ -12,7 +12,7 @@ export class AdminPageComponent implements  OnInit {
   directionToToggle:string='>>';
 
 
-  
+
   ngOnInit(): void {
   }
 
@@ -20,7 +20,7 @@ export class AdminPageComponent implements  OnInit {
 
   }
 
-  toggleNestoPage(){
+  toggleRegisterNewDriverPage(){
     this.page=2;
   }
 
