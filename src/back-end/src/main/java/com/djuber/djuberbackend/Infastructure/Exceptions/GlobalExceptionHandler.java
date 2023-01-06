@@ -3,9 +3,11 @@ package com.djuber.djuberbackend.Infastructure.Exceptions;
 import com.djuber.djuberbackend.Infastructure.Exceptions.CustomExceptions.*;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.authentication.AuthenticationCredentialsNotFoundException;
 import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.authentication.DisabledException;
 import org.springframework.security.authentication.LockedException;
+import org.springframework.security.core.AuthenticationException;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
@@ -27,6 +29,11 @@ public class GlobalExceptionHandler {
         return new ResponseEntity<>(getErrorObject(ex.getMessage(), HttpStatus.BAD_REQUEST), HttpStatus.BAD_REQUEST);
     }
 
+    @ExceptionHandler({CarWithLicensePlateAlreadyExistsException.class})
+    public ResponseEntity<ErrorObject> handleCarWithLicensePlateAlreadyExistsException(CarWithLicensePlateAlreadyExistsException ex, WebRequest request){
+        return new ResponseEntity<>(getErrorObject(ex.getMessage(), HttpStatus.BAD_REQUEST), HttpStatus.BAD_REQUEST);
+    }
+
     @ExceptionHandler({LockedException.class})
     public ResponseEntity<ErrorObject> handleLockedException(LockedException ex, WebRequest request){
         return new ResponseEntity<>(getErrorObject(ex.getMessage(), HttpStatus.UNAUTHORIZED), HttpStatus.UNAUTHORIZED);
@@ -43,7 +50,12 @@ public class GlobalExceptionHandler {
     }
 
     @ExceptionHandler({UnsupportedSocialProviderExcetpion.class})
-    public ResponseEntity<ErrorObject> handleUnsupportedSocialProviderExcetpion(UnsupportedSocialProviderExcetpion ex, WebRequest request){
+    public ResponseEntity<ErrorObject> handleUnsupportedSocialProviderException(UnsupportedSocialProviderExcetpion ex, WebRequest request){
+        return new ResponseEntity<>(getErrorObject(ex.getMessage(), HttpStatus.BAD_REQUEST), HttpStatus.BAD_REQUEST);
+    }
+
+    @ExceptionHandler({UnsupportedCarTypeException.class})
+    public ResponseEntity<ErrorObject> handleUnsupportedCarTypeException(UnsupportedCarTypeException ex, WebRequest request){
         return new ResponseEntity<>(getErrorObject(ex.getMessage(), HttpStatus.BAD_REQUEST), HttpStatus.BAD_REQUEST);
     }
 
@@ -55,6 +67,10 @@ public class GlobalExceptionHandler {
     @ExceptionHandler({InvalidTokenException.class})
     public ResponseEntity<ErrorObject> handleInvalidTokenException(InvalidTokenException ex, WebRequest request){
         return new ResponseEntity<>(getErrorObject(ex.getMessage(), HttpStatus.BAD_REQUEST), HttpStatus.BAD_REQUEST);
+    }
+    @ExceptionHandler({AuthenticationException.class})
+    public ResponseEntity<ErrorObject> handleAuthenticationCredentialsNotFoundException(AuthenticationException ex, WebRequest request){
+        return new ResponseEntity<>(getErrorObject(ex.getMessage(), HttpStatus.GATEWAY_TIMEOUT), HttpStatus.GATEWAY_TIMEOUT);
     }
 
     @ExceptionHandler({TokenExpiredException.class})

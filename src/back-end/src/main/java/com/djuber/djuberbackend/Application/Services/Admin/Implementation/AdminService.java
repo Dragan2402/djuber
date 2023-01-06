@@ -11,7 +11,9 @@ import com.djuber.djuberbackend.Infastructure.Exceptions.CustomExceptions.UserNo
 import com.djuber.djuberbackend.Infastructure.Repositories.Admin.IAdminRepository;
 import com.djuber.djuberbackend.Infastructure.Repositories.Authentication.IIdentityRepository;
 import com.djuber.djuberbackend.Infastructure.Util.MediaService;
+import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
+import lombok.experimental.FieldDefaults;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
@@ -20,15 +22,16 @@ import java.util.List;
 
 @Service
 @RequiredArgsConstructor
+@FieldDefaults(level = AccessLevel.PRIVATE)
 public class AdminService implements IAdminService {
 
-    private final IAdminRepository adminRepository;
+    final IAdminRepository adminRepository;
 
-    private final AdminMapper adminMapper;
+    final AdminMapper adminMapper;
 
-    private final IIdentityRepository identityRepository;
+    final IIdentityRepository identityRepository;
 
-    private final MediaService mediaService;
+    final MediaService mediaService;
 
     @Override
     public List<AdminResult> readAll() {

@@ -2,8 +2,11 @@ package com.djuber.djuberbackend.Controllers.Admin;
 
 import com.djuber.djuberbackend.Application.Services.Admin.IAdminService;
 import com.djuber.djuberbackend.Application.Services.Admin.Results.AdminResult;
+import com.djuber.djuberbackend.Application.Services.Driver.IDriverService;
+import com.djuber.djuberbackend.Controllers.Admin.Requests.RegisterDriverRequest;
 import com.djuber.djuberbackend.Controllers.Admin.Requests.UpdateAdminRequest;
 import com.djuber.djuberbackend.Controllers._Common.Requests.ImageUpdateRequest;
+import com.djuber.djuberbackend.Controllers._Common.Responses.IdResponse;
 import com.djuber.djuberbackend.Controllers._Common.Responses.ImageResponse;
 import com.djuber.djuberbackend.Infastructure.Exceptions.CustomExceptions.UserNotFoundException;
 import io.swagger.v3.oas.annotations.tags.Tag;
@@ -28,6 +31,8 @@ import java.security.Principal;
 public class AdminController {
 
     private final IAdminService adminService;
+
+    private final IDriverService driverService;
 
     @GetMapping
     @PreAuthorize("hasAnyRole('ADMIN')")
@@ -57,5 +62,11 @@ public class AdminController {
     @PreAuthorize("hasAnyRole('ADMIN')")
     public void updateLoggedAdmin(Principal user, @RequestBody @Valid UpdateAdminRequest request){
         this.adminService.updateLoggedAdmin(user.getName(),request);
+    }
+
+    @PostMapping(value = "registerDriver")
+    @PreAuthorize("hasAnyRole('ADMIN')")
+    public ResponseEntity<IdResponse> registerDriver(@RequestBody @Valid RegisterDriverRequest request){
+        return new ResponseEntity<>(new IdResponse(this.driverService.registerNewDriver(request)),HttpStatus.CREATED);
     }
 }

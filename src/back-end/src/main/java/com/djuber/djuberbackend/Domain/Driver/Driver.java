@@ -57,7 +57,7 @@ public class Driver {
     Set<Review> reviews = new HashSet<>();
 
     @OneToOne(cascade = CascadeType.ALL)
-    @JoinColumn(name = "car_id")
+    @JoinColumn(name = "carId")
     Car car;
 
     @Column(name = "durationActive", nullable = false)

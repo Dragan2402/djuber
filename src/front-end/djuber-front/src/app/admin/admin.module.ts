@@ -16,11 +16,14 @@ import {MatSelectModule} from '@angular/material/select';
 import { MatInputModule } from '@angular/material/input';
 import {FormsModule, ReactiveFormsModule} from '@angular/forms';
 import { AdminService } from './admin.service';
+import { RegisterDriverComponent } from './admin-page/register-driver/register-driver.component';
+import {MatStepperModule} from '@angular/material/stepper';
 
 @NgModule({
   declarations: [
     AdminPageComponent,
-    AdminProfileComponent
+    AdminProfileComponent,
+    RegisterDriverComponent
   ],
   providers: [AdminService],
   imports: [
@@ -37,7 +40,8 @@ import { AdminService } from './admin.service';
     FormsModule,
     ReactiveFormsModule,
     MatSelectModule,
-    MatInputModule
+    MatInputModule,
+    MatStepperModule
   ]
 })
 export class AdminModule { }
