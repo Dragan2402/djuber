@@ -118,6 +118,10 @@ export class AuthenticationService {
     return this.http.put("/api/auth/passwordReset",body);
   }
 
+  public changePassword(body){
+    return this.http.put("/api/auth/passwordChange",body);
+  }
+
   public requestPasswordReset(email:string){
     return this.http.get("/api/auth/passwordResetToken?email="+email);
   }

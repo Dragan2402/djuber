@@ -2,6 +2,7 @@ import { Component, OnInit , OnChanges, SimpleChanges} from '@angular/core';
 import { Router } from '@angular/router';
 import {AuthenticationService} from "../authentication/authentication.service";
 import { LoggedUser } from '../authentication/loggedUser';
+import { HashService } from '../utility/hash-service.service';
 
 @Component({
   selector: 'djuber-header-bar',
@@ -14,7 +15,7 @@ export class HeaderBarComponent implements OnInit {
 
   userInfo! : LoggedUser;
 
-  constructor(private authenticationService : AuthenticationService, private router:Router) {
+  constructor(private authenticationService : AuthenticationService, private router:Router, private hashService: HashService) {
     this.authenticationService.logged$.subscribe((attr:boolean) =>{
       this.logged = attr;
     });
@@ -34,7 +35,12 @@ export class HeaderBarComponent implements OnInit {
   }
 
   navigateToProfile(){
-    this.router.navigate(["/admin"]);
+    const role = this.authenticationService.getLoggedUserRole();
+    if(role === this.hashService.hashString("ADMIN")){
+      this.router.navigate(["/admin"]);
+    }else if (role === this.hashService.hashString("CLIENT")){
+      this.router.navigate(["/client"]);
+    }
   }
 
 

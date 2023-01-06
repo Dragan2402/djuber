@@ -1,6 +1,7 @@
 package com.djuber.djuberbackend.Application.Authentication.Implementation;
 
 import com.djuber.djuberbackend.Application.Authentication.IAuthenticationService;
+import com.djuber.djuberbackend.Controllers.Authentication.Request.PasswordChangeRequest;
 import com.djuber.djuberbackend.Controllers.Authentication.Request.PasswordResetRequest;
 import com.djuber.djuberbackend.Controllers.Authentication.Request.SignUpRequest;
 import com.djuber.djuberbackend.Controllers.Authentication.Request.SocialUserRequest;
@@ -257,6 +258,16 @@ public class AuthenticationService implements IAuthenticationService, UserDetail
         identityRepository.save(identity);
 
         emailSenderService.sendPasswordResetEmail(email, token);
+    }
+
+    @Override
+    public void updateLoggedUserPassword(String email, PasswordChangeRequest request) {
+        Identity identity = identityRepository.findByEmail(email);
+        if(identity == null){
+            throw new UserNotFoundException("User with that mail does not exist");
+        }
+        identity.setPassword(passwordEncoder.encode(request.getPassword()));
+        identityRepository.save(identity);
     }
 
     private ClientSigningType getClientSigningType(String type){

@@ -1,13 +1,9 @@
-<div class="admin-page-div">
+<div class="client-page-div">
   <mat-drawer-container class="example-container" autosize>
     <mat-drawer #drawer class="example-sidenav" mode="side">
       <div class="options-content">
         <button (click)="toggleProfilePage()" mat-menu-item>
           Profile
-        </button>
-        <mat-divider></mat-divider>
-        <button (click)="toggleRegisterNewDriverPage()" mat-menu-item>
-          Register a new driver
         </button>
         <mat-divider></mat-divider>
         <button (click)="changePassword()" mat-menu-item>
@@ -18,8 +14,7 @@
 
     <div class="sidenav-content">
       <div class="main-content">
-        <djuber-admin-profile *ngIf="page===1"></djuber-admin-profile>
-        <djuber-register-driver *ngIf="page===2"></djuber-register-driver>
+        <router-outlet name="co"></router-outlet>
       </div>
       <div class="toggle-button">
         <button type="button" mat-raised-button color="primary" (click)="drawer.toggle()" (click)="toggleChange()">
