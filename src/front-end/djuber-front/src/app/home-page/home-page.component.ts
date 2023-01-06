@@ -1,5 +1,7 @@
 import { Component, OnInit } from '@angular/core';
+import { MatSnackBar } from '@angular/material/snack-bar';
 import { AuthenticationService } from '../authentication/authentication.service';
+import { SnackbarComponent } from '../snackbar/snackbar.component';
 
 @Component({
   selector: 'djuber-home-page',
@@ -8,12 +10,9 @@ import { AuthenticationService } from '../authentication/authentication.service'
 })
 export class HomePageComponent implements OnInit {
 
-  constructor(private authenticationService:AuthenticationService) { }
+  constructor(private authenticationService:AuthenticationService,private _snackBar: MatSnackBar) { }
 
   ngOnInit(): void {
-  }
-
-  test(){
   }
 
 }

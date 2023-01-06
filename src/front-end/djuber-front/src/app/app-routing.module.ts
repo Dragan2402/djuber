@@ -12,6 +12,9 @@ const routes: Routes = [
   {path:"admin", loadChildren: ()=>
         import('./admin/admin.module').then((m) => m.AdminModule), canActivate: [LoginGuard, RolesGuard], canActivateChild: [LoginGuard,RolesGuard], canLoad: [LoginGuard,RolesGuard],
       data: {role:"ADMIN"}},
+  {path:"client", loadChildren: ()=>
+      import('./client/client.module').then((m) => m.ClientModule), canActivate: [LoginGuard, RolesGuard], canActivateChild: [LoginGuard,RolesGuard], canLoad: [LoginGuard,RolesGuard],
+    data: {role:"CLIENT"}},
   {path: '' , redirectTo : '/homePage', pathMatch : 'full'},
   {path: "**", component: NotFoundComponent}
 

@@ -1,13 +1,12 @@
-import {MediaMatcher} from '@angular/cdk/layout';
-import {ChangeDetectorRef, Component,OnInit } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
 
 @Component({
-  selector: 'djuber-admin-page',
-  templateUrl: './admin-page.component.html',
-  styleUrls: ['./admin-page.component.css']
+  selector: 'djuber-client-page',
+  templateUrl: './client-page.component.html',
+  styleUrls: ['./client-page.component.css']
 })
-export class AdminPageComponent implements  OnInit {
+export class ClientPageComponent implements OnInit {
 
   page:number=1;
   directionToToggle:string='>>';
@@ -15,14 +14,11 @@ export class AdminPageComponent implements  OnInit {
 
 
   ngOnInit(): void {
+    this.router.navigateByUrl("/client/(co:profile)");
   }
 
-  constructor(private router : Router) {
+  constructor(private router: Router) {
 
-  }
-
-  toggleRegisterNewDriverPage(){
-    this.page=2;
   }
 
   changePassword(){
@@ -30,7 +26,7 @@ export class AdminPageComponent implements  OnInit {
   }
 
   toggleProfilePage(){
-    this.page=1;
+    this.router.navigateByUrl("/client/(co:profile)");
   }
 
   toggleChange(){
@@ -41,7 +37,4 @@ export class AdminPageComponent implements  OnInit {
     }
   }
 
-
 }
-
-

@@ -19,6 +19,7 @@ import {
 import { VerifyAccountComponent } from './verify-account/verify-account.component';
 import { PasswordResetComponent } from './password-reset/password-reset.component';
 import { PasswordResetRequestComponent } from './password-reset/password-resset-request/password-reset-request.component';
+import { PasswordChangeComponent } from './password-change/password-change.component';
 
 @NgModule({
   declarations: [
@@ -27,7 +28,8 @@ import { PasswordResetRequestComponent } from './password-reset/password-resset-
     SpinnerComponent,
     VerifyAccountComponent,
     PasswordResetComponent,
-    PasswordResetRequestComponent
+    PasswordResetRequestComponent,
+    PasswordChangeComponent
   ],
   imports: [
     CommonModule,

@@ -23,28 +23,15 @@ export class RequestInterceptor implements HttpInterceptor {
       return this.handleAdminRequests(request, next);
     }
 
+    if(request.url.includes("api/client")){
+      return this.handleClientRequests(request, next);
+    }
+
+    if(request.url.includes("api/auth")){
+      return this.handleAuthenticationRequests(request, next);
+    }
     if(request.url.includes("googleusercontent")){
       console.log(request);
-      return next.handle(request);
-    }
-    if(request.url.includes("passwordResetToken")){
-      return next.handle(request);
-    }
-    if(request.url.includes("refreshToken") && request.method == 'GET'){
-      request = request.clone({
-        setHeaders: {
-          Authorization: `Bearer ${this.localStorage.getItem("jwt")}`
-        }
-      });
-      return next.handle(request);
-    }
-    if(request.url.startsWith("/api/auth") && request.method == 'GET'){
-      this.authenticationService.refreshToken();
-      request = request.clone({
-        setHeaders: {
-          Authorization: `Bearer ${this.localStorage.getItem("jwt")}`
-        }
-      });
       return next.handle(request);
     }
     return next.handle(request);
@@ -61,5 +48,41 @@ export class RequestInterceptor implements HttpInterceptor {
       return next.handle(request);
     }
     return next.handle(request);
+  }
+
+  private handleClientRequests(request: HttpRequest<unknown>, next: HttpHandler): Observable<HttpEvent<unknown>> {
+
+    this.authenticationService.refreshToken();
+    request = request.clone({
+        setHeaders: {
+          Authorization: `Bearer ${this.localStorage.getItem("jwt")}`
+        }
+      });
+    return next.handle(request);
+  }
+
+  private handleAuthenticationRequests(request: HttpRequest<unknown>, next: HttpHandler): Observable<HttpEvent<unknown>> {
+    if(request.url.includes("passwordResetToken")){
+      return next.handle(request);
+    }
+    if(request.url.includes("refreshToken") && request.method == 'GET'){
+      request = request.clone({
+        setHeaders: {
+          Authorization: `Bearer ${this.localStorage.getItem("jwt")}`
+        }
+      });
+      return next.handle(request);
+    }
+    if((request.url.startsWith("/api/auth") && request.method == 'GET') || (request.url.includes("passwordChange"))){
+      this.authenticationService.refreshToken();
+      request = request.clone({
+        setHeaders: {
+          Authorization: `Bearer ${this.localStorage.getItem("jwt")}`
+        }
+      });
+    }
+    return next.handle(request);
+
+
   }
 }

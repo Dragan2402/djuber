@@ -8,7 +8,6 @@ import com.djuber.djuberbackend.Controllers.Admin.Requests.UpdateAdminRequest;
 import com.djuber.djuberbackend.Controllers._Common.Requests.ImageUpdateRequest;
 import com.djuber.djuberbackend.Controllers._Common.Responses.IdResponse;
 import com.djuber.djuberbackend.Controllers._Common.Responses.ImageResponse;
-import com.djuber.djuberbackend.Infastructure.Exceptions.CustomExceptions.UserNotFoundException;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
@@ -19,7 +18,6 @@ import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
-import java.awt.*;
 import java.security.Principal;
 
 

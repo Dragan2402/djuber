@@ -2,7 +2,6 @@ package com.djuber.djuberbackend.Application.Services.Admin;
 
 import com.djuber.djuberbackend.Application.Services.Admin.Results.AdminResult;
 import com.djuber.djuberbackend.Controllers.Admin.Requests.UpdateAdminRequest;
-import com.djuber.djuberbackend.Domain.Admin.Admin;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 

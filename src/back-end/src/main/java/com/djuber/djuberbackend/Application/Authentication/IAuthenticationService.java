@@ -1,9 +1,6 @@
 package com.djuber.djuberbackend.Application.Authentication;
 
-import com.djuber.djuberbackend.Controllers.Authentication.Request.LoginRequest;
-import com.djuber.djuberbackend.Controllers.Authentication.Request.PasswordResetRequest;
-import com.djuber.djuberbackend.Controllers.Authentication.Request.SignUpRequest;
-import com.djuber.djuberbackend.Controllers.Authentication.Request.SocialUserRequest;
+import com.djuber.djuberbackend.Controllers.Authentication.Request.*;
 import com.djuber.djuberbackend.Controllers.Authentication.Responses.LoggedUserInfoResponse;
 import com.djuber.djuberbackend.Controllers.Authentication.Responses.LoginResponse;
 
@@ -22,4 +19,6 @@ public interface IAuthenticationService {
     void resetPassword(PasswordResetRequest request);
 
     void sendPasswordResetToken(String email);
+
+    void updateLoggedUserPassword(String email, PasswordChangeRequest request);
 }

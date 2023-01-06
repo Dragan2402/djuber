@@ -1,6 +1,8 @@
 import { NgModule } from '@angular/core';
 import { RouterModule, Routes } from '@angular/router';
+import { LoginGuard } from '../guards/login.guard';
 import { LoginComponent } from './login/login.component';
+import { PasswordChangeComponent } from './password-change/password-change.component';
 import { PasswordResetComponent } from './password-reset/password-reset.component';
 import { PasswordResetRequestComponent } from './password-reset/password-resset-request/password-reset-request.component';
 import { RegistrationComponent } from './registration/registration.component';
@@ -12,7 +14,8 @@ const routes: Routes = [
     {path: "register",component:RegistrationComponent},
     {path:"verify/:token", component:VerifyAccountComponent},
     {path:"passwordReset/:token", component:PasswordResetComponent},
-    {path: "requestPasswordReset", component: PasswordResetRequestComponent}]}
+    {path: "requestPasswordReset", component: PasswordResetRequestComponent},
+    {path: "changePassword", component: PasswordChangeComponent, canActivate:[LoginGuard], canLoad:[LoginGuard]}]}
 ];
 
 @NgModule({

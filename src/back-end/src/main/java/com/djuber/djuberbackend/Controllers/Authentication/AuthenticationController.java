@@ -81,6 +81,11 @@ public class AuthenticationController {
         authenticationService.resetPassword(request);
     }
 
+    @PutMapping(value = "passwordChange")
+    public void passwordChange(Principal user, @RequestBody @Valid PasswordChangeRequest request){
+        authenticationService.updateLoggedUserPassword(user.getName() ,request);
+    }
+
     @GetMapping(value = "passwordResetToken")
     public void getPasswordResetToken(@RequestParam String email){
         authenticationService.sendPasswordResetToken(email);

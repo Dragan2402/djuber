@@ -1,8 +1,8 @@
 import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
 
-import { AdminRoutingModule } from './admin-routing.module';
-import { AdminPageComponent } from './admin-page/admin-page.component';
+import { ClientRoutingModule } from './client-routing.module';
+import { ClientPageComponent } from './client-page/client-page.component';
 import {MatSidenavModule} from '@angular/material/sidenav';
 import {MatToolbarModule} from '@angular/material/toolbar';
 import {MatIconModule} from '@angular/material/icon';
@@ -10,40 +10,35 @@ import {MatButtonModule} from '@angular/material/button';
 import {MatListModule} from '@angular/material/list';
 import {MatDividerModule} from '@angular/material/divider';
 import {MatMenuModule} from '@angular/material/menu';
-import { AdminProfileComponent } from './admin-page/admin-profile/admin-profile.component';
+import { ClientProfileComponent } from './client-page/client-profile/client-profile.component';
+import { ClientService } from './client.service';
 import {MatFormFieldModule} from '@angular/material/form-field';
 import {MatSelectModule} from '@angular/material/select';
 import { MatInputModule } from '@angular/material/input';
 import {FormsModule, ReactiveFormsModule} from '@angular/forms';
-import { AdminService } from './admin.service';
-import { RegisterDriverComponent } from './admin-page/register-driver/register-driver.component';
-import {MatStepperModule} from '@angular/material/stepper';
-import {MatCheckboxModule} from '@angular/material/checkbox';
+
 
 @NgModule({
   declarations: [
-    AdminPageComponent,
-    AdminProfileComponent,
-    RegisterDriverComponent
+    ClientPageComponent,
+    ClientProfileComponent
   ],
-  providers: [AdminService],
+  providers:[ClientService],
   imports: [
     CommonModule,
-    AdminRoutingModule,
+    ClientRoutingModule,
     MatSidenavModule,
     MatToolbarModule,
     MatIconModule,
-    MatListModule,
     MatButtonModule,
+    MatListModule,
     MatDividerModule,
     MatMenuModule,
     MatFormFieldModule,
-    FormsModule,
-    ReactiveFormsModule,
     MatSelectModule,
     MatInputModule,
-    MatStepperModule,
-    MatCheckboxModule
+    FormsModule,
+    ReactiveFormsModule
   ]
 })
-export class AdminModule { }
+export class ClientModule { }
