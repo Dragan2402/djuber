@@ -61,7 +61,7 @@ public class DriverService implements IDriverService {
         carToSave.setCarType(getCarType(request.getCarType()));
         carToSave.setX(45.24533662754101);
         carToSave.setY(19.8430497771721);
-
+        carToSave.setAdditionalServices(request.getAdditionalServices());
         Car carSaved = carRepository.save(carToSave);
 
         Identity identity = identityRepository.findByEmail(request.getEmail());

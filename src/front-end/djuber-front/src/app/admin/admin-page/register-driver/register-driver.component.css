@@ -31,3 +31,22 @@ mat-stepper {
 form{
   margin-top: 5%;
 }
+
+.checkboxes-div{
+  display: flex;
+  flex-direction: column;
+  margin-right: auto;
+}
+
+.checkbox-div{
+  display: flex;
+  flex-direction: row;
+  justify-content: left;
+  align-items: center;
+}
+
+.checkbox-option{
+  width: 15px;
+  height: 15px;
+  margin-right: 5%;
+}

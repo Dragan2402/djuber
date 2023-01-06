@@ -7,7 +7,10 @@ import lombok.experimental.FieldDefaults;
 import javax.validation.ValidationException;
 import javax.validation.constraints.Email;
 import javax.validation.constraints.NotEmpty;
+import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Pattern;
+import java.util.List;
+import java.util.Set;
 
 @Data
 @FieldDefaults(level = AccessLevel.PRIVATE)
@@ -41,10 +44,13 @@ public class RegisterDriverRequest {
     @NotEmpty(message = "The license plate type is required.")
     String licensePlate;
 
+    @NotNull(message = "Must provide additional services set. Can be empty.")
+    Set<String> additionalServices;
+
     String picture;
 
     public RegisterDriverRequest(String email, String password, String confirmPassword, String firstName, String lastName,
-                                 String city, String phoneNumber, String carType, String licensePlate, String picture) {
+                                 String city, String phoneNumber, String carType, String licensePlate,Set<String> services ,String picture) {
         if (!confirmPassword.equals(password)) {
             throw new ValidationException("Passwords must match");
         }
@@ -57,6 +63,7 @@ public class RegisterDriverRequest {
         this.phoneNumber = phoneNumber;
         this.carType = carType;
         this.licensePlate = licensePlate;
+        this.additionalServices = services;
         this.picture = picture;
     }
 }

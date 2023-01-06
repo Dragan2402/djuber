@@ -17,6 +17,13 @@ export class RegisterDriverComponent implements OnInit {
 
   selectedCarType:string = "Sedan";
 
+
+  extraLuggage: false;
+  pets: false;
+  luggageTransport: false;
+  knowingEnglish:false;
+
+
   carTypes:string[]= ["Sedan","Station wagon","Van","Transporter"]
 
   profilePicture;
@@ -44,11 +51,14 @@ export class RegisterDriverComponent implements OnInit {
 
   registerDriver(){
     if(this.firstFormGroup.status === "VALID" && this.secondFormGroup.status==="VALID" && this.thirdFormGroup.status === "VALID"){
+
+      const additionalServices = this.getAdditionalServices();
+
       const request = {email:this.firstFormGroup.controls["email"].value, "password":this.firstFormGroup.controls["password"].value,
       "confirmPassword":this.firstFormGroup.controls["confirmPassword"].value, "firstName":this.secondFormGroup.controls.firstName.value,
       "lastName":this.secondFormGroup.controls.lastName.value,
       "city":this.selectedCity,"phoneNumber":this.secondFormGroup.controls.phoneNumber.value,"licensePlate":this.thirdFormGroup.controls.licensePlate.value,
-      "carType":this.selectedCarType
+      "carType":this.selectedCarType,"additionalServices":additionalServices
       } as DriverRegistrationRequest;
       if(this.profilePicture !== undefined){
         request.picture = this.profilePicture;
@@ -58,6 +68,24 @@ export class RegisterDriverComponent implements OnInit {
         console.log(res);
       });
     }
+
+  }
+
+  private  getAdditionalServices():string[]{
+    const services = new Array();
+    if(this.pets){
+      services.push("pets");
+    }
+    if(this.extraLuggage){
+      services.push("extraLuggage");
+    }
+    if(this.luggageTransport){
+      services.push("luggageTransport");
+    }
+    if(this.knowingEnglish){
+      services.push("knowingEnglish");
+    }
+    return services;
 
   }
 

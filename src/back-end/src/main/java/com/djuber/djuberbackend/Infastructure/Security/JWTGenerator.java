@@ -1,5 +1,6 @@
 package com.djuber.djuberbackend.Infastructure.Security;
 
+import com.djuber.djuberbackend.Infastructure.Exceptions.CustomExceptions.TokenExpiredException;
 import com.djuber.djuberbackend.Infastructure.Util.DateCalculator;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
@@ -53,7 +54,7 @@ public class JWTGenerator {
             Jwts.parser().setSigningKey(SecurityConstants.JWT_SECRET).parseClaimsJws(token).getBody();
             return true;
         } catch (Exception ex) {
-            throw new AuthenticationCredentialsNotFoundException("JWT was expired or incorrect");
+            throw new TokenExpiredException("JWT was expired or incorrect");
         }
     }
 

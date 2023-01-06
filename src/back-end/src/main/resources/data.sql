@@ -54,7 +54,7 @@ INSERT INTO car (id, car_type, license_plate, x, y, deleted)
 VALUES (200000, 0, 'NS99892J', 45.24533662754101, 19.8430497771721, false);
 
 INSERT INTO CAR_ADDITIONAL_SERVICES (car_id, ADDITIONAL_SERVICES)
-VALUES (100000, 'Ljubimci do 15kg');
+VALUES (100000, 'pets');
 
 --DRIVERS
 INSERT INTO driver (id, identity_id, first_name, last_name, city, phone_number, active, car_id,

@@ -8,5 +8,6 @@ export interface DriverRegistrationRequest{
   phoneNumber:string;
   carType:string;
   licensePlate:string;
+  additionalServices:string[];
   picture?:string;
 }
