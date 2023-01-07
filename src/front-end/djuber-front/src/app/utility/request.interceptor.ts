@@ -27,6 +27,10 @@ export class RequestInterceptor implements HttpInterceptor {
       return this.handleClientRequests(request, next);
     }
 
+    if(request.url.includes("api/driver")){
+      return this.handleDriverRequests(request, next);
+    }
+
     if(request.url.includes("api/auth")){
       return this.handleAuthenticationRequests(request, next);
     }
@@ -61,6 +65,18 @@ export class RequestInterceptor implements HttpInterceptor {
     return next.handle(request);
   }
 
+
+  private handleDriverRequests(request: HttpRequest<unknown>, next: HttpHandler): Observable<HttpEvent<unknown>> {
+
+    this.authenticationService.refreshToken();
+    request = request.clone({
+        setHeaders: {
+          Authorization: `Bearer ${this.localStorage.getItem("jwt")}`
+        }
+      });
+    return next.handle(request);
+  }
+
   private handleAuthenticationRequests(request: HttpRequest<unknown>, next: HttpHandler): Observable<HttpEvent<unknown>> {
     if(request.url.includes("passwordResetToken")){
       return next.handle(request);
@@ -82,7 +98,6 @@ export class RequestInterceptor implements HttpInterceptor {
       });
     }
     return next.handle(request);
-
-
   }
+
 }

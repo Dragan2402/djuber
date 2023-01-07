@@ -1,0 +1,115 @@
+<div class="profile-div">
+
+  <div class="picture-div">
+    <div class="profile-picture-div">
+      <div *ngIf="profilePictureString !== ''">
+        <img [src]="profilePictureString" width="300" height="270" style="border-radius: 20px;">
+      </div>
+      <div class="image-upload-div">
+        <div>
+          <button type="button" mat-raised-button color="primary" (click)="fileInput.click()">Choose File</button>
+          <input type="file" hidden #fileInput (change)="uploadFile($event.target.files)" accept="image/*">
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="driver-info">
+    <div style="margin-bottom: 10%;">
+      <mat-label>About</mat-label>
+    </div>
+    <form [formGroup]="controlGroup">
+      <div clas="form-things-div">
+        <div>
+          <mat-form-field >
+            <mat-label>Email</mat-label>
+            <input matInput disabled [value]="loggedDriver.email">
+          </mat-form-field>
+        </div>
+        <div>
+          <mat-form-field >
+            <mat-label>First name</mat-label>
+            <input matInput formControlName="firstName" required [(ngModel)]="loggedDriver.firstName">
+          </mat-form-field>
+        </div>
+        <div>
+          <mat-form-field >
+            <mat-label>Last name</mat-label>
+            <input matInput formControlName="lastName" required [(ngModel)]="loggedDriver.lastName">
+          </mat-form-field>
+        </div>
+        <div>
+          <mat-form-field >
+            <mat-label>Phone number</mat-label>
+            <input matInput formControlName="phoneNumber" required [(ngModel)]="loggedDriver.phoneNumber" >
+          </mat-form-field>
+        </div>
+        <div>
+          <mat-form-field>
+            <mat-label>City</mat-label>
+            <mat-select [(value)]="loggedDriver.city" [disabled]="!isEditing()" >
+              <mat-option *ngFor="let city of cities" [value]="city" >
+                {{city}}
+              </mat-option>
+            </mat-select>
+          </mat-form-field>
+        </div>
+
+        <div class="car-info">
+          <div>
+              <div>
+                <mat-form-field >
+                  <mat-label>Car Id</mat-label>
+                  <input matInput disabled [value]="loggedDriver.carId">
+                </mat-form-field>
+              </div>
+
+              <div>
+                <mat-form-field >
+                  <mat-label>License plate</mat-label>
+                  <input matInput formControlName="licensePlate" required [(ngModel)]="loggedDriver.licensePlate" >
+                </mat-form-field>
+              </div>
+
+              <div>
+                <mat-form-field>
+                  <mat-label>Car type</mat-label>
+                  <mat-select [(value)]="selectedCarType" [disabled]="!isEditing()" >
+                    <mat-option *ngFor="let car of carTypes" [value]="car" >
+                      {{car}}
+                    </mat-option>
+                  </mat-select>
+                </mat-form-field>
+              </div>
+          </div>
+          <div class="checkboxes-div">
+              <h4>Additional services</h4>
+              <div class="checkbox-div">
+                <input type="checkbox" [(ngModel)]="pets"  [disabled]="!isEditing()" [ngModelOptions]="{standalone: true}" class="checkbox-option">
+                <mat-label>Pets</mat-label>
+              </div>
+              <div class="checkbox-div">
+                <input type="checkbox" [(ngModel)]="knowingEnglish"  [disabled]="!isEditing()" [ngModelOptions]="{standalone: true}" class="checkbox-option">
+                <mat-label>Knowing English</mat-label>
+              </div>
+              <div class="checkbox-div">
+                <input type="checkbox" [(ngModel)]="extraLuggage"  [disabled]="!isEditing()" [ngModelOptions]="{standalone: true}" class="checkbox-option">
+                <mat-label>Extra luggage</mat-label>
+              </div>
+              <div class="checkbox-div">
+                <input type="checkbox" [(ngModel)]="luggageTransport"  [disabled]="!isEditing()" [ngModelOptions]="{standalone: true}" class="checkbox-option">
+                {{luggageTransport}}
+                <mat-label>Luggage transport</mat-label>
+              </div>
+           </div>
+        </div>
+      </div>
+    </form>
+    <div class="edit-button" *ngIf="!isEditing()">
+      <button mat-raised-button color="primary" (click)="toggleEditing()">Edit information</button>
+    </div>
+    <div class="cancel-save-buttons-div" *ngIf="isEditing()">
+      <button mat-raised-button color="warn" (click)="cancelEditing()">Cancel</button>
+      <button mat-raised-button color="primary" (click)="saveEditing()">Save</button>
+    </div>
+  </div>
+</div>

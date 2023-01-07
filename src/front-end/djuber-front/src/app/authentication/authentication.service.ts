@@ -77,7 +77,6 @@ export class AuthenticationService {
     this.localStorage.setItem("jwt", token["accessToken"])
     this.localStorage.setItem("jwt-expiringDate", token["expiringDate"]);
     this.http.get<LoggedUser>("/api/auth/getLoggedUserInfo").pipe(tap(res => {
-      console.log(res);
       this.localStorage.setItem("user-email",res.email);
       this.localStorage.setItem("user-first-name",res.firstName);
       this.localStorage.setItem("user-last-name",res.lastName);
@@ -107,7 +106,6 @@ export class AuthenticationService {
     const dateNow = new Date();
     if((dateNow.getTime()+360000)>dateExpiring.getTime()){
       this.http.get("/api/auth/refreshToken").subscribe((response) =>{
-        console.log(response);
         this.localStorage.setItem("jwt", response["accessToken"])
         this.localStorage.setItem("jwt-expiringDate", response["expiringDate"]);
       })

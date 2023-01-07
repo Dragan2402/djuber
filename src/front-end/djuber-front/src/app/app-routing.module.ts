@@ -15,6 +15,9 @@ const routes: Routes = [
   {path:"client", loadChildren: ()=>
       import('./client/client.module').then((m) => m.ClientModule), canActivate: [LoginGuard, RolesGuard], canActivateChild: [LoginGuard,RolesGuard], canLoad: [LoginGuard,RolesGuard],
     data: {role:"CLIENT"}},
+  {path:"driver", loadChildren: ()=>
+    import('./driver/driver.module').then((m) => m.DriverModule), canActivate: [LoginGuard, RolesGuard], canActivateChild: [LoginGuard,RolesGuard], canLoad: [LoginGuard,RolesGuard],
+  data: {role:"DRIVER"}},
   {path: '' , redirectTo : '/homePage', pathMatch : 'full'},
   {path: "**", component: NotFoundComponent}
 
