@@ -18,10 +18,10 @@ export class RegisterDriverComponent implements OnInit {
   selectedCarType:string = "Sedan";
 
 
-  extraLuggage: false;
-  pets: false;
-  luggageTransport: false;
-  knowingEnglish:false;
+  extraLuggage: boolean;
+  pets: boolean;
+  luggageTransport: boolean;
+  knowingEnglish:boolean;
 
 
   carTypes:string[]= ["Sedan","Station wagon","Van","Transporter"]

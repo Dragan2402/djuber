@@ -1,16 +1,21 @@
 package com.djuber.djuberbackend.Application.Services.Driver.Implementation;
 
+import com.djuber.djuberbackend.Application.Services.Client.Results.ClientResult;
 import com.djuber.djuberbackend.Application.Services.Driver.IDriverService;
+import com.djuber.djuberbackend.Application.Services.Driver.Results.DriverResult;
 import com.djuber.djuberbackend.Controllers.Admin.Requests.RegisterDriverRequest;
+import com.djuber.djuberbackend.Controllers.Driver.Requests.UpdateDriverRequest;
 import com.djuber.djuberbackend.Domain.Authentication.Identity;
 import com.djuber.djuberbackend.Domain.Authentication.Role;
 import com.djuber.djuberbackend.Domain.Authentication.UserType;
+import com.djuber.djuberbackend.Domain.Client.Client;
 import com.djuber.djuberbackend.Domain.Driver.Car;
 import com.djuber.djuberbackend.Domain.Driver.CarType;
 import com.djuber.djuberbackend.Domain.Driver.Driver;
 import com.djuber.djuberbackend.Infastructure.Exceptions.CustomExceptions.CarWithLicensePlateAlreadyExistsException;
 import com.djuber.djuberbackend.Infastructure.Exceptions.CustomExceptions.EmailAlreadyExistsException;
 import com.djuber.djuberbackend.Infastructure.Exceptions.CustomExceptions.UnsupportedCarTypeException;
+import com.djuber.djuberbackend.Infastructure.Exceptions.CustomExceptions.UserNotFoundException;
 import com.djuber.djuberbackend.Infastructure.Repositories.Authentication.IIdentityRepository;
 import com.djuber.djuberbackend.Infastructure.Repositories.Authentication.RoleRepository;
 import com.djuber.djuberbackend.Infastructure.Repositories.Driver.ICarRepository;
@@ -105,6 +110,54 @@ public class DriverService implements IDriverService {
         emailSenderService.sendDriverRegistrationEmail(identitySaved.getEmail(),saved.getFirstName()+" "+saved.getLastName());
 
         return identitySaved.getId();
+    }
+
+    @Override
+    public DriverResult getDriverByEmail(String email) {
+        Identity identity = identityRepository.findByEmail(email);
+        if(identity == null){
+            throw new UserNotFoundException("Driver with provided email does not exist.");
+        }
+        return new DriverResult(driverRepository.findByIdentityId(identity.getId()));
+    }
+
+    @Override
+    public String getDriverPictureByEmail(String email) {
+        Identity identity = identityRepository.findByEmail(email);
+        if(identity == null){
+            throw new UserNotFoundException("Driver with provided email does not exist.");
+        }
+        return mediaService.readUserPictureAsBase64String(driverRepository.findByIdentityId(identity.getId()).getId(), identity.getUserType());
+    }
+
+    @Override
+    public void updateLoggedDriverPicture(String email, String image) {
+        Identity identity = identityRepository.findByEmail(email);
+        if(identity == null){
+            throw new UserNotFoundException("Driver with provided email does not exist.");
+        }
+        Long driverId = driverRepository.findByIdentityId(identity.getId()).getId();
+        UserType userType = identity.getUserType();
+        mediaService.deleteUserPreviousPicture(driverId, userType);
+        mediaService.saveBase64AsPicture(driverId,userType,image);
+    }
+
+    @Override
+    public void updateLoggedDriver(String email, UpdateDriverRequest request) {
+        Identity identity = identityRepository.findByEmail(email);
+        if(identity == null){
+            throw new UserNotFoundException("Driver with provided email does not exist.");
+        }
+        Driver driver = driverRepository.findByIdentityId(identity.getId());
+        driver.setFirstName(request.getFirstName());
+        driver.setLastName(request.getLastName());
+        driver.setPhoneNumber(request.getPhoneNumber());
+        driver.setCity(request.getCity());
+        driver.getCar().setLicensePlate(request.getLicensePlate());
+        driver.getCar().setCarType(getCarType(request.getCarType()));
+        driver.getCar().setAdditionalServices(request.getAdditionalServices());
+        driverRepository.save(driver);
+
     }
 
     private CarType getCarType(String type){

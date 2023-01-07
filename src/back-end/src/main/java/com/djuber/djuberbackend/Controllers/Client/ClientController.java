@@ -46,7 +46,7 @@ public class ClientController {
 
     @PutMapping(value = "updateLoggedClient")
     @PreAuthorize("hasAnyRole('CLIENT')")
-    public void updateClientAdmin(Principal user, @RequestBody @Valid UpdateClientRequest request){
+    public void updateLoggedClient(Principal user, @RequestBody @Valid UpdateClientRequest request){
         this.clientService.updateLoggedClient(user.getName(),request);
     }
 }

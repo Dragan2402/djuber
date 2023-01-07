@@ -18,7 +18,7 @@ export class PasswordChangeComponent implements OnInit {
     confirmPassword : ['',[Validators.required]],
   },{validators: [CustomValidators.matchPasswords('password','confirmPassword')]});
 
-  constructor(private _formBuilder: FormBuilder, private authenticationService:AuthenticationService,  private router: Router,private _snackBar: MatSnackBar) { }
+  constructor(private _formBuilder: FormBuilder, private authenticationService:AuthenticationService,private _snackBar: MatSnackBar) { }
 
   ngOnInit(): void {
   }

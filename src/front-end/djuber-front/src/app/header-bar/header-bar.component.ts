@@ -40,6 +40,8 @@ export class HeaderBarComponent implements OnInit {
       this.router.navigate(["/admin"]);
     }else if (role === this.hashService.hashString("CLIENT")){
       this.router.navigate(["/client"]);
+    }else if (role === this.hashService.hashString("DRIVER")){
+      this.router.navigate(["/driver"]);
     }
   }
 

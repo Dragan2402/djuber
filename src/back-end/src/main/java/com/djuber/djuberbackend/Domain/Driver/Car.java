@@ -10,7 +10,8 @@ import java.io.Serializable;
 import java.util.Set;
 
 @Entity
-@Data
+@Getter
+@Setter
 @NoArgsConstructor
 @AllArgsConstructor
 @FieldDefaults(level = AccessLevel.PRIVATE)
@@ -42,7 +43,7 @@ public class Car {
     Double y;
 
     @Column(name = "additionalServices", nullable = false)
-    @ElementCollection(targetClass = String.class)
+    @ElementCollection(targetClass = String.class ,fetch = FetchType.EAGER)
     Set<String> additionalServices;
 
     @Column(name = "deleted", nullable = false)
