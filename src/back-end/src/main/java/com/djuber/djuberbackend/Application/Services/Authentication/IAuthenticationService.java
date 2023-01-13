@@ -1,4 +1,4 @@
-package com.djuber.djuberbackend.Application.Authentication;
+package com.djuber.djuberbackend.Application.Services.Authentication;
 
 import com.djuber.djuberbackend.Controllers.Authentication.Request.*;
 import com.djuber.djuberbackend.Controllers.Authentication.Responses.LoggedUserInfoResponse;

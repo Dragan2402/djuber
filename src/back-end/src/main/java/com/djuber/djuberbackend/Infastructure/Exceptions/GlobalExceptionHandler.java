@@ -3,6 +3,7 @@ package com.djuber.djuberbackend.Infastructure.Exceptions;
 import com.djuber.djuberbackend.Infastructure.Exceptions.CustomExceptions.*;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.http.converter.HttpMessageNotReadableException;
 import org.springframework.security.authentication.AuthenticationCredentialsNotFoundException;
 import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.authentication.DisabledException;
@@ -14,6 +15,7 @@ import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.context.request.WebRequest;
 
+import javax.validation.UnexpectedTypeException;
 import java.util.*;
 
 @ControllerAdvice
@@ -78,8 +80,12 @@ public class GlobalExceptionHandler {
         return new ResponseEntity<>(getErrorObject(ex.getMessage(), HttpStatus.EXPECTATION_FAILED), HttpStatus.EXPECTATION_FAILED);
     }
 
+    public ResponseEntity<ErrorObject> handleHttpMessageNotReadableException(HttpMessageNotReadableException ex, WebRequest request){
+        return new ResponseEntity<>(getErrorObject(ex.getMessage(), HttpStatus.EXPECTATION_FAILED), HttpStatus.EXPECTATION_FAILED);
+    }
+
     @ResponseStatus(HttpStatus.BAD_REQUEST)
-    @ExceptionHandler(MethodArgumentNotValidException.class)
+    @ExceptionHandler({MethodArgumentNotValidException.class,UnexpectedTypeException.class})
     public ResponseEntity<List<ErrorObject>> handleValidationExceptions(
             MethodArgumentNotValidException ex) {
 

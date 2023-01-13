@@ -33,6 +33,8 @@ public class DriverResult {
 
     String licensePlate;
 
+    boolean isBlocked;
+
     Set<String> additionalService;
 
     public DriverResult(@NotNull Driver driver){
@@ -46,6 +48,7 @@ public class DriverResult {
         this.carId = driver.getCar().getId();
         this.carType = driver.getCar().getCarType();
         this.licensePlate = driver.getCar().getLicensePlate();
+        this.isBlocked = driver.getBlocked();
         this.additionalService = driver.getCar().getAdditionalServices();
     }
 }

@@ -60,7 +60,7 @@ VALUES (100000, 'pets');
 INSERT INTO driver (id, identity_id, first_name, last_name, city, phone_number, active, car_id,
                     duration_active, blocked, in_ride,
                     deleted)
-VALUES (100000, 500000, 'Haso', 'Hasic', 'Novi Sad', '0691777778', true, 100000, 0, false,
+VALUES (100000, 500000, 'Haso', 'Hasic', 'Novi Sad', '0691777778', true, 100000, 0, true ,
         false, false);
 
 INSERT INTO driver (id, identity_id, first_name, last_name, city, phone_number, active, car_id,

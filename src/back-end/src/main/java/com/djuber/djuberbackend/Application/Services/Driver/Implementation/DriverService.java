@@ -1,14 +1,13 @@
 package com.djuber.djuberbackend.Application.Services.Driver.Implementation;
 
-import com.djuber.djuberbackend.Application.Services.Client.Results.ClientResult;
 import com.djuber.djuberbackend.Application.Services.Driver.IDriverService;
+import com.djuber.djuberbackend.Application.Services.Driver.Mapper.DriverMapper;
 import com.djuber.djuberbackend.Application.Services.Driver.Results.DriverResult;
 import com.djuber.djuberbackend.Controllers.Admin.Requests.RegisterDriverRequest;
 import com.djuber.djuberbackend.Controllers.Driver.Requests.UpdateDriverRequest;
 import com.djuber.djuberbackend.Domain.Authentication.Identity;
 import com.djuber.djuberbackend.Domain.Authentication.Role;
 import com.djuber.djuberbackend.Domain.Authentication.UserType;
-import com.djuber.djuberbackend.Domain.Client.Client;
 import com.djuber.djuberbackend.Domain.Driver.Car;
 import com.djuber.djuberbackend.Domain.Driver.CarType;
 import com.djuber.djuberbackend.Domain.Driver.Driver;
@@ -20,13 +19,13 @@ import com.djuber.djuberbackend.Infastructure.Repositories.Authentication.IIdent
 import com.djuber.djuberbackend.Infastructure.Repositories.Authentication.RoleRepository;
 import com.djuber.djuberbackend.Infastructure.Repositories.Driver.ICarRepository;
 import com.djuber.djuberbackend.Infastructure.Repositories.Driver.IDriverRepository;
-import com.djuber.djuberbackend.Infastructure.Util.DateCalculator;
 import com.djuber.djuberbackend.Infastructure.Util.EmailSenderService;
 import com.djuber.djuberbackend.Infastructure.Util.MediaService;
-import com.djuber.djuberbackend.Infastructure.Util.RandomStringGenerator;
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
@@ -52,6 +51,8 @@ public class DriverService implements IDriverService {
     final EmailSenderService emailSenderService;
 
     final MediaService mediaService;
+
+    final DriverMapper driverMapper;
 
     @Override
     public Long registerNewDriver(RegisterDriverRequest request) {
@@ -158,6 +159,36 @@ public class DriverService implements IDriverService {
         driver.getCar().setAdditionalServices(request.getAdditionalServices());
         driverRepository.save(driver);
 
+    }
+
+    @Override
+    public Page<DriverResult> readPageable(Pageable pageable) {
+        return driverMapper.map(driverRepository.findAll(pageable));
+    }
+
+    @Override
+    public void blockDriver(long driverId) {
+        Driver driver = driverRepository.findById(driverId).orElse(null);
+        if(driver == null){
+            throw new UserNotFoundException("Driver with provided id does not exist.");
+        }
+        driver.setBlocked(true);
+        driverRepository.save(driver);
+    }
+
+    @Override
+    public void unblockDriver(long driverId) {
+        Driver driver = driverRepository.findById(driverId).orElse(null);
+        if(driver == null){
+            throw new UserNotFoundException("Driver with provided id does not exist.");
+        }
+        driver.setBlocked(false);
+        driverRepository.save(driver);
+    }
+
+    @Override
+    public Page<DriverResult> readPageableWithFilter(Pageable pageable, String filter) {
+        return driverMapper.map(driverRepository.findAllWithFilter(filter, pageable));
     }
 
     private CarType getCarType(String type){

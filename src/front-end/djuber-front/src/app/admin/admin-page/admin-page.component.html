@@ -10,6 +10,14 @@
           Register a new driver
         </button>
         <mat-divider></mat-divider>
+        <button (click)="toggleDriversPreview()" mat-menu-item>
+          Preview drivers
+        </button>
+        <mat-divider></mat-divider>
+        <button (click)="toggleClientsPreview()" mat-menu-item>
+          Preview clients
+        </button>
+        <mat-divider></mat-divider>
         <button (click)="changePassword()" mat-menu-item>
           Change password
         </button>
@@ -18,8 +26,7 @@
 
     <div class="sidenav-content">
       <div class="main-content">
-        <djuber-admin-profile *ngIf="page===1"></djuber-admin-profile>
-        <djuber-register-driver *ngIf="page===2"></djuber-register-driver>
+        <router-outlet name="ao"></router-outlet>
       </div>
       <div class="toggle-button">
         <button type="button" mat-raised-button color="primary" (click)="drawer.toggle()" (click)="toggleChange()">

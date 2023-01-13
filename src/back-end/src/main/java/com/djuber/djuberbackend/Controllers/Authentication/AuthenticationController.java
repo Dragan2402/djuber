@@ -1,7 +1,6 @@
 package com.djuber.djuberbackend.Controllers.Authentication;
 
-import com.djuber.djuberbackend.Application.Authentication.IAuthenticationService;
-import com.djuber.djuberbackend.Application.Authentication.Implementation.AuthenticationService;
+import com.djuber.djuberbackend.Application.Services.Authentication.IAuthenticationService;
 import com.djuber.djuberbackend.Controllers.Authentication.Request.*;
 import com.djuber.djuberbackend.Controllers.Authentication.Responses.LoggedUserInfoResponse;
 import com.djuber.djuberbackend.Controllers.Authentication.Responses.LoginResponse;
@@ -9,8 +8,6 @@ import com.djuber.djuberbackend.Infastructure.Security.JWTGenerator;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 
-import java.io.*;
-import java.util.Base64;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -20,13 +17,7 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
-import javax.xml.bind.DatatypeConverter;
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.nio.file.Paths;
 import java.security.Principal;
-import java.util.Date;
-import java.util.Map;
 
 @Tag(name="Authentication API",description = "Provides authentication logic.")
 @RestController

@@ -1,16 +1,21 @@
 package com.djuber.djuberbackend.Controllers.Client;
 
 
+import com.djuber.djuberbackend.Application.Services.Admin.Results.AdminResult;
 import com.djuber.djuberbackend.Application.Services.Client.IClientService;
 import com.djuber.djuberbackend.Application.Services.Client.Results.ClientResult;
 import com.djuber.djuberbackend.Controllers.Admin.Requests.UpdateAdminRequest;
 import com.djuber.djuberbackend.Controllers.Client.Requests.UpdateClientRequest;
+import com.djuber.djuberbackend.Controllers._Common.Requests.IdRequest;
 import com.djuber.djuberbackend.Controllers._Common.Requests.ImageUpdateRequest;
 import com.djuber.djuberbackend.Controllers._Common.Responses.ImageResponse;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.lang.Nullable;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
@@ -25,6 +30,28 @@ import java.security.Principal;
 public class ClientController {
 
     private final IClientService clientService;
+
+    @GetMapping
+    @PreAuthorize("hasAnyRole('ADMIN')")
+    public ResponseEntity<Page<ClientResult>> getAdmins(Pageable pageable, @RequestParam @Nullable String filter) {
+        if (filter == null) {
+            return new ResponseEntity<>(clientService.readPageable(pageable), HttpStatus.OK);
+        } else {
+            return new ResponseEntity<>(clientService.readPageableWithFilter(pageable, filter), HttpStatus.OK);
+        }
+    }
+
+    @PutMapping(value = "blockClient")
+    @PreAuthorize("hasAnyRole('ADMIN')")
+    public void blockClient(@RequestBody @Valid IdRequest request){
+        clientService.blockClient(request.getId());
+    }
+
+    @PutMapping(value = "unblockClient")
+    @PreAuthorize("hasAnyRole('ADMIN')")
+    public void unblockClient(@RequestBody @Valid IdRequest request){
+        clientService.unblockClient(request.getId());
+    }
 
     @GetMapping(value = "loggedClient")
     @PreAuthorize("hasAnyRole('CLIENT')")

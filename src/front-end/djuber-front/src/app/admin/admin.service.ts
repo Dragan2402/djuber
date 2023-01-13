@@ -26,7 +26,41 @@ export class AdminService {
     return this.http.put("/api/admin/updateLoggedAdmin",request);
   }
 
+  public getDriversPage(index:number, size:number, filter:string){
+    return this.http.get(`/api/driver?page=${index.toString()}&size=${size.toString()}&filter=${filter}`);
+  }
+
+  public filterSearch(pageSize:number, filter:string){
+    return this.http.get(`/api/driver?page=0&size=${pageSize.toString()}&filter=${filter}`);
+  }
+
+  public getClientsPage(index:number, size:number, filter:string){
+    return this.http.get(`/api/client?page=${index.toString()}&size=${size.toString()}&filter=${filter}`);
+  }
+
+  public filterSearchClients(pageSize:number, filter:string){
+    return this.http.get(`/api/client?page=0&size=${pageSize.toString()}&filter=${filter}`);
+  }
+
   public registerDriver(request:DriverRegistrationRequest){
     return this.http.post("/api/admin/registerDriver",request);
   }
+
+  public unblockDriver(id:number){
+    return this.http.put("/api/driver/unblockDriver",{"id":id});
+  }
+
+  public blockDriver(id:number){
+    return this.http.put("/api/driver/blockDriver",{"id":id});
+  }
+
+  public unblockClient(id:number){
+    return this.http.put("/api/client/unblockClient",{"id":id});
+  }
+
+  public blockClient(id:number){
+    return this.http.put("/api/client/blockClient",{"id":id});
+  }
+
+
 }

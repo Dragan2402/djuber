@@ -6,4 +6,5 @@ export interface Client{
   lastName: string,
   city: string,
   phoneNumber: string
+  isBlocked:boolean,
 }

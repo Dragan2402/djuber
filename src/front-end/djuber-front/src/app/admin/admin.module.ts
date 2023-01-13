@@ -19,12 +19,18 @@ import { AdminService } from './admin.service';
 import { RegisterDriverComponent } from './admin-page/register-driver/register-driver.component';
 import {MatStepperModule} from '@angular/material/stepper';
 import {MatCheckboxModule} from '@angular/material/checkbox';
+import { DriversPreviewComponent } from './admin-page/drivers-preview/drivers-preview.component';
+import {MatTableModule} from '@angular/material/table';
+import {MatPaginatorModule} from '@angular/material/paginator';
+import { ClientPreviewComponent } from './admin-page/client-preview/client-preview.component';
 
 @NgModule({
   declarations: [
     AdminPageComponent,
     AdminProfileComponent,
-    RegisterDriverComponent
+    RegisterDriverComponent,
+    DriversPreviewComponent,
+    ClientPreviewComponent
   ],
   providers: [AdminService],
   imports: [
@@ -43,7 +49,9 @@ import {MatCheckboxModule} from '@angular/material/checkbox';
     MatSelectModule,
     MatInputModule,
     MatStepperModule,
-    MatCheckboxModule
+    MatCheckboxModule,
+    MatTableModule,
+    MatPaginatorModule
   ]
 })
 export class AdminModule { }

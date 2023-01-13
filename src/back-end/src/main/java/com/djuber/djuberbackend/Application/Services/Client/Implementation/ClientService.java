@@ -2,12 +2,14 @@ package com.djuber.djuberbackend.Application.Services.Client.Implementation;
 
 import com.djuber.djuberbackend.Application.Services.Admin.Results.AdminResult;
 import com.djuber.djuberbackend.Application.Services.Client.IClientService;
+import com.djuber.djuberbackend.Application.Services.Client.Mapper.ClientMapper;
 import com.djuber.djuberbackend.Application.Services.Client.Results.ClientResult;
 import com.djuber.djuberbackend.Controllers.Client.Requests.UpdateClientRequest;
 import com.djuber.djuberbackend.Domain.Admin.Admin;
 import com.djuber.djuberbackend.Domain.Authentication.Identity;
 import com.djuber.djuberbackend.Domain.Authentication.UserType;
 import com.djuber.djuberbackend.Domain.Client.Client;
+import com.djuber.djuberbackend.Domain.Driver.Driver;
 import com.djuber.djuberbackend.Infastructure.Exceptions.CustomExceptions.UserNotFoundException;
 import com.djuber.djuberbackend.Infastructure.Repositories.Authentication.IIdentityRepository;
 import com.djuber.djuberbackend.Infastructure.Repositories.Client.IClientRepository;
@@ -15,6 +17,8 @@ import com.djuber.djuberbackend.Infastructure.Util.MediaService;
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 @Service
@@ -27,6 +31,8 @@ public class ClientService implements IClientService {
     final IClientRepository clientRepository;
 
     final MediaService mediaService;
+
+    final ClientMapper clientMapper;
 
     @Override
     public ClientResult getClientByEmail(String email) {
@@ -70,5 +76,35 @@ public class ClientService implements IClientService {
         client.setPhoneNumber(request.getPhoneNumber());
         client.setCity(request.getCity());
         clientRepository.save(client);
+    }
+
+    @Override
+    public void blockClient(long clientId) {
+        Client client = clientRepository.findById(clientId).orElse(null);
+        if(client == null){
+            throw new UserNotFoundException("Client with provided id does not exist.");
+        }
+        client.setBlocked(true);
+        clientRepository.save(client);
+    }
+
+    @Override
+    public void unblockClient(long clientId) {
+        Client client = clientRepository.findById(clientId).orElse(null);
+        if(client == null){
+            throw new UserNotFoundException("Client with provided id does not exist.");
+        }
+        client.setBlocked(false);
+        clientRepository.save(client);
+    }
+
+    @Override
+    public Page<ClientResult> readPageable(Pageable pageable) {
+        return clientMapper.map(clientRepository.findAll(pageable));
+    }
+
+    @Override
+    public Page<ClientResult> readPageableWithFilter(Pageable pageable, String filter) {
+        return clientMapper.map(clientRepository.findAllWithFilter(filter, pageable));
     }
 }

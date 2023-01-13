@@ -9,5 +9,6 @@ export interface Driver{
   carId : number,
   carType: string,
   licensePlate:string,
+  isBlocked:boolean,
   additionalService:string[]
 }

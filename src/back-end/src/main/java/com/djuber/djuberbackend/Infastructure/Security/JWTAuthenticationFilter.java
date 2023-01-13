@@ -1,7 +1,6 @@
 package com.djuber.djuberbackend.Infastructure.Security;
 
-import com.djuber.djuberbackend.Application.Authentication.Implementation.AuthenticationService;
-import lombok.RequiredArgsConstructor;
+import com.djuber.djuberbackend.Application.Services.Authentication.Implementation.AuthenticationService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.context.SecurityContextHolder;

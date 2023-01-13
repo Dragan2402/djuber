@@ -15,6 +15,8 @@ export class AdminPageComponent implements  OnInit {
 
 
   ngOnInit(): void {
+    this.router.navigateByUrl('admin');
+    this.router.navigate(['admin',{outlets: { ao:['profile']} }],{ skipLocationChange: true });
   }
 
   constructor(private router : Router) {
@@ -22,7 +24,18 @@ export class AdminPageComponent implements  OnInit {
   }
 
   toggleRegisterNewDriverPage(){
-    this.page=2;
+    this.router.navigateByUrl('admin');
+    this.router.navigate(['admin',{outlets: { ao:['registerDriver']} }],{ skipLocationChange: true });
+  }
+
+  toggleDriversPreview(){
+    this.router.navigateByUrl('admin');
+    this.router.navigate(['admin',{outlets: { ao:['previewDrivers']} }],{ skipLocationChange: true });
+  }
+
+  toggleClientsPreview(){
+    this.router.navigateByUrl('admin');
+    this.router.navigate(['admin',{outlets: { ao:['previewClients']} }],{ skipLocationChange: true });
   }
 
   changePassword(){
@@ -30,7 +43,8 @@ export class AdminPageComponent implements  OnInit {
   }
 
   toggleProfilePage(){
-    this.page=1;
+    this.router.navigateByUrl('admin');
+    this.router.navigate(['admin',{outlets: { ao:['profile']} }],{ skipLocationChange: true });
   }
 
   toggleChange(){

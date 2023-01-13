@@ -1,6 +1,6 @@
-package com.djuber.djuberbackend.Application.Authentication.Implementation;
+package com.djuber.djuberbackend.Application.Services.Authentication.Implementation;
 
-import com.djuber.djuberbackend.Application.Authentication.IAuthenticationService;
+import com.djuber.djuberbackend.Application.Services.Authentication.IAuthenticationService;
 import com.djuber.djuberbackend.Controllers.Authentication.Request.PasswordChangeRequest;
 import com.djuber.djuberbackend.Controllers.Authentication.Request.PasswordResetRequest;
 import com.djuber.djuberbackend.Controllers.Authentication.Request.SignUpRequest;
