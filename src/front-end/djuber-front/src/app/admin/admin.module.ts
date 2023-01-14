@@ -23,6 +23,8 @@ import { DriversPreviewComponent } from './admin-page/drivers-preview/drivers-pr
 import {MatTableModule} from '@angular/material/table';
 import {MatPaginatorModule} from '@angular/material/paginator';
 import { ClientPreviewComponent } from './admin-page/client-preview/client-preview.component';
+import { NoteModalComponent } from './admin-page/note-modal/note-modal.component';
+import {MatDialogModule} from '@angular/material/dialog';
 
 @NgModule({
   declarations: [
@@ -30,7 +32,8 @@ import { ClientPreviewComponent } from './admin-page/client-preview/client-previ
     AdminProfileComponent,
     RegisterDriverComponent,
     DriversPreviewComponent,
-    ClientPreviewComponent
+    ClientPreviewComponent,
+    NoteModalComponent
   ],
   providers: [AdminService],
   imports: [
@@ -51,7 +54,8 @@ import { ClientPreviewComponent } from './admin-page/client-preview/client-previ
     MatStepperModule,
     MatCheckboxModule,
     MatTableModule,
-    MatPaginatorModule
+    MatPaginatorModule,
+    MatDialogModule
   ]
 })
 export class AdminModule { }

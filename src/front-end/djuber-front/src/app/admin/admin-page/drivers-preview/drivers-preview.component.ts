@@ -4,6 +4,8 @@ import { MatSort, Sort } from '@angular/material/sort';
 import { AdminService } from '../../admin.service';
 import {Driver} from '../../../driver/driver';
 import { MatTableDataSource } from '@angular/material/table';
+import { MatDialog, MatDialogConfig } from '@angular/material/dialog';
+import { NoteModalComponent } from '../note-modal/note-modal.component';
 
 
 @Component({
@@ -13,7 +15,7 @@ import { MatTableDataSource } from '@angular/material/table';
 })
 export class DriversPreviewComponent implements OnInit, AfterViewInit {
 
-  displayedColumns: string[] = ['id', 'firstName', 'lastName', 'email', 'city', 'carType' , 'licensePlate','block'];
+  displayedColumns: string[] = ['id', 'firstName', 'lastName', 'email', 'city', 'carType' , 'licensePlate','note','block'];
 
   length = 10;
   pageSize = 10;
@@ -28,7 +30,7 @@ export class DriversPreviewComponent implements OnInit, AfterViewInit {
   @ViewChild(MatPaginator) paginator: MatPaginator;
   @ViewChild(MatSort) sort: MatSort;
 
-  constructor(private adminService : AdminService) { }
+  constructor(private adminService : AdminService, public matDialog: MatDialog) { }
 
   ngAfterViewInit(): void {
 
@@ -70,7 +72,7 @@ export class DriversPreviewComponent implements OnInit, AfterViewInit {
       error: (e) => console.log(e),
       complete: () =>{
         let driver = this.drivers.find(driver => driver.id===id);
-        driver.isBlocked = true;
+        driver.blocked = true;
         this.drivers.map(obj => obj.id === id ? driver : obj);
       }
     });
@@ -81,7 +83,7 @@ export class DriversPreviewComponent implements OnInit, AfterViewInit {
       error: (e) => console.log(e),
       complete: () =>{
         let driver = this.drivers.find(driver => driver.id===id);
-        driver.isBlocked = false;
+        driver.blocked = false;
         this.drivers.map(obj => obj.id === id ? driver : obj);
       }
     });
@@ -102,6 +104,18 @@ export class DriversPreviewComponent implements OnInit, AfterViewInit {
 
       },
       error: (e) => console.error(e)})
+  }
+
+  toggleNote(driver:Driver){
+    const dialogConfig = new MatDialogConfig();
+    // The user can't close the dialog by clicking outside its body
+    dialogConfig.disableClose = false;
+    dialogConfig.id = "author-form-modal";
+    dialogConfig.data = {id:driver.id, isClient:false};
+    dialogConfig.height = "55%";
+    dialogConfig.width = "50%";
+    // https://material.angular.io/components/dialog/overview
+    this.matDialog.open(NoteModalComponent, dialogConfig);
   }
 
   ngOnInit(): void {

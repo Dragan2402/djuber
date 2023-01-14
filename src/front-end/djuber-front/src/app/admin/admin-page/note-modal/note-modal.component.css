@@ -1,0 +1,15 @@
+.note-div{
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+}
+.flex-row-buttons{
+  margin-top: auto;
+  padding-bottom: 2%;
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  width: 100%;
+  padding-left: 5%;
+  padding-right: 5%;
+}

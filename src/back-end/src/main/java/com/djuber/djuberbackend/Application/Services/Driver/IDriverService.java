@@ -24,4 +24,8 @@ public interface IDriverService {
     void unblockDriver(long driverId);
 
     Page<DriverResult> readPageableWithFilter(Pageable pageable, String filter);
+
+    void updateDriverNote(long driverId, String note);
+
+    String getDriverNote(long driverId);
 }

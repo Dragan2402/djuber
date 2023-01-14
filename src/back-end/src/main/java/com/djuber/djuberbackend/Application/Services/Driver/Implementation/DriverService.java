@@ -191,6 +191,25 @@ public class DriverService implements IDriverService {
         return driverMapper.map(driverRepository.findAllWithFilter(filter, pageable));
     }
 
+    @Override
+    public void updateDriverNote(long driverId, String note) {
+        Driver driver = driverRepository.findById(driverId).orElse(null);
+        if(driver == null){
+            throw new UserNotFoundException("Driver with provided id does not exist.");
+        }
+        driver.setNote(note);
+        driverRepository.save(driver);
+    }
+
+    @Override
+    public String getDriverNote(long driverId) {
+        Driver driver = driverRepository.findById(driverId).orElse(null);
+        if(driver == null){
+            throw new UserNotFoundException("Driver with provided id does not exist.");
+        }
+        return driver.getNote();
+    }
+
     private CarType getCarType(String type){
         return switch (type) {
             case "Sedan" -> CarType.SEDAN;

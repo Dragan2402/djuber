@@ -8,7 +8,9 @@ import com.djuber.djuberbackend.Controllers.Client.Requests.UpdateClientRequest;
 import com.djuber.djuberbackend.Controllers.Driver.Requests.UpdateDriverRequest;
 import com.djuber.djuberbackend.Controllers._Common.Requests.IdRequest;
 import com.djuber.djuberbackend.Controllers._Common.Requests.ImageUpdateRequest;
+import com.djuber.djuberbackend.Controllers._Common.Requests.NoteUpdateRequest;
 import com.djuber.djuberbackend.Controllers._Common.Responses.ImageResponse;
+import com.djuber.djuberbackend.Controllers._Common.Responses.NoteResponse;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
@@ -33,12 +35,24 @@ public class DriverController {
 
     @GetMapping
     @PreAuthorize("hasAnyRole('ADMIN')")
-    public ResponseEntity<Page<DriverResult>> getAdmins(Pageable pageable, @RequestParam @Nullable String filter){
+    public ResponseEntity<Page<DriverResult>> getDrivers(Pageable pageable, @RequestParam @Nullable String filter){
         if(filter == null){
             return new ResponseEntity<>(driverService.readPageable(pageable), HttpStatus.OK);
         }else{
             return new ResponseEntity<>(driverService.readPageableWithFilter(pageable, filter), HttpStatus.OK);
         }
+    }
+
+    @PutMapping(value = "updateDriverNote")
+    @PreAuthorize("hasAnyRole('ADMIN')")
+    public void updateDriverNote(@RequestBody @Valid NoteUpdateRequest request){
+        driverService.updateDriverNote(request.getId(), request.getNote());
+    }
+
+    @GetMapping(value = "getDriverNote")
+    @PreAuthorize("hasAnyRole('ADMIN')")
+    public ResponseEntity<NoteResponse> getDriverNote(@RequestParam long id) {
+        return new ResponseEntity<>(new NoteResponse(driverService.getDriverNote(id)),HttpStatus.OK);
     }
 
     @PutMapping(value = "blockDriver")

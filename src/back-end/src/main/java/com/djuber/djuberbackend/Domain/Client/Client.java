@@ -71,6 +71,9 @@ public class Client {
     @Column(name = "verificationTokenExpirationDate")
     Date verificationTokenExpirationDate;
 
+    @Column(name = "note", length = 500)
+    String note;
+
     @Column(name = "deleted", nullable = false)
     Boolean deleted;
 }

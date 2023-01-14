@@ -1,0 +1,17 @@
+<div class="note-div">
+  <div style="margin-top: 2%;width: 100%;">
+    <mat-form-field style="width: 100%;">
+      <mat-label>Note</mat-label>
+      <textarea matInput placeholder="Ex. Client has been faking orders..." [value]="note" [(ngModel)]="note" [disabled]="!editing" [maxLength]="500"></textarea>
+    </mat-form-field>
+  </div>
+  <div class="flex-row-buttons">
+    <div>
+      <button mat-raised-button *ngIf="!editing" color="primary" (click)="edit()">Edit</button>
+      <button mat-raised-button  *ngIf="editing" color="primary" (click)="save()">Save</button>
+    </div>
+    <div >
+      <button mat-raised-button color="warn" (click)="closeDialog()">Close</button>
+    </div>
+  </div>
+</div>

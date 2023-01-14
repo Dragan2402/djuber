@@ -8,7 +8,9 @@ import com.djuber.djuberbackend.Controllers.Admin.Requests.UpdateAdminRequest;
 import com.djuber.djuberbackend.Controllers.Client.Requests.UpdateClientRequest;
 import com.djuber.djuberbackend.Controllers._Common.Requests.IdRequest;
 import com.djuber.djuberbackend.Controllers._Common.Requests.ImageUpdateRequest;
+import com.djuber.djuberbackend.Controllers._Common.Requests.NoteUpdateRequest;
 import com.djuber.djuberbackend.Controllers._Common.Responses.ImageResponse;
+import com.djuber.djuberbackend.Controllers._Common.Responses.NoteResponse;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
@@ -33,12 +35,18 @@ public class ClientController {
 
     @GetMapping
     @PreAuthorize("hasAnyRole('ADMIN')")
-    public ResponseEntity<Page<ClientResult>> getAdmins(Pageable pageable, @RequestParam @Nullable String filter) {
+    public ResponseEntity<Page<ClientResult>> getClients(Pageable pageable, @RequestParam @Nullable String filter) {
         if (filter == null) {
             return new ResponseEntity<>(clientService.readPageable(pageable), HttpStatus.OK);
         } else {
             return new ResponseEntity<>(clientService.readPageableWithFilter(pageable, filter), HttpStatus.OK);
         }
+    }
+
+    @GetMapping(value = "getClientNote")
+    @PreAuthorize("hasAnyRole('ADMIN')")
+    public ResponseEntity<NoteResponse> getClientNote(@RequestParam long id) {
+        return new ResponseEntity<>(new NoteResponse(clientService.getClientNote(id)),HttpStatus.OK);
     }
 
     @PutMapping(value = "blockClient")
@@ -51,6 +59,12 @@ public class ClientController {
     @PreAuthorize("hasAnyRole('ADMIN')")
     public void unblockClient(@RequestBody @Valid IdRequest request){
         clientService.unblockClient(request.getId());
+    }
+
+    @PutMapping(value = "updateClientNote")
+    @PreAuthorize("hasAnyRole('ADMIN')")
+    public void updateClientNote(@RequestBody @Valid NoteUpdateRequest request){
+        clientService.updateClientNote(request.getId(), request.getNote());
     }
 
     @GetMapping(value = "loggedClient")

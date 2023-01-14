@@ -5,6 +5,7 @@ export interface Client{
   firstName: string,
   lastName: string,
   city: string,
-  phoneNumber: string
-  isBlocked:boolean,
+  phoneNumber: string,
+  note:string,
+  blocked:boolean,
 }

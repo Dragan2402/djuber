@@ -99,6 +99,25 @@ public class ClientService implements IClientService {
     }
 
     @Override
+    public void updateClientNote(long clientId, String note) {
+        Client client = clientRepository.findById(clientId).orElse(null);
+        if(client == null){
+            throw new UserNotFoundException("Client with provided id does not exist.");
+        }
+        client.setNote(note);
+        clientRepository.save(client);
+    }
+
+    @Override
+    public String getClientNote(long clientId) {
+        Client client = clientRepository.findById(clientId).orElse(null);
+        if(client == null){
+            throw new UserNotFoundException("Client with provided id does not exist.");
+        }
+        return client.getNote();
+    }
+
+    @Override
     public Page<ClientResult> readPageable(Pageable pageable) {
         return clientMapper.map(clientRepository.findAll(pageable));
     }

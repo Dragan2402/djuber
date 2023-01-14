@@ -70,6 +70,9 @@ public class Driver {
     @Column(name = "inRide", nullable = false)
     Boolean inRide;
 
+    @Column(name = "note", length = 500)
+    String note;
+
     @Column(name = "deleted", nullable = false)
     Boolean deleted;
 }

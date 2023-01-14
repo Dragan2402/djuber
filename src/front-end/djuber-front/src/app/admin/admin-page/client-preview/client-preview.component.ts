@@ -1,8 +1,10 @@
 import { Component, OnInit, ViewChild } from '@angular/core';
+import { MatDialog, MatDialogConfig } from '@angular/material/dialog';
 import { MatPaginator, PageEvent } from '@angular/material/paginator';
 import { MatSort } from '@angular/material/sort';
 import { Client } from 'src/app/client/client';
 import { AdminService } from '../../admin.service';
+import { NoteModalComponent } from '../note-modal/note-modal.component';
 
 @Component({
   selector: 'djuber-client-preview',
@@ -10,7 +12,7 @@ import { AdminService } from '../../admin.service';
   styleUrls: ['./client-preview.component.css']
 })
 export class ClientPreviewComponent implements OnInit {
-  displayedColumns: string[] = ['id', 'firstName', 'lastName', 'email', 'city', 'block'];
+  displayedColumns: string[] = ['id', 'firstName', 'lastName', 'email', 'city', 'note', 'block'];
 
   length = 10;
   pageSize = 10;
@@ -25,7 +27,7 @@ export class ClientPreviewComponent implements OnInit {
   @ViewChild(MatPaginator) paginator: MatPaginator;
   @ViewChild(MatSort) sort: MatSort;
 
-  constructor(private adminService : AdminService) { }
+  constructor(private adminService : AdminService, public matDialog: MatDialog) { }
 
   ngAfterViewInit(): void {
 
@@ -67,7 +69,7 @@ export class ClientPreviewComponent implements OnInit {
       error: (e) => console.log(e),
       complete: () =>{
         let client = this.clients.find(client => client.id===id);
-        client.isBlocked = true;
+        client.blocked = true;
         this.clients.map(obj => obj.id === id ? client : obj);
       }
     });
@@ -78,7 +80,7 @@ export class ClientPreviewComponent implements OnInit {
       error: (e) => console.log(e),
       complete: () =>{
         let client = this.clients.find(client => client.id===id);
-        client.isBlocked = false;
+        client.blocked = false;
         this.clients.map(obj => obj.id === id ? client : obj);
       }
     });
@@ -99,6 +101,18 @@ export class ClientPreviewComponent implements OnInit {
 
       },
       error: (e) => console.error(e)})
+  }
+
+  toggleNote(client:Client){
+    const dialogConfig = new MatDialogConfig();
+    // The user can't close the dialog by clicking outside its body
+    dialogConfig.disableClose = false;
+    dialogConfig.id = "author-form-modal";
+    dialogConfig.data = {id:client.id, isClient:true};
+    dialogConfig.height = "55%";
+    dialogConfig.width = "50%";
+    // https://material.angular.io/components/dialog/overview
+    const modalDialog = this.matDialog.open(NoteModalComponent, dialogConfig);
   }
 
   ngOnInit(): void {

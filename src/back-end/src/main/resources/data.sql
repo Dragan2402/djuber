@@ -36,14 +36,14 @@ INSERT INTO admin (id, identity_id, first_name, last_name, city, phone_number, d
 VALUES (200000, 200000, 'Dimitrije', 'Petrov', 'Novi Sad', '067123456',  false);
 
 --CLIENTS
-INSERT INTO client (id, identity_id, first_name, last_name, city, phone_number, verified, signing_type, blocked, in_ride,
+INSERT INTO client (id, identity_id, first_name, last_name, city, phone_number, verified, signing_type, blocked, in_ride, note,
                     deleted)
-VALUES (100000, 300000, 'Pero', 'Peric', 'Novi Sad', '0691777778', true, 0, false , false,
+VALUES (100000, 300000, 'Pero', 'Peric', 'Novi Sad', '0691777778', true, 0, false , false, 'Client has been reporting drivers without valid reason.',
         false);
 
 INSERT INTO client (id, identity_id, first_name, last_name, city, phone_number, verified, signing_type, blocked, in_ride,
                     deleted)
-VALUES (200000, 400000, 'Jovo', 'Jovic', 'Novi Sad', '067123423', true , 0, false , false,
+VALUES (200000, 400000, 'Jovo', 'Jovic', 'Novi Sad', '067123423', true , 0, true , false,
         false);
 
 --CARS

@@ -39,14 +39,21 @@
         <td mat-cell *matCellDef="let client">{{client.city}}</td>
       </ng-container>
 
+      <!-- Note -->
+      <ng-container matColumnDef="note">
+        <th mat-header-cell *matHeaderCellDef></th>
+        <td mat-cell *matCellDef="let client">
+          <button type="button" style="width: 90px;"  mat-raised-button color="primary" (click)="toggleNote(client)">Note</button>
+        </td>
+      </ng-container>
+
       <ng-container matColumnDef="block">
         <th mat-header-cell *matHeaderCellDef>Un/block</th>
         <td mat-cell *matCellDef="let client">
-
-            <div  *ngIf="!client.isBlocked">
+            <div  *ngIf="!client.blocked">
               <button type="button" style="width: 90px;"  mat-raised-button color="primary" (click)="block(client.id)">Block</button>
             </div>
-            <div *ngIf="client.isBlocked">
+            <div *ngIf="client.blocked">
               <button type="button" style="width: 90px;" mat-raised-button color="warn" (click)="unblock(client.id)">Unblock</button>
             </div>
         </td>

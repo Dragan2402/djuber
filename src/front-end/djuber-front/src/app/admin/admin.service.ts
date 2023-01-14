@@ -62,5 +62,19 @@ export class AdminService {
     return this.http.put("/api/client/blockClient",{"id":id});
   }
 
+  public updateClientNote(id:number, note:string){
+    return this.http.put("/api/client/updateClientNote", {id:id, note:note});
+  }
 
+  public getClientNote(id:number){
+    return this.http.get("/api/client/getClientNote?id="+id);
+  }
+
+  public updateDriverNote(id:number, note:string){
+    return this.http.put("/api/driver/updateDriverNote", {id:id, note:note});
+  }
+
+  public getDriverNote(id:number){
+    return this.http.get("/api/driver/getDriverNote?id="+id);
+  }
 }

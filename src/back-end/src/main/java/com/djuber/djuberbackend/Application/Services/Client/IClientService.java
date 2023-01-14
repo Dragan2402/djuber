@@ -21,4 +21,8 @@ public interface IClientService {
     void blockClient(long clientId);
 
     void unblockClient(long clientId);
+
+    void updateClientNote(long clientId, String note);
+
+    String getClientNote(long clientId);
 }

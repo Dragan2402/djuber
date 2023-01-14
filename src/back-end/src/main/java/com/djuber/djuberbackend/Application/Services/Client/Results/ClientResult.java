@@ -25,6 +25,10 @@ public class ClientResult {
 
     String phoneNumber;
 
+    String note;
+
+    boolean blocked;
+
     public ClientResult(@NotNull Client client){
         this.id = client.getId();
         this.identityId = client.getIdentity().getId();
@@ -33,5 +37,7 @@ public class ClientResult {
         this.lastName = client.getLastName();
         this.city = client.getCity();
         this.phoneNumber = client.getPhoneNumber();
+        this.note = client.getNote();
+        this.blocked = client.getBlocked();
     }
 }
