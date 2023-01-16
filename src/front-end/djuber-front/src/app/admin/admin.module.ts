@@ -25,6 +25,10 @@ import {MatPaginatorModule} from '@angular/material/paginator';
 import { ClientPreviewComponent } from './admin-page/client-preview/client-preview.component';
 import { NoteModalComponent } from './admin-page/note-modal/note-modal.component';
 import {MatDialogModule} from '@angular/material/dialog';
+import { AdminLiveChatComponent } from './admin-page/admin-live-chat/admin-live-chat.component';
+import {MatCardModule} from '@angular/material/card';
+import {MatBadgeModule} from '@angular/material/badge';
+
 
 @NgModule({
   declarations: [
@@ -33,7 +37,8 @@ import {MatDialogModule} from '@angular/material/dialog';
     RegisterDriverComponent,
     DriversPreviewComponent,
     ClientPreviewComponent,
-    NoteModalComponent
+    NoteModalComponent,
+    AdminLiveChatComponent
   ],
   providers: [AdminService],
   imports: [
@@ -55,7 +60,9 @@ import {MatDialogModule} from '@angular/material/dialog';
     MatCheckboxModule,
     MatTableModule,
     MatPaginatorModule,
-    MatDialogModule
+    MatDialogModule,
+    MatCardModule,
+    MatBadgeModule
   ]
 })
 export class AdminModule { }

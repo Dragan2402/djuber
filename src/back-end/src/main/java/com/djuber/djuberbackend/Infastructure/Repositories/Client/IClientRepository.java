@@ -6,7 +6,9 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
+import org.springframework.stereotype.Repository;
 
+@Repository
 public interface IClientRepository extends JpaRepository<Client, Long> {
 
     @Query("select c from Client c where c.identity.id = ?1 and c.deleted=false")

@@ -18,6 +18,15 @@
 
 }
 
+:host ::ng-deep .mat-badge{
+  position: relative;
+}
+
+:host ::ng-deep .mat-badge-medium.mat-badge-above .mat-badge-content{
+  right: -22px;
+  top: -11px;
+}
+
 .options-content{
   display: flex;
   width: 200px;

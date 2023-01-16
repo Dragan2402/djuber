@@ -1,5 +1,6 @@
 import { NgModule } from '@angular/core';
 import { RouterModule, Routes } from '@angular/router';
+import { AdminLiveChatComponent } from './admin-page/admin-live-chat/admin-live-chat.component';
 import { AdminPageComponent } from './admin-page/admin-page.component';
 import { AdminProfileComponent } from './admin-page/admin-profile/admin-profile.component';
 import { ClientPreviewComponent } from './admin-page/client-preview/client-preview.component';
@@ -12,6 +13,7 @@ const routes: Routes = [
     {path:"registerDriver", component:RegisterDriverComponent, outlet:"ao", data: {role:"ADMIN"}},
     {path:"previewDrivers", component:DriversPreviewComponent, outlet:"ao", data: {role:"ADMIN"}},
     {path:"previewClients", component:ClientPreviewComponent, outlet:"ao", data: {role:"ADMIN"}},
+    {path:"customerSupport", component:AdminLiveChatComponent, outlet:"ao", data: {role:"ADMIN"}},
 ]}
 ];
 

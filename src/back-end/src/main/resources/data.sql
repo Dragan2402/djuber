@@ -1,7 +1,10 @@
 --ROLES
-INSERT INTO role (id, name, deleted) VALUES (1, 'ROLE_ADMIN', false);
-INSERT INTO role (id, name, deleted) VALUES (2, 'ROLE_CLIENT', false);
-INSERT INTO role (id, name, deleted) VALUES (3, 'ROLE_DRIVER', false);
+INSERT INTO role (id, name, deleted)
+VALUES (1, 'ROLE_ADMIN', false);
+INSERT INTO role (id, name, deleted)
+VALUES (2, 'ROLE_CLIENT', false);
+INSERT INTO role (id, name, deleted)
+VALUES (3, 'ROLE_DRIVER', false);
 
 --IDENTITIES
 INSERT INTO identity (id, email, user_type, password, deleted)
@@ -9,41 +12,50 @@ VALUES (100000, 'asi@maildrop.cc', 0, '$2a$12$20EPQtCU8q4D.7/nRReWae5XaEJV0tOGRH
 INSERT INTO identity (id, email, user_type, password, deleted)
 VALUES (200000, 'dmitar@maildrop.cc', 0, '$2a$12$UGtCSbOYCDC1WHKJl.u.2uqufpBSmFApXpHMM8s2HlyTxUnlsSpoC', false);
 
-INSERT INTO identity_roles(identity_id, roles_id) VALUES (100000,1);
-INSERT INTO identity_roles(identity_id, roles_id) VALUES (200000,1);
+INSERT INTO identity_roles(identity_id, roles_id)
+VALUES (100000, 1);
+INSERT INTO identity_roles(identity_id, roles_id)
+VALUES (200000, 1);
 
 INSERT INTO identity (id, email, user_type, password, deleted)
 VALUES (300000, 'pero@maildrop.cc', 1, '$2a$12$Nd.axxCA/EUTgVpE6JU7yu1m0FbazoNKQSlh2p.b1dy.W1EfUzEwi', false);
 INSERT INTO identity (id, email, user_type, password, deleted)
 VALUES (400000, 'jovo@maildrop.cc', 1, '$2a$12$pW0AC2EKW0sqMgERfj3ojuuD67cSKLwClksdhEOzZrIvdu8JWvqVW', false);
 
-INSERT INTO identity_roles(identity_id, roles_id) VALUES (300000,2);
-INSERT INTO identity_roles(identity_id, roles_id) VALUES (400000,2);
+INSERT INTO identity_roles(identity_id, roles_id)
+VALUES (300000, 2);
+INSERT INTO identity_roles(identity_id, roles_id)
+VALUES (400000, 2);
 
 INSERT INTO identity (id, email, user_type, password, deleted)
 VALUES (500000, 'haso@maildrop.cc', 2, '$2a$12$B0M7RM24WZYet.lqGrIVWOGUKEaNCFgTAcT95qMIeua5/M0Tnzc6y', false);
 INSERT INTO identity (id, email, user_type, password, deleted)
 VALUES (600000, 'mujo@maildrop.cc', 2, '$2a$12$bP24xyfnbEhigBAMI0cKOeJ.hng3f4kBYx/puFYeXzStIrSo5m/JK', false);
 
-INSERT INTO identity_roles(identity_id, roles_id) VALUES (500000,3);
-INSERT INTO identity_roles(identity_id, roles_id) VALUES (600000,3);
+INSERT INTO identity_roles(identity_id, roles_id)
+VALUES (500000, 3);
+INSERT INTO identity_roles(identity_id, roles_id)
+VALUES (600000, 3);
 
 --ADMINS
-INSERT INTO admin (id, identity_id, first_name, last_name, city, phone_number,  deleted)
-VALUES (100000, 100000, 'Andrej', 'Culjak', 'Novi Sad', '0677777778',  false);
+INSERT INTO admin (id, identity_id, first_name, last_name, city, phone_number, deleted)
+VALUES (100000, 100000, 'Andrej', 'Culjak', 'Novi Sad', '0677777778', false);
 
 INSERT INTO admin (id, identity_id, first_name, last_name, city, phone_number, deleted)
-VALUES (200000, 200000, 'Dimitrije', 'Petrov', 'Novi Sad', '067123456',  false);
+VALUES (200000, 200000, 'Dimitrije', 'Petrov', 'Novi Sad', '067123456', false);
 
 --CLIENTS
-INSERT INTO client (id, identity_id, first_name, last_name, city, phone_number, verified, signing_type, blocked, in_ride, note,
+INSERT INTO client (id, identity_id, first_name, last_name, city, phone_number, verified, signing_type, blocked,
+                    in_ride, note,
                     deleted)
-VALUES (100000, 300000, 'Pero', 'Peric', 'Novi Sad', '0691777778', true, 0, false , false, 'Client has been reporting drivers without valid reason.',
+VALUES (100000, 300000, 'Pero', 'Peric', 'Novi Sad', '0691777778', true, 0, false, false,
+        'Client has been reporting drivers without valid reason.',
         false);
 
-INSERT INTO client (id, identity_id, first_name, last_name, city, phone_number, verified, signing_type, blocked, in_ride,
+INSERT INTO client (id, identity_id, first_name, last_name, city, phone_number, verified, signing_type, blocked,
+                    in_ride,
                     deleted)
-VALUES (200000, 400000, 'Jovo', 'Jovic', 'Novi Sad', '067123423', true , 0, true , false,
+VALUES (200000, 400000, 'Jovo', 'Jovic', 'Novi Sad', '067123423', true, 0, true, false,
         false);
 
 --CARS
@@ -60,7 +72,7 @@ VALUES (100000, 'pets');
 INSERT INTO driver (id, identity_id, first_name, last_name, city, phone_number, active, car_id,
                     duration_active, blocked, in_ride,
                     deleted)
-VALUES (100000, 500000, 'Haso', 'Hasic', 'Novi Sad', '0691777778', true, 100000, 0, true ,
+VALUES (100000, 500000, 'Haso', 'Hasic', 'Novi Sad', '0691777778', true, 100000, 0, true,
         false, false);
 
 INSERT INTO driver (id, identity_id, first_name, last_name, city, phone_number, active, car_id,
@@ -108,3 +120,21 @@ VALUES (100000, 200000);
 --REVIEWS
 INSERT INTO review (id, driver_id, client_id, ride_id, rating, comment, deleted)
 VALUES (100000, 100000, 100000, 100000, 4.8, 'Fin i kulturan vozac', false);
+
+--CHATS
+INSERT INTO chat (id, subject_identity_id, deleted)
+VALUES (100000, 400000, false);
+INSERT INTO chat (id, subject_identity_id, deleted)
+VALUES (200000, 500000, false);
+INSERT INTO chat (id, subject_identity_id, deleted)
+VALUES (300000, 600000, false);
+
+--MESSAGES
+INSERT INTO message (id, chat_id, sender_name, content, time, from_admin, deleted)
+VALUES (100000, 100000, 'Jovo Jovic', 'Pozdrav admine imam problem', CURRENT_TIMESTAMP, false, false);
+INSERT INTO message (id, chat_id, sender_name, content, time, from_admin, deleted)
+VALUES (300000, 200000, 'Haso Hasic', 'Pozdrav admine imam dvjesta problem', CURRENT_TIMESTAMP,false , false);
+INSERT INTO message (id, chat_id, sender_name, content, time,from_admin, deleted)
+VALUES (400000, 300000, 'Mujo Mujic', 'Pozdrav admine imam trista problem', CURRENT_TIMESTAMP, false,false);
+INSERT INTO message (id, chat_id, sender_name, content, time, from_admin, deleted)
+VALUES (200000, 100000, 'Andrej Culjak', 'Kazite gospodine', CURRENT_TIMESTAMP, true, false);

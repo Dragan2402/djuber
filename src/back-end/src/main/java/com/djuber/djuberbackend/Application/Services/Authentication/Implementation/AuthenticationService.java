@@ -6,6 +6,7 @@ import com.djuber.djuberbackend.Controllers.Authentication.Request.PasswordReset
 import com.djuber.djuberbackend.Controllers.Authentication.Request.SignUpRequest;
 import com.djuber.djuberbackend.Controllers.Authentication.Request.SocialUserRequest;
 import com.djuber.djuberbackend.Controllers.Authentication.Responses.LoggedUserInfoResponse;
+import com.djuber.djuberbackend.Controllers._Common.Responses.IdResponse;
 import com.djuber.djuberbackend.Domain.Admin.Admin;
 import com.djuber.djuberbackend.Domain.Authentication.Identity;
 import com.djuber.djuberbackend.Domain.Authentication.Role;
@@ -268,6 +269,15 @@ public class AuthenticationService implements IAuthenticationService, UserDetail
         }
         identity.setPassword(passwordEncoder.encode(request.getPassword()));
         identityRepository.save(identity);
+    }
+
+    @Override
+    public Long getLoggedUserIdentityId(String email) {
+        Identity identity = identityRepository.findByEmail(email);
+        if(identity == null){
+            throw new UserNotFoundException("User with that mail does not exist");
+        }
+        return identity.getId();
     }
 
     private ClientSigningType getClientSigningType(String type){

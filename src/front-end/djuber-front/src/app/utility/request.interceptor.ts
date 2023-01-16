@@ -35,26 +35,37 @@ export class RequestInterceptor implements HttpInterceptor {
       return this.handleAuthenticationRequests(request, next);
     }
     if(request.url.includes("googleusercontent")){
-      console.log(request);
       return next.handle(request);
+    }
+    if(request.url.includes("getMessages")){
+      return this.handleMessagesRequests(request, next);
     }
     return next.handle(request);
   }
 
   private handleAdminRequests(request: HttpRequest<unknown>, next: HttpHandler): Observable<HttpEvent<unknown>> {
-    if(request.method==='GET' || request.method==="PUT" || request.method==='POST'){
-      this.authenticationService.refreshToken();
+    this.authenticationService.refreshToken();
       request = request.clone({
         setHeaders: {
           Authorization: `Bearer ${this.localStorage.getItem("jwt")}`
         }
       });
-      return next.handle(request);
-    }
     return next.handle(request);
+
   }
 
   private handleClientRequests(request: HttpRequest<unknown>, next: HttpHandler): Observable<HttpEvent<unknown>> {
+
+    this.authenticationService.refreshToken();
+    request = request.clone({
+        setHeaders: {
+          Authorization: `Bearer ${this.localStorage.getItem("jwt")}`
+        }
+      });
+    return next.handle(request);
+  }
+
+  private handleMessagesRequests(request: HttpRequest<unknown>, next: HttpHandler): Observable<HttpEvent<unknown>> {
 
     this.authenticationService.refreshToken();
     request = request.clone({

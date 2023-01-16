@@ -31,6 +31,16 @@ public class GlobalExceptionHandler {
         return new ResponseEntity<>(getErrorObject(ex.getMessage(), HttpStatus.BAD_REQUEST), HttpStatus.BAD_REQUEST);
     }
 
+    @ExceptionHandler({ChatNotFoundException.class})
+    public ResponseEntity<ErrorObject> handleChatNotFoundException(ChatNotFoundException ex, WebRequest request){
+        return new ResponseEntity<>(getErrorObject(ex.getMessage(), HttpStatus.NOT_FOUND), HttpStatus.NOT_FOUND);
+    }
+
+    @ExceptionHandler({AdminCreatingChatException.class})
+    public ResponseEntity<ErrorObject> handleAdminCreatingChatException(AdminCreatingChatException ex, WebRequest request){
+        return new ResponseEntity<>(getErrorObject(ex.getMessage(), HttpStatus.BAD_REQUEST), HttpStatus.BAD_REQUEST);
+    }
+
     @ExceptionHandler({CarWithLicensePlateAlreadyExistsException.class})
     public ResponseEntity<ErrorObject> handleCarWithLicensePlateAlreadyExistsException(CarWithLicensePlateAlreadyExistsException ex, WebRequest request){
         return new ResponseEntity<>(getErrorObject(ex.getMessage(), HttpStatus.BAD_REQUEST), HttpStatus.BAD_REQUEST);
@@ -80,12 +90,13 @@ public class GlobalExceptionHandler {
         return new ResponseEntity<>(getErrorObject(ex.getMessage(), HttpStatus.EXPECTATION_FAILED), HttpStatus.EXPECTATION_FAILED);
     }
 
+    @ExceptionHandler({HttpMessageNotReadableException.class})
     public ResponseEntity<ErrorObject> handleHttpMessageNotReadableException(HttpMessageNotReadableException ex, WebRequest request){
         return new ResponseEntity<>(getErrorObject(ex.getMessage(), HttpStatus.EXPECTATION_FAILED), HttpStatus.EXPECTATION_FAILED);
     }
 
     @ResponseStatus(HttpStatus.BAD_REQUEST)
-    @ExceptionHandler({MethodArgumentNotValidException.class,UnexpectedTypeException.class})
+    @ExceptionHandler({MethodArgumentNotValidException.class})
     public ResponseEntity<List<ErrorObject>> handleValidationExceptions(
             MethodArgumentNotValidException ex) {
 
@@ -94,6 +105,14 @@ public class GlobalExceptionHandler {
             errors.add(getErrorObject(error.getDefaultMessage(), HttpStatus.BAD_REQUEST));
         });
         return new ResponseEntity<>(errors, HttpStatus.BAD_REQUEST);
+    }
+
+    @ResponseStatus(HttpStatus.BAD_REQUEST)
+    @ExceptionHandler({UnexpectedTypeException.class})
+    public ResponseEntity<ErrorObject> handleUnexpectedTypeException(
+            UnexpectedTypeException ex) {
+
+        return new ResponseEntity<>(getErrorObject(ex.getMessage(), HttpStatus.GATEWAY_TIMEOUT), HttpStatus.GATEWAY_TIMEOUT);
     }
 
     private static ErrorObject getErrorObject(String message, HttpStatus status){

@@ -25,14 +25,12 @@ export class HeaderBarComponent implements OnInit {
    }
 
   ngOnInit(): void {
-    if(this.logged){
-
-    }
   }
 
   logout():void{
     this.authenticationService.logout();
   }
+
 
   navigateToProfile(){
     const role = this.authenticationService.getLoggedUserRole();

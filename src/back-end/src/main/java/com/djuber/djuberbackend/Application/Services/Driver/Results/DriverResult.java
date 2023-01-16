@@ -1,6 +1,5 @@
 package com.djuber.djuberbackend.Application.Services.Driver.Results;
 
-import com.djuber.djuberbackend.Domain.Client.Client;
 import com.djuber.djuberbackend.Domain.Driver.CarType;
 import com.djuber.djuberbackend.Domain.Driver.Driver;
 import lombok.AllArgsConstructor;

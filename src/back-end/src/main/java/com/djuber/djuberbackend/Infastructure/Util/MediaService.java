@@ -86,8 +86,7 @@ public class MediaService {
             byte[] data = new byte[(int) file.length()];
             fis.read(data);
             fis.close();
-            String base64 = Base64.getEncoder().encodeToString(data);
-            return base64;
+            return Base64.getEncoder().encodeToString(data);
         } catch (IOException e) {
             e.printStackTrace();
             return null;

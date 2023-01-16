@@ -4,6 +4,7 @@ import com.djuber.djuberbackend.Application.Services.Authentication.IAuthenticat
 import com.djuber.djuberbackend.Controllers.Authentication.Request.*;
 import com.djuber.djuberbackend.Controllers.Authentication.Responses.LoggedUserInfoResponse;
 import com.djuber.djuberbackend.Controllers.Authentication.Responses.LoginResponse;
+import com.djuber.djuberbackend.Controllers._Common.Responses.IdResponse;
 import com.djuber.djuberbackend.Infastructure.Security.JWTGenerator;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
@@ -82,5 +83,9 @@ public class AuthenticationController {
         authenticationService.sendPasswordResetToken(email);
     }
 
+    @GetMapping(value = "getLoggedUserIdentityId")
+    public ResponseEntity<IdResponse> getLoggedUserIdentityId(Principal user){
+        return new ResponseEntity<>(new IdResponse(authenticationService.getLoggedUserIdentityId(user.getName())), HttpStatus.OK);
+    }
 
 }

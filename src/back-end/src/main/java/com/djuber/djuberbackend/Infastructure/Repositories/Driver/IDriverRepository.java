@@ -5,7 +5,9 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
+import org.springframework.stereotype.Repository;
 
+@Repository
 public interface IDriverRepository extends JpaRepository<Driver, Long> {
 
     @Query("select d from Driver d where d.identity.id = ?1 and d.deleted = false")

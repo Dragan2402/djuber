@@ -142,6 +142,10 @@ export class AuthenticationService {
     return {email: this.localStorage.getItem("user-email"), firstName: this.localStorage.getItem("user-first-name"), lastName: this.localStorage.getItem("user-last-name"), picture: this.localStorage.getItem("user-picture")} as LoggedUser;
   }
 
+  public getLoggedUserIdentityId(){
+    return this.http.get("/api/auth/getLoggedUserIdentityId");
+  }
+
 
   private async handleError(error : HttpErrorResponse){
     this.loading$.next(true);

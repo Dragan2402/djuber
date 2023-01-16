@@ -18,6 +18,12 @@
           Preview clients
         </button>
         <mat-divider></mat-divider>
+        <button (click)="toggleCustomerSupport()" mat-menu-item>
+          <span matBadgeOverlap="false"  [matBadge]="numberOfActiveChats" matBadgeColor="warn">
+            Customer live support
+          </span>
+        </button>
+        <mat-divider></mat-divider>
         <button (click)="changePassword()" mat-menu-item>
           Change password
         </button>

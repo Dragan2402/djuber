@@ -1,1 +1,18 @@
-<span>DMITAR UBACUJE MAPU</span>
+<div class="main-div">
+  <div class="chat-support" *ngIf="canUserContactLiveChat()">
+    <div *ngIf="!this.toggledLiveChat">
+      <button mat-fab color="primary" aria-label="Toggle live chat." (click)="toggleLiveChat()">
+        <mat-icon>contact_support</mat-icon>
+      </button>
+    </div>
+    <div *ngIf="this.toggledLiveChat" class="chat-div">
+      <div style="margin-left: auto;margin-bottom: 2%;margin-right: 1%;">
+          <mat-icon (click)="close()" style="cursor: pointer;">close</mat-icon>
+      </div>
+      <djuber-user-live-chat *ngIf="this.toggledLiveChat"></djuber-user-live-chat>
+    </div>
+  </div>
+  <div class="map-div">
+    MAPA
+  </div>
+</div>

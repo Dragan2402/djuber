@@ -1,5 +1,6 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
+import { Chat } from '../_common/model/chat';
 import { Admin } from './admin';
 import { AdminModule } from './admin.module';
 import { DriverRegistrationRequest } from './driver.registration.request';
@@ -76,5 +77,17 @@ export class AdminService {
 
   public getDriverNote(id:number){
     return this.http.get("/api/driver/getDriverNote?id="+id);
+  }
+
+  public getChats(){
+    return this.http.get<Chat[]>("/api/admin/chats");
+  }
+
+  public deleteChat(id:number){
+    return this.http.delete("/api/admin/deleteChat?chatID="+id);
+  }
+
+  public getNumberOfChats(){
+    return this.http.get("/api/admin/numberOfChats");
   }
 }

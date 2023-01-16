@@ -16,6 +16,14 @@ import {MatMenuModule} from '@angular/material/menu';
 import {MatSnackBarModule, MAT_SNACK_BAR_DEFAULT_OPTIONS} from '@angular/material/snack-bar';
 import { FacebookLoginProvider, GoogleLoginProvider, SocialAuthServiceConfig } from '@abacritt/angularx-social-login';
 import { SnackbarComponent } from './snackbar/snackbar.component';
+import { LiveChatComponent } from './live-chat/live-chat.component';
+import { UserLiveChatComponent } from './home-page/user-live-chat/user-live-chat.component';
+import {MatButtonModule} from '@angular/material/button';
+import {MatCardModule} from '@angular/material/card';
+import {FormsModule, ReactiveFormsModule} from '@angular/forms';
+import {MatFormFieldModule} from '@angular/material/form-field';
+import { MatInputModule } from '@angular/material/input';
+import {MatDividerModule} from '@angular/material/divider';
 
 @NgModule({
   declarations: [
@@ -23,7 +31,9 @@ import { SnackbarComponent } from './snackbar/snackbar.component';
     HomePageComponent,
     NotFoundComponent,
     HeaderBarComponent,
-    SnackbarComponent
+    SnackbarComponent,
+    LiveChatComponent,
+    UserLiveChatComponent
   ],
   imports: [
     BrowserModule,
@@ -33,7 +43,14 @@ import { SnackbarComponent } from './snackbar/snackbar.component';
     MatIconModule,
     HttpClientModule,
     MatMenuModule,
-    MatSnackBarModule
+    MatSnackBarModule,
+    MatButtonModule,
+    MatCardModule,
+    FormsModule,
+    ReactiveFormsModule,
+    MatFormFieldModule,
+    MatDividerModule,
+    MatInputModule
   ],
   providers: [
     { provide: ErrorHandler, useClass: GlobalErroHandler },

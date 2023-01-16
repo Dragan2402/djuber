@@ -1,6 +1,9 @@
-import {MediaMatcher} from '@angular/cdk/layout';
-import {ChangeDetectorRef, Component,OnInit } from '@angular/core';
+import { Component,OnInit } from '@angular/core';
 import { Router } from '@angular/router';
+import * as Stomp from 'stompjs';
+import * as SockJS from 'sockjs-client';
+import { AdminService } from '../admin.service';
+
 
 @Component({
   selector: 'djuber-admin-page',
@@ -11,16 +14,29 @@ export class AdminPageComponent implements  OnInit {
 
   page:number=1;
   directionToToggle:string='>>';
+  numberOfActiveChats:number;
+
+  url = 'http://localhost:8080'
+
+  socket?: WebSocket;
+  stompClient?: Stomp.Client;
 
 
-
-  ngOnInit(): void {
-    this.router.navigateByUrl('admin');
-    this.router.navigate(['admin',{outlets: { ao:['profile']} }],{ skipLocationChange: true });
+  constructor(private router : Router, private adminService:AdminService) {
+    this.numberOfActiveChats=0;
   }
 
-  constructor(private router : Router) {
+  ngOnInit(): void {
+    this.adminService.getNumberOfChats()
+      .subscribe({
+        next:(response)=>{
+          this.numberOfActiveChats = response["count"];
+          this.connectToChat();
+        }
+      });
 
+    this.router.navigateByUrl('admin');
+    this.router.navigate(['admin',{outlets: { ao:['profile']} }],{ skipLocationChange: true });
   }
 
   toggleRegisterNewDriverPage(){
@@ -36,6 +52,11 @@ export class AdminPageComponent implements  OnInit {
   toggleClientsPreview(){
     this.router.navigateByUrl('admin');
     this.router.navigate(['admin',{outlets: { ao:['previewClients']} }],{ skipLocationChange: true });
+  }
+
+  toggleCustomerSupport(){
+    this.router.navigateByUrl('admin');
+    this.router.navigate(['admin',{outlets: { ao:['customerSupport']} }],{ skipLocationChange: true });
   }
 
   changePassword(){
@@ -55,6 +76,36 @@ export class AdminPageComponent implements  OnInit {
     }
   }
 
+  loadNumberOfChats(){
+    this.adminService.getNumberOfChats()
+      .subscribe({
+        next:(response)=>{
+          this.numberOfActiveChats = response["count"] as number;
+          this.toggleChange();
+          this.toggleChange();
+        }
+      });
+  }
+
+  connectToChat() {
+    this.loadNumberOfChats();
+    this.socket = new SockJS(this.url + '/chat',{
+        transports: ['xhr-streaming']
+    });
+    this.stompClient = Stomp.over(this.socket);
+
+    this.stompClient.connect({}, (frame) => {
+        //func = what to do when connection is established
+        this.stompClient!.subscribe(
+          '/topic/messages/**' ,
+          () => {
+            //func = what to do when client receives data (messages)
+            this.loadNumberOfChats();
+          }
+        );
+      });
+
+  }
 
 }
 

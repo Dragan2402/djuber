@@ -3,9 +3,12 @@ package com.djuber.djuberbackend.Controllers.Admin;
 import com.djuber.djuberbackend.Application.Services.Admin.IAdminService;
 import com.djuber.djuberbackend.Application.Services.Admin.Results.AdminResult;
 import com.djuber.djuberbackend.Application.Services.Driver.IDriverService;
+import com.djuber.djuberbackend.Application.Services.LiveChat.ILiveChatService;
 import com.djuber.djuberbackend.Controllers.Admin.Requests.RegisterDriverRequest;
 import com.djuber.djuberbackend.Controllers.Admin.Requests.UpdateAdminRequest;
 import com.djuber.djuberbackend.Controllers._Common.Requests.ImageUpdateRequest;
+import com.djuber.djuberbackend.Controllers._Common.Responses.ChatResponse;
+import com.djuber.djuberbackend.Controllers._Common.Responses.CountResponse;
 import com.djuber.djuberbackend.Controllers._Common.Responses.IdResponse;
 import com.djuber.djuberbackend.Controllers._Common.Responses.ImageResponse;
 import io.swagger.v3.oas.annotations.tags.Tag;
@@ -19,6 +22,7 @@ import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
 import java.security.Principal;
+import java.util.List;
 
 
 @Tag(name="Admin API",description = "Provides Admin CRUD end-points.")
@@ -31,6 +35,8 @@ public class AdminController {
     private final IAdminService adminService;
 
     private final IDriverService driverService;
+
+    private final ILiveChatService liveChatService;
 
     @GetMapping
     @PreAuthorize("hasAnyRole('ADMIN')")
@@ -66,5 +72,23 @@ public class AdminController {
     @PreAuthorize("hasAnyRole('ADMIN')")
     public ResponseEntity<IdResponse> registerDriver(@RequestBody @Valid RegisterDriverRequest request){
         return new ResponseEntity<>(new IdResponse(this.driverService.registerNewDriver(request)),HttpStatus.CREATED);
+    }
+
+    @GetMapping(value = "chats")
+    @PreAuthorize("hasAnyRole('ADMIN')")
+    public ResponseEntity<List<ChatResponse>> getChats(){
+        return new ResponseEntity<>(liveChatService.getChats(), HttpStatus.OK);
+    }
+
+    @GetMapping(value = "numberOfChats")
+    @PreAuthorize("hasAnyRole('ADMIN')")
+    public ResponseEntity<CountResponse> getNumberOfChats(){
+        return new ResponseEntity<>(new CountResponse(liveChatService.getNumberOfChats()), HttpStatus.OK);
+    }
+
+    @DeleteMapping(value = "deleteChat")
+    @PreAuthorize("hasAnyRole('ADMIN')")
+    public void deleteChat(@RequestParam("chatID") Long chatId){
+        liveChatService.deleteChatById(chatId);
     }
 }
