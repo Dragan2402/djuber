@@ -110,7 +110,7 @@ export class DriversPreviewComponent implements OnInit, AfterViewInit {
     const dialogConfig = new MatDialogConfig();
     // The user can't close the dialog by clicking outside its body
     dialogConfig.disableClose = false;
-    dialogConfig.id = "author-form-modal";
+    dialogConfig.id = "note-modal";
     dialogConfig.data = {id:driver.id, isClient:false};
     dialogConfig.height = "55%";
     dialogConfig.width = "50%";

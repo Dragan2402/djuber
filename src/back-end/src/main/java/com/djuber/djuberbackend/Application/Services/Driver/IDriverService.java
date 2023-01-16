@@ -3,8 +3,11 @@ package com.djuber.djuberbackend.Application.Services.Driver;
 import com.djuber.djuberbackend.Application.Services.Driver.Results.DriverResult;
 import com.djuber.djuberbackend.Controllers.Admin.Requests.RegisterDriverRequest;
 import com.djuber.djuberbackend.Controllers.Driver.Requests.UpdateDriverRequest;
+import com.djuber.djuberbackend.Controllers.Driver.Response.DriverUpdateResponse;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+
+import java.util.List;
 
 public interface IDriverService {
     Long registerNewDriver(RegisterDriverRequest request);
@@ -27,5 +30,13 @@ public interface IDriverService {
 
     void updateDriverNote(long driverId, String note);
 
+    void submitDriverUpdateRequest(String email, UpdateDriverRequest request);
+
     String getDriverNote(long driverId);
+
+    List<DriverUpdateResponse> getDriverProfileUpdates();
+
+    void declineChangeRequest(long id);
+
+    void acceptChangeRequest(long id);
 }

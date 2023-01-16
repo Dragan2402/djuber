@@ -97,7 +97,7 @@
               </div>
               <div class="checkbox-div">
                 <input type="checkbox" [(ngModel)]="luggageTransport"  [disabled]="!isEditing()" [ngModelOptions]="{standalone: true}" class="checkbox-option">
-                {{luggageTransport}}
+
                 <mat-label>Luggage transport</mat-label>
               </div>
            </div>
@@ -105,11 +105,11 @@
       </div>
     </form>
     <div class="edit-button" *ngIf="!isEditing()">
-      <button mat-raised-button color="primary" (click)="toggleEditing()">Edit information</button>
+      <button mat-raised-button color="primary" (click)="toggleEditing()" style="height: 40px;">Edit information</button>
     </div>
     <div class="cancel-save-buttons-div" *ngIf="isEditing()">
-      <button mat-raised-button color="warn" (click)="cancelEditing()">Cancel</button>
-      <button mat-raised-button color="primary" (click)="saveEditing()">Save</button>
+      <button mat-raised-button color="warn" (click)="cancelEditing()" style="height: 40px;">Cancel</button>
+      <button mat-raised-button color="primary" (click)="saveEditing()" style="height: 40px;">Save</button>
     </div>
   </div>
 </div>

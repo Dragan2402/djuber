@@ -13,7 +13,7 @@ export class NoteModalComponent implements OnInit {
   isClient:boolean = false;
   id:number;
 
-  constructor(public dialogRef: MatDialogRef<NoteModalComponent>, @Inject(MAT_DIALOG_DATA) public data: number, private adminSerivce : AdminService) {
+  constructor(public dialogRef: MatDialogRef<NoteModalComponent>, @Inject(MAT_DIALOG_DATA) public data: any, private adminSerivce : AdminService) {
     this.isClient = data["isClient"];
     this.id = data["id"];
     if(this.isClient){

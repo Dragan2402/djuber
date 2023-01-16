@@ -20,7 +20,7 @@ export class DriverService {
     return this.http.put("/api/driver/updateLoggedDriverPicture",{"image":image});
   }
 
-  public updateLoggedDriver(request:UpdateDriverRequest){
-    return this.http.put("/api/driver/updateLoggedDriver",request);
+  public submitDriverUpdateRequest(request:UpdateDriverRequest){
+    return this.http.put("/api/driver/submitDriverUpdateRequest",request);
   }
 }

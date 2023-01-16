@@ -28,6 +28,8 @@ import {MatDialogModule} from '@angular/material/dialog';
 import { AdminLiveChatComponent } from './admin-page/admin-live-chat/admin-live-chat.component';
 import {MatCardModule} from '@angular/material/card';
 import {MatBadgeModule} from '@angular/material/badge';
+import { DriverProfileUpdatesComponent } from './admin-page/driver-profile-updates/driver-profile-updates.component';
+import { HandleModalComponent } from './admin-page/driver-profile-updates/handle-modal/handle-modal.component';
 
 
 @NgModule({
@@ -38,7 +40,9 @@ import {MatBadgeModule} from '@angular/material/badge';
     DriversPreviewComponent,
     ClientPreviewComponent,
     NoteModalComponent,
-    AdminLiveChatComponent
+    AdminLiveChatComponent,
+    DriverProfileUpdatesComponent,
+    HandleModalComponent
   ],
   providers: [AdminService],
   imports: [

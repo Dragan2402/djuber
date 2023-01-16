@@ -1,5 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { FormBuilder, Validators } from '@angular/forms';
+import { MatSnackBar } from '@angular/material/snack-bar';
+import { SnackbarComponent } from 'src/app/snackbar/snackbar.component';
 import { Driver } from '../../driver';
 import { DriverService } from '../../driver.service';
 import { UpdateDriverRequest } from '../../updateDriverRequest';
@@ -28,6 +30,15 @@ export class DriverProfileComponent implements OnInit {
 
   backUpDriver:Driver;
 
+  selectedCarTypeBackUp:string;
+
+  selectedCityBackUp:string;
+
+  extraLuggageBackUp: boolean;
+  petsBackUp: boolean;
+  luggageTransportBackUp: boolean;
+  knowingEnglishBackUp:boolean;
+
   editing:boolean=false;
 
   controlGroup = this._formBuilder.group({
@@ -39,7 +50,7 @@ export class DriverProfileComponent implements OnInit {
 
   profilePictureString:string='';
 
-  constructor(private _formBuilder: FormBuilder, private driverService:DriverService) {
+  constructor(private _formBuilder: FormBuilder, private driverService:DriverService, private _snackBar: MatSnackBar) {
    }
 
   ngOnInit(): void {
@@ -86,9 +97,29 @@ export class DriverProfileComponent implements OnInit {
 
 
   toggleEditing(){
-    this.backUpDriver = structuredClone(this.loggedDriver);
+    this.generateBackUp();
     this.editing=true;
     this.controlGroup.enable();
+  }
+
+  private generateBackUp(){
+    this.backUpDriver = structuredClone(this.loggedDriver);
+    this.selectedCarTypeBackUp = this.selectedCarType;
+    this.selectedCityBackUp = this.selectedCity;
+    this.extraLuggageBackUp = this.extraLuggage;
+    this.petsBackUp = this.pets;
+    this.luggageTransportBackUp= this.luggageTransport;
+    this.knowingEnglishBackUp = this.knowingEnglish;
+  }
+
+  private backUp(){
+    this.loggedDriver = this.backUpDriver;
+    this.selectedCarType = this.selectedCarTypeBackUp;
+    this.selectedCity = this.selectedCityBackUp;
+    this.extraLuggage = this.extraLuggageBackUp;
+    this.pets = this.petsBackUp;
+    this.luggageTransport= this.luggageTransportBackUp;
+    this.knowingEnglish = this.knowingEnglishBackUp;
   }
 
   isEditing(){
@@ -96,19 +127,28 @@ export class DriverProfileComponent implements OnInit {
   }
 
   cancelEditing(){
-    this.loggedDriver = this.backUpDriver;
+    this.backUp();
     this.editing=false;
     this.controlGroup.disable();
   }
+
+
 
   saveEditing(){
     const services = this.getAdditionalServices();
     if(this.controlGroup.status ==="VALID"){
       const driverRequest = {firstName:this.loggedDriver.firstName, lastName:this.loggedDriver.lastName,phoneNumber:this.loggedDriver.phoneNumber,
         city:this.loggedDriver.city, licensePlate:this.loggedDriver.licensePlate,carType:this.selectedCarType, additionalServices:services} as UpdateDriverRequest;
-      this.driverService.updateLoggedDriver(driverRequest).subscribe();
-      localStorage.setItem("user-last-name",this.loggedDriver.lastName);
-      localStorage.setItem("user-first-name",this.loggedDriver.firstName);
+      this.driverService.submitDriverUpdateRequest(driverRequest).subscribe({
+        error: (err) =>{
+          console.log(err);
+          this._snackBar.openFromComponent(SnackbarComponent, {data:"You have already submitted request."});
+        },
+        complete:()=>{
+          this._snackBar.openFromComponent(SnackbarComponent, {data:"Request submitted."});
+        }
+      });
+      this.backUp();
       this.editing = false;
       this.controlGroup.disable();
     }

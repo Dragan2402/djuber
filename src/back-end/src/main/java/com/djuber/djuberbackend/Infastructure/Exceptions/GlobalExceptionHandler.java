@@ -41,6 +41,11 @@ public class GlobalExceptionHandler {
         return new ResponseEntity<>(getErrorObject(ex.getMessage(), HttpStatus.BAD_REQUEST), HttpStatus.BAD_REQUEST);
     }
 
+    @ExceptionHandler({RequestAlreadyExistsException.class})
+    public ResponseEntity<ErrorObject> handleRequestAlreadyExistsException(RequestAlreadyExistsException ex, WebRequest request){
+        return new ResponseEntity<>(getErrorObject(ex.getMessage(), HttpStatus.BAD_REQUEST), HttpStatus.BAD_REQUEST);
+    }
+
     @ExceptionHandler({CarWithLicensePlateAlreadyExistsException.class})
     public ResponseEntity<ErrorObject> handleCarWithLicensePlateAlreadyExistsException(CarWithLicensePlateAlreadyExistsException ex, WebRequest request){
         return new ResponseEntity<>(getErrorObject(ex.getMessage(), HttpStatus.BAD_REQUEST), HttpStatus.BAD_REQUEST);

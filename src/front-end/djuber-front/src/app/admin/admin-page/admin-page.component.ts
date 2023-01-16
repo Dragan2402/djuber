@@ -49,6 +49,11 @@ export class AdminPageComponent implements  OnInit {
     this.router.navigate(['admin',{outlets: { ao:['previewDrivers']} }],{ skipLocationChange: true });
   }
 
+  toggleDriverProfileUpdates(){
+    this.router.navigateByUrl('admin');
+    this.router.navigate(['admin',{outlets: { ao:['driverProfileChanges']} }],{ skipLocationChange: true });
+  }
+
   toggleClientsPreview(){
     this.router.navigateByUrl('admin');
     this.router.navigate(['admin',{outlets: { ao:['previewClients']} }],{ skipLocationChange: true });

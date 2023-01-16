@@ -2,6 +2,7 @@ import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { Chat } from '../_common/model/chat';
 import { Admin } from './admin';
+import { DriverUpdate } from './admin-page/driver-profile-updates/driverUpdate';
 import { AdminModule } from './admin.module';
 import { DriverRegistrationRequest } from './driver.registration.request';
 import { UpdateAdminRequest } from './update.admin.request';
@@ -77,6 +78,18 @@ export class AdminService {
 
   public getDriverNote(id:number){
     return this.http.get("/api/driver/getDriverNote?id="+id);
+  }
+
+  public getDriverProfileUpdates(){
+    return this.http.get<DriverUpdate[]>("/api/driver/driverProfileUpdates");
+  }
+
+  public declineDriverDataChange(id:number){
+    return this.http.put("/api/driver/declineChange",{id:id})
+  }
+
+  public acceptDriverDataChange(id:number){
+    return this.http.put("/api/driver/acceptChange",{id:id})
   }
 
   public getChats(){

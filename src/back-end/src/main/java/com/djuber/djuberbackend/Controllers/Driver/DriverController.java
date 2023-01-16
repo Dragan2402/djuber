@@ -1,11 +1,9 @@
 package com.djuber.djuberbackend.Controllers.Driver;
 
-import com.djuber.djuberbackend.Application.Services.Client.IClientService;
-import com.djuber.djuberbackend.Application.Services.Client.Results.ClientResult;
 import com.djuber.djuberbackend.Application.Services.Driver.IDriverService;
 import com.djuber.djuberbackend.Application.Services.Driver.Results.DriverResult;
-import com.djuber.djuberbackend.Controllers.Client.Requests.UpdateClientRequest;
 import com.djuber.djuberbackend.Controllers.Driver.Requests.UpdateDriverRequest;
+import com.djuber.djuberbackend.Controllers.Driver.Response.DriverUpdateResponse;
 import com.djuber.djuberbackend.Controllers._Common.Requests.IdRequest;
 import com.djuber.djuberbackend.Controllers._Common.Requests.ImageUpdateRequest;
 import com.djuber.djuberbackend.Controllers._Common.Requests.NoteUpdateRequest;
@@ -23,6 +21,7 @@ import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
 import java.security.Principal;
+import java.util.List;
 
 @Tag(name="Driver API",description = "Provides Driver CRUD end-points.")
 @RestController
@@ -79,15 +78,33 @@ public class DriverController {
         return new ResponseEntity<>(new ImageResponse(driverService.getDriverPictureByEmail(user.getName())), HttpStatus.OK);
     }
 
+    @GetMapping(value = "driverProfileUpdates")
+    @PreAuthorize("hasAnyRole('ADMIN')")
+    public ResponseEntity<List<DriverUpdateResponse>> getDriverProfileUpdates(){
+        return new ResponseEntity<>(driverService.getDriverProfileUpdates(), HttpStatus.OK);
+    }
+
+    @PutMapping(value = "declineChange")
+    @PreAuthorize("hasAnyRole('ADMIN')")
+    public void declineChange(@RequestBody @Valid IdRequest request){
+        driverService.declineChangeRequest(request.getId());
+    }
+
+    @PutMapping(value = "acceptChange")
+    @PreAuthorize("hasAnyRole('ADMIN')")
+    public void acceptChange(@RequestBody @Valid IdRequest request){
+        driverService.acceptChangeRequest(request.getId());
+    }
+
     @PutMapping(value = "updateLoggedDriverPicture")
     @PreAuthorize("hasAnyRole('DRIVER')")
     public void updateLoggedDriverPicture(Principal user, @RequestBody @Valid ImageUpdateRequest request){
         this.driverService.updateLoggedDriverPicture(user.getName(), request.getImage());
     }
 
-    @PutMapping(value = "updateLoggedDriver")
+    @PutMapping(value = "submitDriverUpdateRequest")
     @PreAuthorize("hasAnyRole('DRIVER')")
     public void updateLoggedDriver(Principal user, @RequestBody @Valid UpdateDriverRequest request){
-        this.driverService.updateLoggedDriver(user.getName(),request);
+        this.driverService.submitDriverUpdateRequest(user.getName(),request);
     }
 }
