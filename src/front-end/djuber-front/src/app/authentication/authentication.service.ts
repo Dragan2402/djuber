@@ -28,7 +28,7 @@ export class AuthenticationService {
     private route: Router,
     private socialAuthService: SocialAuthService,
     private hashService: HashService) {
-    this.socialAuthService.authState.subscribe((user) => {this.socialLogin(user)});
+      //this.socialAuthService.authState.subscribe((user) => {this.socialLogin(user)});
     }
 
 
@@ -72,7 +72,7 @@ export class AuthenticationService {
   }
 
 
-  private async setToken(token : any){
+  public async setToken(token : any){
     this.loading$.next(true);
     this.localStorage.setItem("jwt", token["accessToken"])
     this.localStorage.setItem("jwt-expiringDate", token["expiringDate"]);
@@ -147,7 +147,7 @@ export class AuthenticationService {
   }
 
 
-  private async handleError(error : HttpErrorResponse){
+  public async handleError(error : HttpErrorResponse){
     this.loading$.next(true);
     await new Promise(r => setTimeout(r, 1000));
     this.loading$.next(false);

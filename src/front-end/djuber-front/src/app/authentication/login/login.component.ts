@@ -1,4 +1,4 @@
-import { FacebookLoginProvider, GoogleLoginProvider, SocialAuthService, SocialUser } from '@abacritt/angularx-social-login';
+
 import { Component, OnDestroy, OnInit } from '@angular/core';
 import {FormControl, Validators} from '@angular/forms';
 import { Observable } from 'rxjs';
