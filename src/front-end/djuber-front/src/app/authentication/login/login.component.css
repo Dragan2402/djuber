@@ -1,10 +1,11 @@
 .login-div{
   display: flex;
   flex-direction: column;
-  min-height: 30%;
+
   margin-left: 30%;
   margin-right: 30%;
   margin: 5% 30% 0 30%;
+  height: 100%;
 }
 
 .input-field-80{

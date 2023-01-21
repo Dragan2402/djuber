@@ -5,27 +5,27 @@
         <mat-icon>home</mat-icon> <span style="margin-left: 5%;">Home</span>
       </div>
       <div class="djuber-title-div">
-        DJUBER
+        <span id="title">DJUBER</span>
         <div>
           <img src="../../favicon.ico" class="djuber-icon">
         </div>
       </div>
       <div>
-        <div class="login-div" *ngIf="!logged" routerLink="authentication/login">
+        <div class="login-div" *ngIf="!logged" routerLink="authentication/login" id="login-div">
 
             <mat-icon>login</mat-icon>
             <span style="margin-left: 5%;">Login</span>
 
         </div>
         <div class="login-div" *ngIf="logged">
-          <mat-icon [matMenuTriggerFor]="menu">apps</mat-icon>
+          <mat-icon [matMenuTriggerFor]="menu" id="menuButton">apps</mat-icon>
           <mat-menu #menu="matMenu" >
             <div class="user-info-div">
               <div style="align-self: center;">
                 <img [src]="'data:image/png;base64,' + userInfo.picture" style="border-radius: 20%;padding-left: 10px;padding-right: 10px;height: 80;width: 90px;" alt="Profile picture">
               </div>
               <div style="margin-top: 10%;margin-bottom: 5%;align-self: center;">
-                <span>{{userInfo.firstName}} {{userInfo.lastName}}</span>
+                <span id="userName">{{userInfo.firstName}} {{userInfo.lastName}}</span>
               </div>
             </div>
             <button mat-menu-item (click)="navigateToProfile()">
