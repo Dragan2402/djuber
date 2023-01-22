@@ -52,9 +52,8 @@ export class MapComponent implements OnInit {
     if(this.address.length > 4){
     this.mapService.searchLocation(this.address).subscribe({ next:(response : Array<any>)=> {
         this.clear();
-        if(response.length !==0){
-
-        this.desiredLocation = {lat:response[0].lat , long : response[0].lon} as Point;
+        if(response["features"].length > 0){
+        this.desiredLocation = {lat:response["features"][0]["geometry"]["coordinates"][1] , long : response["features"][0]["geometry"]["coordinates"][0]} as Point;
         this.desireMarker = L.marker([this.desiredLocation.lat, this.desiredLocation.long], {
           icon: L.icon({
               iconUrl: 'assets/finish.svg',
@@ -80,18 +79,38 @@ export class MapComponent implements OnInit {
   }
 
   getRoutes(){
-    this.mapService.getRoutesBetweenPoints(this.clientLocation, this.desiredLocation).subscribe({
-      next:(v)=>{
-        const paths = v["paths"];
-        let i = 0;
-        paths.forEach(path => {
-          let route = new Route(i, path);
-          this.routes.push(route);
-          this.drawRoute(route);
-          i = i+1;
-        })
+    let points = [];
+    points.push(this.clientLocation);
+    points.push(this.desiredLocation);
+    this.mapService.getRoutesBetweenPointsORS(points, 'fastest').subscribe({
+      next:(response) =>{
+        console.log(response);
+        let i = 0 ;
+        if(response["features"].length > 0){
+          response["features"].forEach(feature => {
+            let route = new Route(i, feature);
+            this.routes.push(route);
+            this.drawRoute(route);
+            i++;
+          })
+        }
+        else{
+          this._snackBar.openFromComponent(SnackbarComponent, {data:"Can not find route."});
+        }
       }
-    });
+    })
+    // this.mapService.getRoutesBetweenPoints(this.clientLocation, this.desiredLocation).subscribe({
+    //   next:(v)=>{
+    //     const paths = v["paths"];
+    //     let i = 0;
+    //     paths.forEach(path => {
+    //       let route = new Route(i, path);
+    //       this.routes.push(route);
+    //       this.drawRoute(route);
+    //       i = i+1;
+    //     })
+    //   }
+    // });
   }
 
   setGeoLocation(position: { coords: { latitude: any; longitude: any } }) {

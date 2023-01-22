@@ -14,10 +14,21 @@ import { AuthenticationService } from '../authentication/authentication.service'
 export class RequestInterceptor implements HttpInterceptor {
   constructor(@Inject(localStorageToken) private localStorage : Storage, private authenticationService: AuthenticationService) {}
 
+  private key:string = "5b3ce3597851110001cf62486b80eee7f91341569a61109ec802d68f";
+
   intercept(
     request: HttpRequest<unknown>,
     next: HttpHandler
   ): Observable<HttpEvent<unknown>> {
+
+    if(request.url.includes("https://api.openrouteservice.org/v2/directions")){
+      request = request.clone({
+        setHeaders: {
+          Authorization: this.key
+        }
+      });
+    return next.handle(request);
+    }
 
     if(request.url.includes("api/admin")){
       return this.handleAdminRequests(request, next);

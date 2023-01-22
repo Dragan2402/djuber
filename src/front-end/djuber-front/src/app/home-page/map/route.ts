@@ -6,11 +6,11 @@ export class Route{
   points:LatLngExpression[];
   distance:number;
 
-  constructor(id:number, path:any){
+  constructor(id:number, feature:any){
     this.id = id;
-    this.distance = path["distance"];
+    this.distance = feature["properties"]["summary"]["distance"];
     this.points = [];
-    const coordinates = path["points"]["coordinates"];
+    const coordinates = feature["geometry"]["coordinates"];
     coordinates.forEach(coordinate => {
       this.points.push({lat:coordinate[1], lng:coordinate[0]});
     })
