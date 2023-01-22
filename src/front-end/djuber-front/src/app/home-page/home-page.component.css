@@ -12,6 +12,8 @@
   z-index: 0;
 }
 
+
+
 .chat-support{
   position: fixed;
   bottom: 20px;
@@ -19,7 +21,6 @@
   width: max-content;
   z-index: 1;
 }
-
 .chat-div{
   display: flex;
   flex-direction: column;

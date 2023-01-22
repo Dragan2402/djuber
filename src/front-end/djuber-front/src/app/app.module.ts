@@ -24,6 +24,8 @@ import {FormsModule, ReactiveFormsModule} from '@angular/forms';
 import {MatFormFieldModule} from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
 import {MatDividerModule} from '@angular/material/divider';
+import { LeafletModule } from '@asymmetrik/ngx-leaflet';
+import { MapComponent } from './home-page/map/map.component';
 
 @NgModule({
   declarations: [
@@ -33,7 +35,8 @@ import {MatDividerModule} from '@angular/material/divider';
     HeaderBarComponent,
     SnackbarComponent,
     LiveChatComponent,
-    UserLiveChatComponent
+    UserLiveChatComponent,
+    MapComponent
   ],
   imports: [
     BrowserModule,
@@ -50,7 +53,8 @@ import {MatDividerModule} from '@angular/material/divider';
     ReactiveFormsModule,
     MatFormFieldModule,
     MatDividerModule,
-    MatInputModule
+    MatInputModule,
+    LeafletModule
   ],
   providers: [
     { provide: ErrorHandler, useClass: GlobalErroHandler },

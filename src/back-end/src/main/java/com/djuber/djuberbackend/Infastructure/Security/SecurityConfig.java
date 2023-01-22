@@ -42,6 +42,7 @@ public class SecurityConfig{
                 .antMatchers("/api/auth/verifyClientAccount").permitAll()
                 .antMatchers("/api/auth/passwordReset").permitAll()
                 .antMatchers("/api/auth/passwordResetToken").permitAll()
+                .antMatchers("/api/driver/availableDrivers").permitAll()
                 .antMatchers("/chat/**").permitAll()
                 .anyRequest().authenticated()
                 .and()

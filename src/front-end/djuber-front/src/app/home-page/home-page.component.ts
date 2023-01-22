@@ -3,6 +3,7 @@ import { MatSnackBar } from '@angular/material/snack-bar';
 import { AuthenticationService } from '../authentication/authentication.service';
 import { SnackbarComponent } from '../snackbar/snackbar.component';
 import { HashService } from '../utility/hash-service.service';
+import * as Leaflet from "leaflet";
 
 @Component({
   selector: 'djuber-home-page',
@@ -10,6 +11,10 @@ import { HashService } from '../utility/hash-service.service';
   styleUrls: ['./home-page.component.css']
 })
 export class HomePageComponent implements OnInit {
+
+
+  // you want to get it of the window global
+  //const provider = new GeoSearch.OpenStreetMapProvider();
 
   logged! : boolean;
 
@@ -25,6 +30,7 @@ export class HomePageComponent implements OnInit {
 
   ngOnInit(): void {
   }
+
 
   canUserContactLiveChat(){
     if(this.logged)

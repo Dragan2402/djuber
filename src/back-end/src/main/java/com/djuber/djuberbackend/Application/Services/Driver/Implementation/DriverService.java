@@ -5,6 +5,7 @@ import com.djuber.djuberbackend.Application.Services.Driver.Mapper.DriverMapper;
 import com.djuber.djuberbackend.Application.Services.Driver.Results.DriverResult;
 import com.djuber.djuberbackend.Controllers.Admin.Requests.RegisterDriverRequest;
 import com.djuber.djuberbackend.Controllers.Driver.Requests.UpdateDriverRequest;
+import com.djuber.djuberbackend.Controllers.Driver.Response.AvailableDriverResponse;
 import com.djuber.djuberbackend.Controllers.Driver.Response.DriverUpdateResponse;
 import com.djuber.djuberbackend.Domain.Authentication.Identity;
 import com.djuber.djuberbackend.Domain.Authentication.Role;
@@ -280,6 +281,11 @@ public class DriverService implements IDriverService {
         carRepository.save(driver.getCar());
         driverDataChangeRepository.delete(existing);
 
+    }
+
+    @Override
+    public List<AvailableDriverResponse> getAvailableDrivers() {
+        return driverMapper.mapAvailableDrivers(driverRepository.getAvailableDrivers());
     }
 
     private CarType getCarType(String type){

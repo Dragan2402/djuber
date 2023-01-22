@@ -1,0 +1,12 @@
+.map-container {
+  height: 100%;
+  z-index: 0;
+}
+.route-floating-div{
+  position: absolute;
+  z-index: 1;
+  top: 13%;
+  left: 5%;
+}
+
+

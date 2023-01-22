@@ -78,6 +78,9 @@ export class RequestInterceptor implements HttpInterceptor {
 
 
   private handleDriverRequests(request: HttpRequest<unknown>, next: HttpHandler): Observable<HttpEvent<unknown>> {
+    if(request.url.includes("availableDrivers") && request.method==="GET"){
+      return next.handle(request);
+    }
 
     this.authenticationService.refreshToken();
     request = request.clone({

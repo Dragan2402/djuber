@@ -7,6 +7,8 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
 
+import java.util.List;
+
 @Repository
 public interface IDriverRepository extends JpaRepository<Driver, Long> {
 
@@ -20,4 +22,7 @@ public interface IDriverRepository extends JpaRepository<Driver, Long> {
             "or lower(d.city) like lower(concat('%', ?1,'%') ) " +
             "or lower(d.car.carType) like lower(concat('%', ?1,'%') ) ")
     Page<Driver> findAllWithFilter(String filter, Pageable pageable);
+
+    @Query("select d from Driver d where d.deleted=false and d.active=true and d.inRide=false and d.blocked=false")
+    List<Driver> getAvailableDrivers();
 }

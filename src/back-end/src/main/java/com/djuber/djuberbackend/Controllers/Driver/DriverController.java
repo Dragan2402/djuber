@@ -3,6 +3,7 @@ package com.djuber.djuberbackend.Controllers.Driver;
 import com.djuber.djuberbackend.Application.Services.Driver.IDriverService;
 import com.djuber.djuberbackend.Application.Services.Driver.Results.DriverResult;
 import com.djuber.djuberbackend.Controllers.Driver.Requests.UpdateDriverRequest;
+import com.djuber.djuberbackend.Controllers.Driver.Response.AvailableDriverResponse;
 import com.djuber.djuberbackend.Controllers.Driver.Response.DriverUpdateResponse;
 import com.djuber.djuberbackend.Controllers._Common.Requests.IdRequest;
 import com.djuber.djuberbackend.Controllers._Common.Requests.ImageUpdateRequest;
@@ -106,5 +107,10 @@ public class DriverController {
     @PreAuthorize("hasAnyRole('DRIVER')")
     public void updateLoggedDriver(Principal user, @RequestBody @Valid UpdateDriverRequest request){
         this.driverService.submitDriverUpdateRequest(user.getName(),request);
+    }
+
+    @GetMapping(value = "availableDrivers")
+    public ResponseEntity<List<AvailableDriverResponse>> getAvailableDrivers(){
+        return new ResponseEntity<>(driverService.getAvailableDrivers(), HttpStatus.OK);
     }
 }
