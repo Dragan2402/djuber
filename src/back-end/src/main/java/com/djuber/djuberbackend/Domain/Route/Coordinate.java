@@ -1,7 +1,5 @@
 package com.djuber.djuberbackend.Domain.Route;
 
-import com.djuber.djuberbackend.Domain.Driver.Car;
-import com.djuber.djuberbackend.Domain.Driver.Driver;
 import lombok.*;
 import lombok.experimental.FieldDefaults;
 import org.hibernate.annotations.SQLDelete;
@@ -16,7 +14,7 @@ import javax.persistence.*;
 @FieldDefaults(level = AccessLevel.PRIVATE)
 @Where(clause = "deleted = false")
 @SQLDelete(sql = "UPDATE coordinate SET deleted = true WHERE id = ?")
-public class Coordinates {
+public class Coordinate {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -28,11 +26,11 @@ public class Coordinates {
     @Column(name = "locationName")
     String locationName;
 
-    @Column(name = "x", nullable = false)
-    Double x;
+    @Column(name = "lat", nullable = false)
+    Double lat;
 
-    @Column(name = "y", nullable = false)
-    Double y;
+    @Column(name = "lon", nullable = false)
+    Double lon;
 
     @ManyToOne
     @JoinColumn(name = "routeId", nullable = false)

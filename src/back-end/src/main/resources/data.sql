@@ -59,10 +59,10 @@ VALUES (200000, 400000, 'Jovo', 'Jovic', 'Novi Sad', '067123423', true, 0, true,
         false);
 
 --CARS
-INSERT INTO car (id, car_type, license_plate, x, y, deleted)
+INSERT INTO car (id, car_type, license_plate, lat, lon, deleted)
 VALUES (100000, 0, 'NS24423J', 45.24533662754101, 19.8430497771721, false);
 
-INSERT INTO car (id, car_type, license_plate, x, y, deleted)
+INSERT INTO car (id, car_type, license_plate, lat, lon, deleted)
 VALUES (200000, 0, 'NS99892J', 45.24533662754101, 19.8430497771721, false);
 
 INSERT INTO CAR_ADDITIONAL_SERVICES (car_id, ADDITIONAL_SERVICES)
@@ -89,18 +89,18 @@ INSERT INTO route (id, deleted)
 VALUES (200000, false);
 
 --COORDINATES
-INSERT INTO coordinates(id, index, location_name, x, y, route_id, is_stop)
+INSERT INTO coordinate(id, index, location_name, lat, lon, route_id, is_stop)
 VALUES (100000, 0, 'Promenada', 45.24473173439358, 19.84146283175646, 100000, true);
-INSERT INTO coordinates(id, index, location_name, x, y, route_id, is_stop)
+INSERT INTO coordinate(id, index, location_name, lat, lon, route_id, is_stop)
 VALUES (200000, 1, NULL, 45.2480590388405, 19.839219531462838, 100000, false);
-INSERT INTO coordinates(id, index, location_name, x, y, route_id, is_stop)
+INSERT INTO coordinate(id, index, location_name, lat, lon, route_id, is_stop)
 VALUES (300000, 2, 'Balans Palacinkarnica', 45.25258638691436, 19.83754453391027, 100000, true);
 
-INSERT INTO coordinates(id, index, location_name, x, y, route_id, is_stop)
+INSERT INTO coordinate(id, index, location_name, lat, lon, route_id, is_stop)
 VALUES (400000, 0, 'Pekara Evropa', 45.240182962558684, 19.825826428862268, 200000, true);
-INSERT INTO coordinates(id, index, location_name, x, y, route_id, is_stop)
+INSERT INTO coordinate(id, index, location_name, lat, lon, route_id, is_stop)
 VALUES (500000, 1, NULL, 45.2480590388405, 19.839219531462838, 200000, false);
-INSERT INTO coordinates(id, index, location_name, x, y, route_id, is_stop)
+INSERT INTO coordinate(id, index, location_name, lat, lon, route_id, is_stop)
 VALUES (600000, 2, 'Medicinski Fakultet Novi Sad', 45.25328151383017, 19.824271073957725, 200000, true);
 
 --RIDES

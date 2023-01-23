@@ -31,7 +31,7 @@ public class Route {
     Reservation reservation;
 
     @OneToMany(mappedBy = "route",fetch = FetchType.LAZY, cascade = CascadeType.DETACH)
-    Set<Coordinates> coordinates = new HashSet<>();
+    Set<Coordinate> coordinates = new HashSet<>();
 
     @Column(name = "deleted", nullable = false)
     Boolean deleted;
