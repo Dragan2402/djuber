@@ -7,14 +7,93 @@
     >
   </div>
   <div class="route-floating-div">
-    <div >
+    <div style="min-width: 300px;">
       <mat-card style="background-color: white;display: flex;flex-direction: column;">
-        <mat-form-field style="width: 250px;">
-          <mat-card-content><input matInput placeholder="Desired address" [(ngModel)]="address"></mat-card-content>
-        </mat-form-field>
-        <div style="display: flex;flex-direction: row;">
-          <button style="width: 100px; margin-left: auto;margin-right: auto;" color="primary" mat-raised-button (click)="getCoordinates()">Search</button>
-          <button *ngIf="desireMarker !==undefined" style="width: 15px;" mat-raised-button (click)="clear()" color="warn"><mat-icon>clear</mat-icon></button>
+        <mat-radio-group *ngIf="canUserOrderRide() && orderStatus!==1" [(ngModel)]="checkPrice" aria-label="Select an option" style="display: flex;flex-direction: row;justify-content: space-evenly;margin-bottom: 2%;">
+          <mat-radio-button value="1">Order</mat-radio-button>
+          <mat-radio-button value="2">Check price</mat-radio-button>
+        </mat-radio-group>
+        <div *ngIf="checkPrice ==2">
+          <mat-form-field style="width: 250px;">
+            <mat-card-content><input matInput placeholder="Desired address" [(ngModel)]="desiredAddress"></mat-card-content>
+          </mat-form-field>
+          <div style="display: flex;flex-direction: row;" >
+            <button style="width: 100px; margin-left: auto;margin-right: auto;" color="primary" mat-raised-button (click)="getCoordinates()">Search</button>
+            <button *ngIf="desireMarker !==undefined" style="width: 15px;" mat-raised-button (click)="clear()" color="warn"><mat-icon>clear</mat-icon></button>
+          </div>
+        </div>
+        <div *ngIf="checkPrice==1" style="max-height: 400px;overflow-y: auto;">
+          <div  *ngIf="orderStatus === 0">
+            <div style="display: flex; flex-direction: column;width: 100%;">
+              <mat-checkbox style="margin-left: 2%; margin-right: auto;margin-bottom: 2%; margin-top: 2%;" [(ngModel)]="differentStartingPoint">Use different starting point</mat-checkbox>
+              <div style="display: flex;flex-direction: row;">
+                <mat-form-field style="width: 250px;" >
+                  <mat-card-content style="display: flex;flex-direction:row;">
+                    <input [disabled]="!differentStartingPoint" matInput placeholder="Your location" [(ngModel)]="startingAddress"/>
+                  </mat-card-content>
+                </mat-form-field>
+                <button mat-button style="height: 60px;width: 20px;" matTooltip="Add route point" (click)="addRoutePoint(0)"><mat-icon>add</mat-icon></button>
+              </div>
+            </div>
+            <div *ngFor="let address of routePathAddresses;let i = index">
+              <div style="display: flex;flex-direction: row;">
+                <mat-form-field style="width: 250px;" >
+                    <input matInput placeholder="Enter address" [ngModel]="routePathAddresses[i]" (change)="onValueUpdate($event, i)"/>
+                </mat-form-field>
+                <button mat-button style="height: 60px;width: 20px;" matTooltip="Add route point" (click)="addRoutePoint(i)"><mat-icon>add</mat-icon></button>
+                <button mat-button style="height: 60px;width: 20px;" matTooltip="Add route point" (click)="removeRoutePoint(i)"><mat-icon>remove</mat-icon></button>
+              </div>
+            </div>
+            <div>
+              <mat-form-field style="width: 250px;">
+                <mat-card-content><input matInput placeholder="Desired address" [(ngModel)]="desiredAddress"></mat-card-content>
+              </mat-form-field>
+            </div>
+            <div>
+              <mat-checkbox style="margin-left: 2%; margin-right: auto;margin-bottom: 5%; margin-top: 2%;" matTooltip="Selecting this option can increase potential price of the ride." [(ngModel)]="fastestRoute">Use fastest route</mat-checkbox>
+            </div>
+            <div style="display: flex;flex-direction: row;">
+              <button style="width: 120px; margin-left: auto;margin-right: auto;" color="primary" mat-raised-button (click)="createRoute()">Create route</button>
+            </div>
+          </div>
+          <div *ngIf="orderStatus === 1" style="margin-top: 2%; margin-bottom: 2%;">
+            <mat-progress-bar style="margin-top: 2%; margin-bottom: 2%;" mode="indeterminate"></mat-progress-bar>
+          </div>
+          <div *ngIf="orderStatus ===2">
+            <div style="margin-top:6%; margin-bottom: 5%;width: 100%;">
+              <mat-form-field appearance="fill" style="width: 100%;margin-left: auto;margin-right: auto;">
+                <mat-label>Car type</mat-label>
+                <mat-select [(value)]="selectedCarType" style="width: 100%;margin-left: auto;margin-right: auto;">
+                  <mat-option *ngFor="let car of carTypes" [value]="car">
+                    {{car}}
+                  </mat-option>
+                </mat-select>
+              </mat-form-field>
+            </div>
+            <div class="checkboxes-div">
+              <h4>Select additional services:</h4>
+              <div class="checkbox-div">
+                <input type="checkbox" [(ngModel)]="pets" [ngModelOptions]="{standalone: true}" class="checkbox-option">
+                <mat-label>Pets</mat-label>
+              </div>
+              <div class="checkbox-div">
+                <input type="checkbox" [(ngModel)]="knowingEnglish" [ngModelOptions]="{standalone: true}" class="checkbox-option">
+                <mat-label>Knowing English</mat-label>
+              </div>
+              <div class="checkbox-div">
+                <input type="checkbox" [(ngModel)]="extraLuggage" [ngModelOptions]="{standalone: true}" class="checkbox-option">
+                <mat-label>Extra luggage</mat-label>
+              </div>
+              <div class="checkbox-div">
+                <input type="checkbox" [(ngModel)]="luggageTransport" [ngModelOptions]="{standalone: true}" class="checkbox-option">
+                <mat-label>Luggage transport</mat-label>
+              </div>
+            </div>
+            <div style="display: flex;flex-direction: row;justify-content: space-evenly;width: 100%;margin-top: 8%;">
+              <button mat-raised-button color="primary" (click)="orderRide()">Order</button>
+              <button mat-raised-button color="warn" (click)="clear()">Cancel</button>
+            </div>
+          </div>
         </div>
       </mat-card>
     </div>

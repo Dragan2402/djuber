@@ -26,6 +26,11 @@ import { MatInputModule } from '@angular/material/input';
 import {MatDividerModule} from '@angular/material/divider';
 import { LeafletModule } from '@asymmetrik/ngx-leaflet';
 import { MapComponent } from './home-page/map/map.component';
+import {MatRadioModule} from '@angular/material/radio';
+import {MatCheckboxModule} from '@angular/material/checkbox';
+import {MatTooltipModule} from '@angular/material/tooltip';
+import {MatProgressBarModule} from '@angular/material/progress-bar';
+import {MatSelectModule} from '@angular/material/select';
 
 @NgModule({
   declarations: [
@@ -54,7 +59,12 @@ import { MapComponent } from './home-page/map/map.component';
     MatFormFieldModule,
     MatDividerModule,
     MatInputModule,
-    LeafletModule
+    LeafletModule,
+    MatRadioModule,
+    MatCheckboxModule,
+    MatTooltipModule,
+    MatProgressBarModule,
+    MatSelectModule
   ],
   providers: [
     { provide: ErrorHandler, useClass: GlobalErroHandler },

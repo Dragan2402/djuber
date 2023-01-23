@@ -1,5 +1,5 @@
 import { LatLngExpression } from "leaflet";
-import { Point } from "./point";
+import { Coordinate } from "./coordinate";
 
 export class Route{
   id:number;
@@ -17,7 +17,7 @@ export class Route{
   }
 
   public getPrice(){
-    return Math.round((this.distance/1000) * 120);
+    return Math.round((this.distance) * 120);
   }
 
 }

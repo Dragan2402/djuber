@@ -2,11 +2,15 @@ import { HttpClient } from '@angular/common/http';
 import { Component, OnInit } from '@angular/core';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import * as L from 'leaflet';
+import { AuthenticationService } from 'src/app/authentication/authentication.service';
 import { SnackbarComponent } from 'src/app/snackbar/snackbar.component';
+import { HashService } from 'src/app/utility/hash-service.service';
 import { AvailableDriver } from './availableDriver';
 import { MapService } from './map.service';
-import {Point} from "./point";
+import {Coordinate} from "./coordinate";
 import { Route } from './route';
+import {firstValueFrom, lastValueFrom} from "rxjs";
+import { RideRequest } from './rideRequest';
 
 @Component({
   selector: 'djuber-map',
@@ -17,9 +21,11 @@ export class MapComponent implements OnInit {
 
   map!: L.Map;
 
-  clientLocation : Point;
+  clientLocation : Coordinate;
 
-  desiredLocation : Point;
+  desiredLocation : Coordinate;
+
+  clientMarker :L.Marker;
 
   desireMarker : L.Marker = undefined;
 
@@ -29,15 +35,44 @@ export class MapComponent implements OnInit {
 
   availableDriversMarkers : L.Marker[] = [];
 
+  checkPrice:number = 2;
+
+  differentStartingPoint: boolean = false;
+
+  fastestRoute : boolean = false;
+
+  routePathPoints : Coordinate[] = [];
+
+  routePathAddresses : string[]= [];
+
+  logged! : boolean;
+
+  orderStatus:number = 0;
+
+  selectedCarType:string = "Any";
+
+  carTypes:string[]= ["Any","Sedan","Station wagon","Van","Transporter"];
+
+  extraLuggage: boolean;
+  pets: boolean;
+  luggageTransport: boolean;
+  knowingEnglish:boolean;
+
   options = {
     layers: getLayers(),
     zoom: 16,
     center: { lat: 45.25461307185434, lng:  19.842973257328783 }
   }
 
-  address:string;
+  desiredAddress:string = '';
 
-  constructor(private mapService:MapService, private _snackBar: MatSnackBar) { }
+  startingAddress:string = '';
+
+  constructor(private mapService:MapService, private _snackBar: MatSnackBar, private authenticationService : AuthenticationService, private hashService:HashService) {
+    this.authenticationService.logged$.subscribe((attr:boolean) =>{
+      this.logged = attr;
+    });
+  }
 
 
   ngOnInit(): void {
@@ -48,13 +83,13 @@ export class MapComponent implements OnInit {
   }
 
   getCoordinates() {
-    let addressToDisplay = this.address;
-    if(this.address.length > 4){
-    this.mapService.searchLocation(this.address).subscribe({ next:(response : Array<any>)=> {
+    let addressToDisplay = this.desiredAddress;
+    if(this.desiredAddress.length > 4){
+    this.mapService.searchLocation(this.desiredAddress).subscribe({ next:(response : Array<any>)=> {
         this.clear();
         if(response["features"].length > 0){
-        this.desiredLocation = {lat:response["features"][0]["geometry"]["coordinates"][1] , long : response["features"][0]["geometry"]["coordinates"][0]} as Point;
-        this.desireMarker = L.marker([this.desiredLocation.lat, this.desiredLocation.long], {
+        this.desiredLocation = {lat:response["features"][0]["geometry"]["coordinates"][1] , lon : response["features"][0]["geometry"]["coordinates"][0], index:9999} as Coordinate;
+        this.desireMarker = L.marker([this.desiredLocation.lat, this.desiredLocation.lon], {
           icon: L.icon({
               iconUrl: 'assets/finish.svg',
               iconSize: [30, 30],
@@ -63,7 +98,7 @@ export class MapComponent implements OnInit {
           }),
           title: 'Desired location'
       }).addTo(this.map);
-      this.map.panTo([this.desiredLocation.lat, this.desiredLocation.long]);
+      this.map.panTo([this.desiredLocation.lat, this.desiredLocation.lon]);
       this.desireMarker.bindTooltip(addressToDisplay.toUpperCase());
       this.getRoutes();
     }else{
@@ -84,7 +119,6 @@ export class MapComponent implements OnInit {
     points.push(this.desiredLocation);
     this.mapService.getRoutesBetweenPointsORS(points, 'fastest').subscribe({
       next:(response) =>{
-        console.log(response);
         let i = 0 ;
         if(response["features"].length > 0){
           response["features"].forEach(feature => {
@@ -99,34 +133,26 @@ export class MapComponent implements OnInit {
         }
       }
     })
-    // this.mapService.getRoutesBetweenPoints(this.clientLocation, this.desiredLocation).subscribe({
-    //   next:(v)=>{
-    //     const paths = v["paths"];
-    //     let i = 0;
-    //     paths.forEach(path => {
-    //       let route = new Route(i, path);
-    //       this.routes.push(route);
-    //       this.drawRoute(route);
-    //       i = i+1;
-    //     })
-    //   }
-    // });
+  }
+
+  addRoutePoint(index:number){
+    this.routePathAddresses.splice(index+1, 0, "");
+  }
+
+  removeRoutePoint(index:number){
+    this.routePathAddresses.splice(index, 1);
+  }
+
+  onValueUpdate(event, index){
+    this.routePathAddresses[index]=event.target.value;
   }
 
   setGeoLocation(position: { coords: { latitude: any; longitude: any } }) {
     const {
        coords: { latitude, longitude },
     } = position;
-    this.clientLocation = {lat:latitude, long:longitude} as Point;
-    L.marker([latitude, longitude], {
-      icon: L.icon({
-          iconUrl: 'assets/person.svg',
-          iconSize: [30, 30],
-          iconAnchor: [10, 10],
-          popupAnchor: [0, 0]
-      }),
-      title: 'Client'
-  }).addTo(this.map);
+    this.clientLocation = {lat:latitude, lon:longitude, index:0} as Coordinate;
+    this.clientMarker = this.drawMarker(this.clientLocation,"person","Your location");
 }
 
 
@@ -146,18 +172,15 @@ export class MapComponent implements OnInit {
     console.log($event.target.getLatLng());
   }
 
-  drawAvailableDriverMarker(driver:AvailableDriver){
-    const marker = L.marker([driver.lat, driver.lon], {
-      icon: L.icon({
-          iconUrl: 'assets/car.svg',
-          iconSize: [30, 30],
-          iconAnchor: [10, 10],
-          popupAnchor: [0, 0]
-      }),
-      title: 'Available Driver'
-    }).addTo(this.map);
+  canUserOrderRide(){
+    if(this.logged){
+    return (this.authenticationService.getLoggedUserRole()===this.hashService.hashString("CLIENT"));
+    }
+  }
 
-    this.availableDriversMarkers.push(marker);
+  drawAvailableDriverMarker(driver:AvailableDriver){
+
+    this.availableDriversMarkers.push(this.drawMarker({lat:driver.lat, lon: driver.lon, index:0 } as Coordinate,"car","Available driver"));
   }
 
   drawRoute(route:Route){
@@ -170,11 +193,20 @@ export class MapComponent implements OnInit {
     if(this.desireMarker !== undefined){
       this.desireMarker.remove();
     }
-    this.address = '';
+    this.desiredAddress = '';
     this.desireMarker = undefined;
     this.routes.splice(0,this.routes.length);
     this.routeLines.forEach(line => line.remove());
     this.routeLines.splice(0, this.routeLines.length);
+    this.checkPrice = 2;
+    this.routePathAddresses.splice(0, this.routePathAddresses.length);
+    this.routePathPoints.splice(0, this.routePathPoints.length);
+    this.orderStatus = 0;
+    this.selectedCarType = "Any";
+    this.extraLuggage = false;
+    this.pets = false;
+    this.luggageTransport = false;
+    this.knowingEnglish = false;
   }
 
   setAvailableDrivers(){
@@ -185,6 +217,127 @@ export class MapComponent implements OnInit {
         v.forEach(d => {this.drawAvailableDriverMarker(d)});
       }
     })
+  }
+
+  private async getCoordinateFromAddress(address:string, id:number){
+    const result$ = this.mapService.searchLocationAsync(address).pipe();
+    const response = await firstValueFrom(result$);
+    if(response["features"].length > 0){
+      return {lat:response["features"][0]["geometry"]["coordinates"][1] , lon : response["features"][0]["geometry"]["coordinates"][0], index:id} as Coordinate;
+    }
+  }
+
+  getRoutesFromCoordinates(coordinates:Coordinate[], preference:string){
+    this.mapService.getRoutesBetweenPointsORS(coordinates, preference).subscribe({
+      next:(response) =>{
+        let i = 0 ;
+        if(response["features"].length > 0){
+          response["features"].forEach(feature => {
+            let route = new Route(i, feature);
+            this.routes.push(route);
+            this.drawRoute(route);
+            i++;
+            this.orderStatus = 2;
+          });
+          this._snackBar.openFromComponent(SnackbarComponent, {data:"Routes have been displayed. Please continue"});
+        }
+        else{
+          this._snackBar.openFromComponent(SnackbarComponent, {data:"Can not find route."});
+        }
+      }
+    })
+  }
+
+  async createRoute(){
+    this.routePathPoints.splice(0, this.routePathPoints.length);
+
+    if(this.differentStartingPoint && this.startingAddress.length <= 4){
+      this._snackBar.openFromComponent(SnackbarComponent, {data:"Please provide at least 5 characters of starting address."});
+      return;
+    }
+    if(this.desiredAddress.length <= 4){
+      this._snackBar.openFromComponent(SnackbarComponent, {data:"Please provide at least 5 characters of desired address."});
+      return;
+    }
+
+    this.routePathAddresses.forEach(address => {
+        if(address.length <= 4){
+          this._snackBar.openFromComponent(SnackbarComponent, {data:`Please provide at least 5 characters for address ${address}.`});
+          return;
+        }
+      });
+    this.orderStatus = 1;
+
+    if(this.clientMarker !== undefined){
+      this.clientMarker.remove();
+    }
+    const clientPoint = this.differentStartingPoint ? await this.getCoordinateFromAddress(this.startingAddress,0) : this.clientLocation;
+    this.routePathPoints.push(clientPoint);
+    this.clientMarker = this.drawMarker(clientPoint,"person","Starting location");
+
+    for(let i = 0 ; i < this.routePathAddresses.length ; i++){
+      this.routePathPoints.push(await this.getCoordinateFromAddress(this.routePathAddresses[i], i+1));
+    }
+
+    const desiredPoint = await this.getCoordinateFromAddress(this.desiredAddress,9999);
+
+    this.routePathPoints.push(desiredPoint);
+    this.desireMarker = this.drawMarker(desiredPoint, "finish",this.desiredAddress.toUpperCase());
+
+    this.routePathPoints.sort((a, b) => {return a.index - b.index});
+
+    const preference = this.fastestRoute ? "fastest": "shortest";
+
+    this.getRoutesFromCoordinates(this.routePathPoints, preference);
+  }
+
+  private drawMarker(coordinate:Coordinate, iconUrlPart:string, tooltipText:string){
+    const marker = L.marker([coordinate.lat, coordinate.lon], {
+      icon: L.icon({
+          iconUrl: 'assets/'+iconUrlPart+'.svg',
+          iconSize: [30, 30],
+          iconAnchor: [10, 10],
+          popupAnchor: [0, 0]
+      }),
+      title: 'Desired location'
+    }).addTo(this.map);
+    this.map.panTo([coordinate.lat, coordinate.lon]);
+    marker.bindTooltip(tooltipText);
+    return marker;
+  }
+
+
+  private  getAdditionalServices():string[]{
+    const services = new Array();
+    if(this.pets){
+      services.push("pets");
+    }
+    if(this.extraLuggage){
+      services.push("extraLuggage");
+    }
+    if(this.luggageTransport){
+      services.push("luggageTransport");
+    }
+    if(this.knowingEnglish){
+      services.push("knowingEnglish");
+    }
+    return services;
+
+  }
+
+  orderRide(){
+    const coordinates = [];
+    const points = this.routes[0].points;
+    if(points.length >= 2){
+      for(let i = 0; i < points.length ; i++){
+        coordinates.push({lat:points[i]["lat"], lon:points[i]["lon"],index:i} as Coordinate)
+      }
+
+      const request = {clientEmail:this.authenticationService.loggedUserInfo$.value["email"], distance:this.routes[0].distance, carType:this.selectedCarType,
+                      additionalServices:this.getAdditionalServices(), coordinates:coordinates} as RideRequest;
+      this.orderStatus = 1;
+      this._snackBar.openFromComponent(SnackbarComponent,{data:"Waiting for driver."});
+    }
   }
 }
 
