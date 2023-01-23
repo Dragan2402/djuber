@@ -44,6 +44,8 @@ public class SecurityConfig{
                 .antMatchers("/api/auth/passwordResetToken").permitAll()
                 .antMatchers("/api/driver/availableDrivers").permitAll()
                 .antMatchers("/chat/**").permitAll()
+                .antMatchers("/ride/**").permitAll()
+                .antMatchers("/singleRide/**").permitAll()
                 .anyRequest().authenticated()
                 .and()
                 .cors()

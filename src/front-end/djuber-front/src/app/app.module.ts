@@ -31,6 +31,9 @@ import {MatCheckboxModule} from '@angular/material/checkbox';
 import {MatTooltipModule} from '@angular/material/tooltip';
 import {MatProgressBarModule} from '@angular/material/progress-bar';
 import {MatSelectModule} from '@angular/material/select';
+import { AcceptRideDriverDialogComponent } from './ride/dialogs/accept-ride-driver-dialog/accept-ride-driver-dialog.component';
+import {MatDialogModule} from '@angular/material/dialog';
+import { SingleRideMapComponent } from './ride/single-ride-map/single-ride-map.component';
 
 @NgModule({
   declarations: [
@@ -41,7 +44,9 @@ import {MatSelectModule} from '@angular/material/select';
     SnackbarComponent,
     LiveChatComponent,
     UserLiveChatComponent,
-    MapComponent
+    MapComponent,
+    AcceptRideDriverDialogComponent,
+    SingleRideMapComponent
   ],
   imports: [
     BrowserModule,
@@ -64,7 +69,8 @@ import {MatSelectModule} from '@angular/material/select';
     MatCheckboxModule,
     MatTooltipModule,
     MatProgressBarModule,
-    MatSelectModule
+    MatSelectModule,
+    MatDialogModule
   ],
   providers: [
     { provide: ErrorHandler, useClass: GlobalErroHandler },

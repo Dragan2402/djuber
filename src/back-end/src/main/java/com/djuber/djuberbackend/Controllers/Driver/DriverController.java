@@ -2,6 +2,7 @@ package com.djuber.djuberbackend.Controllers.Driver;
 
 import com.djuber.djuberbackend.Application.Services.Driver.IDriverService;
 import com.djuber.djuberbackend.Application.Services.Driver.Results.DriverResult;
+import com.djuber.djuberbackend.Application.Services.LiveChat.Results.MessageResult;
 import com.djuber.djuberbackend.Controllers.Driver.Requests.UpdateDriverRequest;
 import com.djuber.djuberbackend.Controllers.Driver.Response.AvailableDriverResponse;
 import com.djuber.djuberbackend.Controllers.Driver.Response.DriverUpdateResponse;
@@ -17,6 +18,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.lang.Nullable;
+import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 

@@ -3,6 +3,7 @@ package com.djuber.djuberbackend.Application.Services.Driver.Implementation;
 import com.djuber.djuberbackend.Application.Services.Driver.IDriverService;
 import com.djuber.djuberbackend.Application.Services.Driver.Mapper.DriverMapper;
 import com.djuber.djuberbackend.Application.Services.Driver.Results.DriverResult;
+import com.djuber.djuberbackend.Application.Services.LiveChat.Results.MessageResult;
 import com.djuber.djuberbackend.Controllers.Admin.Requests.RegisterDriverRequest;
 import com.djuber.djuberbackend.Controllers.Driver.Requests.UpdateDriverRequest;
 import com.djuber.djuberbackend.Controllers.Driver.Response.AvailableDriverResponse;
@@ -27,6 +28,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 

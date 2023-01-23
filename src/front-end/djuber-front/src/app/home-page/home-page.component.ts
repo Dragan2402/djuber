@@ -4,6 +4,7 @@ import { AuthenticationService } from '../authentication/authentication.service'
 import { SnackbarComponent } from '../snackbar/snackbar.component';
 import { HashService } from '../utility/hash-service.service';
 import * as Leaflet from "leaflet";
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'djuber-home-page',

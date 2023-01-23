@@ -1,0 +1,21 @@
+<div style="height: 100%;width: 100%;">
+  <div class="map-container"
+    leaflet
+    [leafletOptions]="options"
+    (leafletMapReady)="onMapReady($event)"
+    >
+  </div>
+  <div class="ride-status-div">
+    <div style="min-width: 200px;">
+      <mat-card style="background-color: white;display: flex;flex-direction: column;">
+        <mat-card-content style="width: 100%;"><span>Ride status: Driver on his way...</span></mat-card-content>
+        <mat-card-content style="width: 100%;margin-top: 5%;"><span>Rider: Haso Hasic</span></mat-card-content>
+      </mat-card>
+    </div>
+  </div>
+  <div class="cancel-button">
+    <button mat-fab color="warn" matTooltip="Cancel ride" >
+      <mat-icon>close</mat-icon>
+    </button>
+  </div>
+</div>

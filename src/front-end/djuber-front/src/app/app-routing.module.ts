@@ -3,11 +3,13 @@ import { RouterModule, Routes } from '@angular/router';
 import { LoginGuard } from './guards/login.guard';
 import { RolesGuard } from './guards/roles.guard';
 import { HomePageComponent } from './home-page/home-page.component';
+import { SingleRideMapComponent } from './ride/single-ride-map/single-ride-map.component';
 import { LiveChatComponent } from './live-chat/live-chat.component';
 import { NotFoundComponent } from './not-found/not-found.component';
 
 const routes: Routes = [
   {path:"homePage", component: HomePageComponent},
+  {path:"singleRideMap/:id", component: SingleRideMapComponent, canActivate: [LoginGuard], canActivateChild: [LoginGuard], canLoad: [LoginGuard]},
   {path:"authentication", loadChildren: ()=>
         import('./authentication/authentication.module').then((m) => m.AuthenticationModule)},
   {path:"admin", loadChildren: ()=>
