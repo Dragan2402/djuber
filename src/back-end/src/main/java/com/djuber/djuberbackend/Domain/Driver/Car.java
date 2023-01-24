@@ -6,7 +6,6 @@ import org.hibernate.annotations.SQLDelete;
 import org.hibernate.annotations.Where;
 
 import javax.persistence.*;
-import java.io.Serializable;
 import java.util.Set;
 
 @Entity
@@ -36,11 +35,11 @@ public class Car {
     @OneToOne(mappedBy = "car")
     Driver driver;
 
-    @Column(name = "x", nullable = false)
-    Double x;
+    @Column(name = "lat", nullable = false)
+    Double lat;
 
-    @Column(name = "y", nullable = false)
-    Double y;
+    @Column(name = "lon", nullable = false)
+    Double lon;
 
     @Column(name = "additionalServices", nullable = false)
     @ElementCollection(targetClass = String.class ,fetch = FetchType.EAGER)

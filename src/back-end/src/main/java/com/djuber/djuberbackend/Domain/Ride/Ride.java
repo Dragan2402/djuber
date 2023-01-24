@@ -1,7 +1,6 @@
 package com.djuber.djuberbackend.Domain.Ride;
 
 import com.djuber.djuberbackend.Domain.Client.Client;
-import com.djuber.djuberbackend.Domain.Driver.Car;
 import com.djuber.djuberbackend.Domain.Driver.Driver;
 import com.djuber.djuberbackend.Domain.Review.Review;
 import com.djuber.djuberbackend.Domain.Route.Route;
@@ -36,7 +35,7 @@ public class Ride implements Serializable {
 
     @ManyToMany(fetch = FetchType.EAGER)
     @JoinTable(name = "clients_rides",joinColumns = @JoinColumn(name = "ride_id", referencedColumnName = "id"), inverseJoinColumns = @JoinColumn(name = "client_id", referencedColumnName = "id"))
-    Set<Client> clients_ride = new HashSet<>();
+    Set<Client> passengers = new HashSet<>();
 
     @OneToMany(mappedBy = "ride",fetch = FetchType.LAZY, cascade = CascadeType.DETACH)
     Set<Review> reviews = new HashSet<>();

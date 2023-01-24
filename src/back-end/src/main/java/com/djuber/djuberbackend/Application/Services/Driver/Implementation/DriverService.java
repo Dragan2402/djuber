@@ -72,8 +72,8 @@ public class DriverService implements IDriverService {
         carToSave.setDeleted(false);
         carToSave.setLicensePlate(request.getLicensePlate());
         carToSave.setCarType(getCarType(request.getCarType()));
-        carToSave.setX(45.24533662754101);
-        carToSave.setY(19.8430497771721);
+        carToSave.setLat(45.24533662754101);
+        carToSave.setLon(19.8430497771721);
         carToSave.setAdditionalServices(request.getAdditionalServices());
         Car carSaved = carRepository.save(carToSave);
 

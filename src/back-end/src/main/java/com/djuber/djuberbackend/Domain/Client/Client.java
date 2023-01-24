@@ -50,7 +50,7 @@ public class Client {
     @Column(name = "signingType", nullable = false)
     ClientSigningType clientSigningType;
 
-    @ManyToMany(mappedBy = "clients_ride")
+    @ManyToMany(mappedBy = "passengers")
     Set<Ride> rides = new HashSet<>();
 
     @ManyToMany(mappedBy = "clients")

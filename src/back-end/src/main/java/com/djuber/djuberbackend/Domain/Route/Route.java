@@ -8,8 +8,8 @@ import org.hibernate.annotations.SQLDelete;
 import org.hibernate.annotations.Where;
 
 import javax.persistence.*;
-import java.util.HashSet;
-import java.util.Set;
+import java.util.ArrayList;
+import java.util.List;
 
 @Entity
 @Data
@@ -31,8 +31,20 @@ public class Route {
     Reservation reservation;
 
     @OneToMany(mappedBy = "route",fetch = FetchType.LAZY, cascade = CascadeType.DETACH)
-    Set<Coordinates> coordinates = new HashSet<>();
+    List<Coordinate> coordinates = new ArrayList<>();
 
     @Column(name = "deleted", nullable = false)
     Boolean deleted;
+
+    public Coordinate getStartCoordinate() {
+        Coordinate firstCoordinate = coordinates.get(0);
+        if (firstCoordinate.getIndex() != 0) {
+            for (Coordinate c : coordinates) {
+                if (c.getIndex() == 0) {
+                    return c;
+                }
+            }
+        }
+        return firstCoordinate;
+    }
 }

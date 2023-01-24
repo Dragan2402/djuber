@@ -4,7 +4,6 @@ import com.djuber.djuberbackend.Domain.Authentication.Identity;
 import com.djuber.djuberbackend.Domain.Review.Review;
 import com.djuber.djuberbackend.Domain.Ride.Reservation;
 import com.djuber.djuberbackend.Domain.Ride.Ride;
-import com.djuber.djuberbackend.Domain.Route.Coordinates;
 import lombok.*;
 import lombok.experimental.FieldDefaults;
 import org.hibernate.annotations.SQLDelete;

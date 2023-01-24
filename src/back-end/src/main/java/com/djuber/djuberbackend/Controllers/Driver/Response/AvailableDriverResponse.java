@@ -20,7 +20,7 @@ public class AvailableDriverResponse {
 
     public AvailableDriverResponse(Driver driver){
         this.id = driver.getId();
-        this.lat = driver.getCar().getX();
-        this.lon = driver.getCar().getY();
+        this.lat = driver.getCar().getLat();
+        this.lon = driver.getCar().getLon();
     }
 }
