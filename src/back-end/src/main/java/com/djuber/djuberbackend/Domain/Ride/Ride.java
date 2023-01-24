@@ -59,6 +59,10 @@ public class Ride implements Serializable {
     @Column(name = "rideStatus", nullable = false)
     RideStatus rideStatus;
 
+    @Column(name = "requested_services")
+    @ElementCollection(targetClass = String.class, fetch = FetchType.EAGER)
+    private Set<String> requestedServices;
+
     @Column(name = "deleted", nullable = false)
     Boolean deleted;
 }

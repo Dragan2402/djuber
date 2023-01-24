@@ -26,6 +26,7 @@ public class RideMapper {
 
         RideType rideType = RideType.fromString(rideRequest.getRideType());
         ride.setRideType(rideType);
+        ride.setRequestedServices(rideRequest.getAdditionalServices());
 
 
         ride.setRoute(new Route());

@@ -42,7 +42,7 @@ public class Car {
     Double lon;
 
     @Column(name = "additionalServices", nullable = false)
-    @ElementCollection(targetClass = String.class ,fetch = FetchType.EAGER)
+    @ElementCollection(targetClass = String.class, fetch = FetchType.EAGER)
     Set<String> additionalServices;
 
     @Column(name = "deleted", nullable = false)

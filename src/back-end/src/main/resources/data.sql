@@ -116,6 +116,10 @@ VALUES (600000, 2, 'Medicinski Fakultet Novi Sad', 45.25328151383017, 19.8242710
 INSERT INTO ride (id, driver_id, ride_type, start, finish, route_id, price, ride_status, deleted)
 VALUES (100000, 100000, 0, '2022-10-23 00:00', NULL, 100000, 110, 0, false);
 
+--REQUESTED_SERVICES
+INSERT INTO RIDE_REQUESTED_SERVICES (ride_id, REQUESTED_SERVICES)
+VALUES (100000, 'pets');
+
 INSERT INTO clients_rides (client_id, ride_id)
 VALUES (100000, 100000);
 

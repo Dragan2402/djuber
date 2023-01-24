@@ -7,4 +7,6 @@ import com.djuber.djuberbackend.Domain.Ride.Ride;
 public interface IRideService {
     void getClosestFittingDriver(RideRequest rideRequest);
     RideResponse getRideResponse(Long rideId);
+    void acceptRideOffer(Long rideId);
+    void declineRideOffer(Long rideId);
 }

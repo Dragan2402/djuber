@@ -11,6 +11,7 @@ import com.djuber.djuberbackend.Domain.Client.Client;
 import com.djuber.djuberbackend.Domain.Driver.Car;
 import com.djuber.djuberbackend.Domain.Driver.Driver;
 import com.djuber.djuberbackend.Domain.Ride.Ride;
+import com.djuber.djuberbackend.Domain.Ride.RideStatus;
 import com.djuber.djuberbackend.Domain.Route.Coordinate;
 import com.djuber.djuberbackend.Infastructure.Repositories.Authentication.IIdentityRepository;
 import com.djuber.djuberbackend.Infastructure.Repositories.Client.IClientRepository;
@@ -26,6 +27,8 @@ import org.springframework.transaction.annotation.Transactional;
 import org.webjars.NotFoundException;
 
 import java.util.List;
+import java.util.Objects;
+import java.util.Set;
 
 @Service
 @RequiredArgsConstructor
@@ -48,7 +51,7 @@ public class RideService implements IRideService {
 
         Coordinate startCoordinate = ride.getRoute().getStartCoordinate();
         List<Driver> sortedAvailableDrivers = driverRepository.findAvailableDriversSortedByDistanceFromCoordinate(startCoordinate);
-        Driver closestFittingDriver = getClosestFittingDriver(rideRequest, sortedAvailableDrivers);
+        Driver closestFittingDriver = getClosestFittingDriver(sortedAvailableDrivers, rideRequest.getCarType(), rideRequest.getAdditionalServices());
 
         if (closestFittingDriver == null) {
             RideMessageResult result = new RideMessageResult(RideMessageStatus.RIDE_CLIENT_DECLINED, null);
@@ -74,7 +77,48 @@ public class RideService implements IRideService {
         return RideMapper.mapResponse(ride, coordinates);
     }
 
-    private static Driver getClosestFittingDriver(RideRequest rideRequest, List<Driver> sortedAvailableDrivers) {
+    @Override
+    public void acceptRideOffer(Long rideId) {
+        Ride ride = rideRepository.findById(rideId).orElse(null);
+        if (ride == null) {
+            throw new NotFoundException("Ride not found.");
+        }
+        ride.setRideStatus(RideStatus.ON_THE_WAY);
+        RideMessageResult result = new RideMessageResult(RideMessageStatus.RIDE_CLIENT_ACCEPTED, ride.getId());
+        for (Client client : ride.getClients()) {
+            simpMessagingTemplate.convertAndSend("/topic/ride/" + client.getIdentity().getId(), result);
+        }
+    }
+
+    @Override
+    public void declineRideOffer(Long rideId) {
+        Ride ride = rideRepository.findById(rideId).orElse(null);
+        if (ride == null) {
+            throw new NotFoundException("Ride not found.");
+        }
+
+        Coordinate startCoordinate = ride.getRoute().getStartCoordinate();
+        List<Driver> sortedAvailableDrivers = driverRepository.findAvailableDriversSortedByDistanceFromCoordinate(startCoordinate);
+        String carType = ride.getDriver().getCar().getCarType().toString();
+        Driver nextFittingDriver = getNextFittingDriver(sortedAvailableDrivers, carType, ride.getRequestedServices(), ride.getDriver().getId());
+
+        if (nextFittingDriver == null) {
+            RideMessageResult result = new RideMessageResult(RideMessageStatus.RIDE_CLIENT_DECLINED, null);
+            for (Client client : ride.getClients()) {
+                simpMessagingTemplate.convertAndSend("/topic/ride/" + client.getIdentity().getId(), result);
+            }
+
+        } else {
+            ride.setDriver(nextFittingDriver);
+            ride = rideRepository.save(ride);
+            RideMessageResult result = new RideMessageResult(RideMessageStatus.RIDE_DRIVER_OFFER, ride.getId());
+
+            Identity driverIdentity = nextFittingDriver.getIdentity();
+            simpMessagingTemplate.convertAndSend("/topic/ride/" + driverIdentity.getId(), result);
+        }
+    }
+
+    private static Driver getClosestFittingDriver(List<Driver> sortedAvailableDrivers, String carType, Set<String> additionalServices) {
         if (sortedAvailableDrivers == null) {
             return null;
         }
@@ -84,11 +128,11 @@ public class RideService implements IRideService {
             boolean driverFits = true;
             Car car = driver.getCar();
 
-            if (!rideRequest.getCarType().equals("Any") && !rideRequest.getCarType().equals(car.getCarType().toString())) {
+            if (!carType.equals("Any") && !carType.equals(car.getCarType().toString())) {
                 driverFits = false;
             }
 
-            for (String service : rideRequest.getAdditionalServices()) {
+            for (String service : additionalServices) {
                 if (!car.getAdditionalServices().contains(service)) {
                     driverFits = false;
                     break;
@@ -102,5 +146,47 @@ public class RideService implements IRideService {
         }
 
         return closestFittingDriver;
+    }
+
+    private static Driver getNextFittingDriver(List<Driver> sortedAvailableDrivers, String carType, Set<String> additionalServices, Long currentDriverId) {
+        if (sortedAvailableDrivers == null) {
+            return null;
+        }
+        Driver nextFittingDriver = null;
+
+        int i = 0;
+        while (i < sortedAvailableDrivers.size()) {
+            Driver driver = sortedAvailableDrivers.get(i);
+            i++;
+            if (currentDriverId.equals(driver.getId())) {
+                break;
+            }
+        }
+
+        while (i < sortedAvailableDrivers.size()) {
+            Driver driver = sortedAvailableDrivers.get(i);
+            boolean driverFits = true;
+            Car car = driver.getCar();
+
+            if (!carType.equals("Any") && !carType.equals(car.getCarType().toString())) {
+                driverFits = false;
+            }
+
+            for (String service : additionalServices) {
+                if (!car.getAdditionalServices().contains(service)) {
+                    driverFits = false;
+                    break;
+                }
+            }
+
+            if (driverFits) {
+                nextFittingDriver = driver;
+                break;
+            }
+
+            i++;
+        }
+
+        return nextFittingDriver;
     }
 }

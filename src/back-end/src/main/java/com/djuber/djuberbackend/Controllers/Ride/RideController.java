@@ -27,6 +27,20 @@ public class RideController {
         return new ResponseEntity<>(HttpStatus.OK);
     }
 
+    @PostMapping("/accept/{rideId}")
+    @PreAuthorize("hasAnyRole('DRIVER')")
+    public ResponseEntity<Void> acceptRideOffer(@PathVariable("rideId") Long rideId) {
+        rideService.acceptRideOffer(rideId);
+        return new ResponseEntity<>(HttpStatus.OK);
+    }
+
+    @PostMapping("/decline/{rideId}")
+    @PreAuthorize("hasAnyRole('DRIVER')")
+    public ResponseEntity<Void> declineRideOffer(@PathVariable("rideId") Long rideId) {
+        rideService.declineRideOffer(rideId);
+        return new ResponseEntity<>(HttpStatus.OK);
+    }
+
     @GetMapping("/{rideId}")
     @PreAuthorize("hasAnyRole('CLIENT', 'DRIVER')")
     public ResponseEntity<RideResponse> getRide(@PathVariable("rideId") Long rideId) {
