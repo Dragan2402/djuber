@@ -5,6 +5,11 @@ import * as SockJS from 'sockjs-client';
 import { HashService } from './utility/hash-service.service';
 import { MatDialog, MatDialogConfig } from '@angular/material/dialog';
 import { AcceptRideDriverDialogComponent } from './ride/dialogs/accept-ride-driver-dialog/accept-ride-driver-dialog.component';
+import { RideSocketResponse } from './ride/rideSocketResponse';
+import { Router } from '@angular/router';
+import { MatSnackBar } from '@angular/material/snack-bar';
+import { SnackbarComponent } from './snackbar/snackbar.component';
+import { AcceptRideClientDialogComponent } from './ride/dialogs/accept-ride-client-dialog/accept-ride-client-dialog.component';
 
 @Component({
   selector: 'djuber-root',
@@ -23,7 +28,7 @@ export class AppComponent implements DoCheck{
   socket?: WebSocket;
   stompClient?: Stomp.Client;
 
-  constructor(private authService:AuthenticationService, private hashService:HashService, public matDialog: MatDialog){}
+  constructor(private authService:AuthenticationService, private hashService:HashService, public matDialog: MatDialog, private router:Router, private _snackBar:MatSnackBar){}
 
   ngDoCheck(): void {
     if(this.authService.logged$.value === true && this.socketOpened === false){
@@ -55,9 +60,11 @@ export class AppComponent implements DoCheck{
       //func = what to do when connection is established
       this.stompClient!.subscribe(
         '/topic/ride/'+this.identityId ,
-        (response) => {
+        (response : RideSocketResponse) => {
           //func = what to do when client receives data (messages)
-          this.toggleAcceptRideDialog(response);
+          if(response.status === "RIDE_DRIVER_OFFER"){
+            this.toggleAcceptRideDriverDialog(response);
+          }
         }
       );
     });
@@ -72,8 +79,15 @@ export class AppComponent implements DoCheck{
       //func = what to do when connection is established
       this.stompClient!.subscribe(
         '/topic/ride/'+this.identityId ,
-        (response) => {
+        (response : RideSocketResponse) => {
           //func = what to do when client receives data (messages)
+          if(response.status === "RIDE_CLIENT_ACCEPTED"){
+            this.router.navigate(["singleRideMap",response.rideId]);
+          }else if(response.status === "RIDE_CLIENT_DECLINED"){
+            this._snackBar.openFromComponent(SnackbarComponent,{data:"Sorry, but we did not manage to find a driver for your ride."});
+          }else if(response.status === "RIDE_CLIENT_OFFER"){
+           this.toggleAcceptRideClientDialog(response);
+          }
           console.log(response);
         },
         (error) =>{
@@ -83,16 +97,24 @@ export class AppComponent implements DoCheck{
     });
   }
 
-  private toggleAcceptRideDialog(data){
+  private toggleAcceptRideDriverDialog(response : RideSocketResponse){
     const dialogConfig = new MatDialogConfig();
-    // The user can't close the dialog by clicking outside its body
     dialogConfig.disableClose = true;
-    dialogConfig.id = "note-modal";
-    dialogConfig.data = {data};
+    dialogConfig.id = "driver-modal";
+    dialogConfig.data = {response};
     dialogConfig.height = "20%";
     dialogConfig.width = "20%";
-    // https://material.angular.io/components/dialog/overview
     this.matDialog.open(AcceptRideDriverDialogComponent, dialogConfig);
+  }
+
+  private toggleAcceptRideClientDialog(response : RideSocketResponse){
+    const dialogConfig = new MatDialogConfig();
+    dialogConfig.disableClose = true;
+    dialogConfig.id = "client-modal";
+    dialogConfig.data = {response};
+    dialogConfig.height = "20%";
+    dialogConfig.width = "20%";
+    this.matDialog.open(AcceptRideClientDialogComponent, dialogConfig);
   }
 
 }
