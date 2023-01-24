@@ -54,6 +54,14 @@ public class RideMapper {
         return ride;
     }
 
+    public static List<CoordinateResponse> map(List<Coordinate> coordinates){
+        List<CoordinateResponse> coordinateResponses = new ArrayList<>();
+        for(Coordinate coordinate : coordinates){
+            coordinateResponses.add(new CoordinateResponse(coordinate));
+        }
+        return coordinateResponses;
+    }
+
     public static RideResponse mapResponse(Ride ride, List<Coordinate> coordinates) {
         RideResponse response = new RideResponse();
         response.setDriverName(ride.getDriver().getFirstName());

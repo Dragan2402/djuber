@@ -3,6 +3,7 @@ import { ActivatedRoute } from '@angular/router';
 import * as L from 'leaflet';
 import * as Stomp from 'stompjs';
 import * as SockJS from 'sockjs-client';
+import { RideUpdateResponse } from '../rideUpdateResponse';
 
 
 @Component({
@@ -26,6 +27,8 @@ export class SingleRideMapComponent implements OnInit {
     center: { lat: 45.25461307185434, lng:  19.842973257328783 }
   }
 
+  driverMarker:L.Marker;
+
   constructor(private route: ActivatedRoute) { }
 
   ngOnInit(): void {
@@ -48,13 +51,35 @@ export class SingleRideMapComponent implements OnInit {
         '/topic/singleRide/'+this.routeId ,
         (response) => {
           //func = what to do when client receives data (messages)
-          console.log(response);
+          const RideUpdateResponse = JSON.parse(response["body"]) as RideUpdateResponse;
+          this.updateRideStatus(RideUpdateResponse);
         },
         (error) =>{
           console.log(error);
         }
       );
     });
+  }
+
+  private updateRideStatus(rideUpdateResponse:RideUpdateResponse){
+    if(rideUpdateResponse.rideStatus==="DONE"){
+      console.log("RIDE DONE PLEASE NAVIGATE");
+    }else{
+      if(this.driverMarker !== undefined){
+        this.driverMarker.remove();
+      }
+      this.driverMarker = L.marker([rideUpdateResponse.lat, rideUpdateResponse.lon], {
+        icon: L.icon({
+            iconUrl: 'assets/car.svg',
+            iconSize: [30, 30],
+            iconAnchor: [10, 10],
+            popupAnchor: [0, 0]
+        }),
+        title: 'Driver'
+      }).addTo(this.map);
+      this.map.panTo([rideUpdateResponse.lat, rideUpdateResponse.lon]);
+      this.driverMarker.bindTooltip("Driver");
+    }
   }
 
 }
