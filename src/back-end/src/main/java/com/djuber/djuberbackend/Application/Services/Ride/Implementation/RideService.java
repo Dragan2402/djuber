@@ -30,6 +30,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.webjars.NotFoundException;
 
+import java.io.IOException;
 import java.util.List;
 import java.util.Set;
 
@@ -92,6 +93,12 @@ public class RideService implements IRideService {
         for (Client client : ride.getClients()) {
             simpMessagingTemplate.convertAndSend("/topic/ride/" + client.getIdentity().getId(), result);
         }
+    }
+
+    private boolean execute(Long rideId) throws IOException, InterruptedException {
+        Process p = new ProcessBuilder("locust", "-f", "script/djuber-simulation.py", "--conf", "script/locust.conf", "--data", rideId.toString()).start();
+        int exitVal = p.waitFor();
+        return true;
     }
 
     @Override
