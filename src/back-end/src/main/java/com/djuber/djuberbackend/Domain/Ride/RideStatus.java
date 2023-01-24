@@ -5,5 +5,6 @@ public enum RideStatus {
     CANCELED,
     DONE,
     ON_THE_WAY,
-    ON_ADDRESS
+    ON_ADDRESS,
+    PENDING
 }

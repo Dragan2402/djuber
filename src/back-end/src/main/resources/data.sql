@@ -60,10 +60,13 @@ VALUES (200000, 400000, 'Jovo', 'Jovic', 'Novi Sad', '067123423', true, 0, true,
 
 --CARS
 INSERT INTO car (id, car_type, license_plate, lat, lon, deleted)
-VALUES (100000, 0, 'NS24423J', 45.24533662754101, 19.8430497771721, false);
+VALUES (100000, 0, 'NS24423J', 44.24533662754101, 18.8430497771721, false);
 
 INSERT INTO car (id, car_type, license_plate, lat, lon, deleted)
-VALUES (200000, 0, 'NS99892J', 45.24533662754101, 19.8430497771721, false);
+VALUES (200000, 0, 'NS99892J', 46.24533662754101, 20.8430497771721, false);
+
+INSERT INTO car (id, car_type, license_plate, lat, lon, deleted)
+VALUES (300000, 0, 'NS99894J', 45.24533662754101, 19.8430497771721, false);
 
 INSERT INTO CAR_ADDITIONAL_SERVICES (car_id, ADDITIONAL_SERVICES)
 VALUES (100000, 'pets');
@@ -79,6 +82,12 @@ INSERT INTO driver (id, identity_id, first_name, last_name, city, phone_number, 
                     duration_active, blocked, in_ride,
                     deleted)
 VALUES (200000, 600000, 'Mujo', 'Mujic', 'Novi Sad', '067123423', true, 200000, 0, false,
+        false, false);
+
+INSERT INTO driver (id, identity_id, first_name, last_name, city, phone_number, active, car_id,
+                    duration_active, blocked, in_ride,
+                    deleted)
+VALUES (300000, 600000, 'Fata', 'Fatic', 'Novi Sad', '067123424', true, 300000, 0, false,
         false, false);
 
 --ROUTES
