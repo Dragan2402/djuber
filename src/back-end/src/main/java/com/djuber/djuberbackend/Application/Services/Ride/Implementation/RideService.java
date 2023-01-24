@@ -20,6 +20,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
 import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 
@@ -34,6 +35,7 @@ public class RideService implements IRideService {
     final SimpMessagingTemplate simpMessagingTemplate;
 
     @Override
+    @Transactional
     public void getClosestFittingDriver(RideRequest rideRequest) {
         Ride ride = RideMapper.map(rideRequest);
         Identity clientIdentity = identityRepository.findByEmail(rideRequest.getClientEmail());
@@ -59,28 +61,29 @@ public class RideService implements IRideService {
     }
 
     private static Driver getClosestFittingDriver(RideRequest rideRequest, List<Driver> sortedAvailableDrivers) {
+        if (sortedAvailableDrivers == null) {
+            return null;
+        }
         Driver closestFittingDriver = null;
 
-        if (sortedAvailableDrivers != null) {
-            for (Driver driver : sortedAvailableDrivers) {
-                boolean driverFits = true;
-                Car car = driver.getCar();
+        for (Driver driver : sortedAvailableDrivers) {
+            boolean driverFits = true;
+            Car car = driver.getCar();
 
-                if (!rideRequest.getCarType().equals("Any") && !rideRequest.getCarType().equals(car.getCarType().toString())) {
+            if (!rideRequest.getCarType().equals("Any") && !rideRequest.getCarType().equals(car.getCarType().toString())) {
+                driverFits = false;
+            }
+
+            for (String service : rideRequest.getAdditionalServices()) {
+                if (!car.getAdditionalServices().contains(service)) {
                     driverFits = false;
-                }
-
-                for (String service : rideRequest.getAdditionalServices()) {
-                    if (!car.getAdditionalServices().contains(service)) {
-                        driverFits = false;
-                        break;
-                    }
-                }
-
-                if (driverFits) {
-                    closestFittingDriver = driver;
                     break;
                 }
+            }
+
+            if (driverFits) {
+                closestFittingDriver = driver;
+                break;
             }
         }
 
