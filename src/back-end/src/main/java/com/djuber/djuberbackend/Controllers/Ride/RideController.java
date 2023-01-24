@@ -3,9 +3,8 @@ package com.djuber.djuberbackend.Controllers.Ride;
 import com.djuber.djuberbackend.Application.Services.Ride.IRideService;
 import com.djuber.djuberbackend.Application.Services.Ride.Mapper.RideMapper;
 import com.djuber.djuberbackend.Controllers.Ride.Requests.RideRequest;
+import com.djuber.djuberbackend.Controllers.Ride.Responses.RideResponse;
 import com.djuber.djuberbackend.Domain.Ride.Ride;
-import com.djuber.djuberbackend.Domain.Route.Coordinate;
-import com.djuber.djuberbackend.Domain.Route.Route;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -22,9 +21,15 @@ public class RideController {
     private final IRideService rideService;
 
     @PostMapping("/driver")
-    @PreAuthorize("hasAnyRole('CLIENT','DRIVER')")
+    @PreAuthorize("hasAnyRole('CLIENT')")
     public ResponseEntity<Void> sendRideRequestToClosestFittingDriver(@RequestBody RideRequest rideRequest) {
         rideService.getClosestFittingDriver(rideRequest);
         return new ResponseEntity<>(HttpStatus.OK);
+    }
+
+    @GetMapping("/{rideId}")
+    @PreAuthorize("hasAnyRole('CLIENT', 'DRIVER')")
+    public ResponseEntity<RideResponse> getRide(@PathVariable("rideId") Long rideId) {
+        return new ResponseEntity<>(rideService.getRideResponse(rideId), HttpStatus.OK);
     }
 }

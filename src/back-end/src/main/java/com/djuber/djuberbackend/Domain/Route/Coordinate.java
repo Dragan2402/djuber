@@ -12,8 +12,8 @@ import javax.persistence.*;
 @NoArgsConstructor
 @AllArgsConstructor
 @FieldDefaults(level = AccessLevel.PRIVATE)
-@Where(clause = "deleted = false")
-@SQLDelete(sql = "UPDATE coordinate SET deleted = true WHERE id = ?")
+//@Where(clause = "deleted = false")
+//@SQLDelete(sql = "UPDATE coordinate SET deleted = true WHERE id = ?")
 public class Coordinate {
 
     @Id

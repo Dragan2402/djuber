@@ -30,7 +30,7 @@ public class Route {
     @OneToOne(mappedBy = "route")
     Reservation reservation;
 
-    @OneToMany(mappedBy = "route",fetch = FetchType.LAZY, cascade = CascadeType.DETACH)
+    @OneToMany(mappedBy = "route", fetch = FetchType.LAZY, cascade = CascadeType.DETACH)
     List<Coordinate> coordinates = new ArrayList<>();
 
     @Column(name = "deleted", nullable = false)

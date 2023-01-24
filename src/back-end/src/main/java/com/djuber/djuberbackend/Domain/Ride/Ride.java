@@ -35,7 +35,7 @@ public class Ride implements Serializable {
 
     @ManyToMany(fetch = FetchType.EAGER)
     @JoinTable(name = "clients_rides",joinColumns = @JoinColumn(name = "ride_id", referencedColumnName = "id"), inverseJoinColumns = @JoinColumn(name = "client_id", referencedColumnName = "id"))
-    Set<Client> passengers = new HashSet<>();
+    Set<Client> clients = new HashSet<>();
 
     @OneToMany(mappedBy = "ride",fetch = FetchType.LAZY, cascade = CascadeType.DETACH)
     Set<Review> reviews = new HashSet<>();

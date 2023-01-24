@@ -5,6 +5,7 @@ import com.djuber.djuberbackend.Application.Services.Ride.Mapper.RideMapper;
 import com.djuber.djuberbackend.Application.Services.Ride.Results.RideMessageResult;
 import com.djuber.djuberbackend.Application.Services.Ride.Results.RideMessageStatus;
 import com.djuber.djuberbackend.Controllers.Ride.Requests.RideRequest;
+import com.djuber.djuberbackend.Controllers.Ride.Responses.RideResponse;
 import com.djuber.djuberbackend.Domain.Authentication.Identity;
 import com.djuber.djuberbackend.Domain.Client.Client;
 import com.djuber.djuberbackend.Domain.Driver.Car;
@@ -15,12 +16,14 @@ import com.djuber.djuberbackend.Infastructure.Repositories.Authentication.IIdent
 import com.djuber.djuberbackend.Infastructure.Repositories.Client.IClientRepository;
 import com.djuber.djuberbackend.Infastructure.Repositories.Driver.IDriverRepository;
 import com.djuber.djuberbackend.Infastructure.Repositories.Ride.IRideRepository;
+import com.djuber.djuberbackend.Infastructure.Repositories.Route.ICoordinatesRepository;
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
 import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.webjars.NotFoundException;
 
 import java.util.List;
 
@@ -32,6 +35,7 @@ public class RideService implements IRideService {
     final IIdentityRepository identityRepository;
     final IClientRepository clientRepository;
     final IDriverRepository driverRepository;
+    final ICoordinatesRepository coordinatesRepository;
     final SimpMessagingTemplate simpMessagingTemplate;
 
     @Override
@@ -40,7 +44,7 @@ public class RideService implements IRideService {
         Ride ride = RideMapper.map(rideRequest);
         Identity clientIdentity = identityRepository.findByEmail(rideRequest.getClientEmail());
         Client client = clientRepository.findByIdentityId(clientIdentity.getId());
-        ride.getPassengers().add(client);
+        ride.getClients().add(client);
 
         Coordinate startCoordinate = ride.getRoute().getStartCoordinate();
         List<Driver> sortedAvailableDrivers = driverRepository.findAvailableDriversSortedByDistanceFromCoordinate(startCoordinate);
@@ -58,6 +62,16 @@ public class RideService implements IRideService {
             Identity driverIdentity = closestFittingDriver.getIdentity();
             simpMessagingTemplate.convertAndSend("/topic/ride/" + driverIdentity.getId(), result);
         }
+    }
+
+    @Override
+    public RideResponse getRideResponse(Long rideId) {
+        Ride ride = rideRepository.findById(rideId).orElse(null);
+        if (ride == null) {
+            throw new NotFoundException("Ride not found.");
+        }
+        List<Coordinate> coordinates = coordinatesRepository.findByRouteId(ride.getRoute().getId());
+        return RideMapper.mapResponse(ride, coordinates);
     }
 
     private static Driver getClosestFittingDriver(RideRequest rideRequest, List<Driver> sortedAvailableDrivers) {
