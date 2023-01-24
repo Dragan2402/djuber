@@ -16,14 +16,20 @@ import {MatFormFieldModule} from '@angular/material/form-field';
 import {MatSelectModule} from '@angular/material/select';
 import { MatInputModule } from '@angular/material/input';
 import {FormsModule, ReactiveFormsModule} from '@angular/forms';
+import { ClientPaymentComponent } from './client-page/client-payment/client-payment.component';
+import {MatDialogModule, MatDialogRef} from '@angular/material/dialog';
 
 
 @NgModule({
   declarations: [
     ClientPageComponent,
-    ClientProfileComponent
+    ClientProfileComponent,
+    ClientPaymentComponent
   ],
-  providers:[ClientService],
+  providers:[ClientService ,{
+    provide: MatDialogRef,
+    useValue: {}
+  },],
   imports: [
     CommonModule,
     ClientRoutingModule,
@@ -38,7 +44,8 @@ import {FormsModule, ReactiveFormsModule} from '@angular/forms';
     MatSelectModule,
     MatInputModule,
     FormsModule,
-    ReactiveFormsModule
+    ReactiveFormsModule,
+    MatDialogModule
   ]
 })
 export class ClientModule { }

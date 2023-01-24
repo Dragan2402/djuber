@@ -2,6 +2,7 @@ import { Component, OnInit , OnChanges, SimpleChanges} from '@angular/core';
 import { Router } from '@angular/router';
 import {AuthenticationService} from "../authentication/authentication.service";
 import { LoggedUser } from '../authentication/loggedUser';
+import { ClientService } from '../client/client.service';
 import { HashService } from '../utility/hash-service.service';
 
 @Component({
@@ -15,6 +16,8 @@ export class HeaderBarComponent implements OnInit {
 
   userInfo! : LoggedUser;
 
+  balance:number = 0;
+
   constructor(private authenticationService : AuthenticationService, private router:Router, private hashService: HashService) {
     this.authenticationService.logged$.subscribe((attr:boolean) =>{
       this.logged = attr;
@@ -25,10 +28,24 @@ export class HeaderBarComponent implements OnInit {
    }
 
   ngOnInit(): void {
+    this.authenticationService.getLoggedClientBalance().subscribe({next:(v) =>{
+      this.balance = v["balance"];
+    }})
   }
 
   logout():void{
     this.authenticationService.logout();
+  }
+
+  loggedUserClient(){
+    const role = this.authenticationService.getLoggedUserRole();
+    return (role === this.hashService.hashString("CLIENT"));
+  }
+
+  loggedClientBalance(){
+    this.authenticationService.getLoggedClientBalance().subscribe({next:(v) =>{
+      this.balance = v["balance"];
+    }})
   }
 
 

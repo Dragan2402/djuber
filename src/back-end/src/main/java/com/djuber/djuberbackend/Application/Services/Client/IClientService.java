@@ -25,4 +25,8 @@ public interface IClientService {
     void updateClientNote(long clientId, String note);
 
     String getClientNote(long clientId);
+
+    Double getClientBalanceByEmail(String email);
+
+    void addLoggedClientFunds(String email, Double amount);
 }

@@ -1,0 +1,13 @@
+<div class="main-div">
+  <div class="price-div">
+    <h2 style="margin-bottom: 2%;">On {{today | date: 'dd.MM.yyyy.'}} 1 dollar equals 108RSD</h2>
+    <div style="display: flex;flex-direction: row;width: 100%;align-items: center;">
+      <mat-form-field style="margin-left: auto; width: 60%;height: 50%;">
+        <mat-label>Amount of rsd you want to purchase.</mat-label>
+        <input matInput type="number" min=5 required [(ngModel)]="amount" step=1 height=100px>
+      </mat-form-field>
+      <mat-label>You will get {{amount*108}}RSD</mat-label>
+    </div>
+  </div>
+  <div #paypal class="paypal-div"></div>
+</div>

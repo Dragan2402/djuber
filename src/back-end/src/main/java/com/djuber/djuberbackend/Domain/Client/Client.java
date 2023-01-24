@@ -47,6 +47,9 @@ public class Client {
     @Column(name = "verified", nullable = false)
     Boolean verified;
 
+    @Column(name = "balance", nullable = false)
+    Double balance;
+
     @Column(name = "signingType", nullable = false)
     ClientSigningType clientSigningType;
 

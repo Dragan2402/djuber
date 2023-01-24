@@ -21,6 +21,11 @@ export class ClientPageComponent implements OnInit {
 
   }
 
+  payment(){
+    this.router.navigateByUrl('client');
+    this.router.navigate(['client',{outlets: { co:['payment']} }],{ skipLocationChange: true });
+  }
+
   changePassword(){
     this.router.navigate(["/authentication/changePassword"]);
   }

@@ -28,6 +28,9 @@
                 <span id="userName">{{userInfo.firstName}} {{userInfo.lastName}}</span>
               </div>
             </div>
+            <button mat-menu-item *ngIf="loggedUserClient()" (click)="loggedClientBalance()">
+              <span >Balance: {{balance}}RSD</span>
+            </button>
             <button mat-menu-item (click)="navigateToProfile()">
               <mat-icon>account_box</mat-icon>
               <span>Profile</span>

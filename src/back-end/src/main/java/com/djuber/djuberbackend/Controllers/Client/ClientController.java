@@ -5,7 +5,9 @@ import com.djuber.djuberbackend.Application.Services.Admin.Results.AdminResult;
 import com.djuber.djuberbackend.Application.Services.Client.IClientService;
 import com.djuber.djuberbackend.Application.Services.Client.Results.ClientResult;
 import com.djuber.djuberbackend.Controllers.Admin.Requests.UpdateAdminRequest;
+import com.djuber.djuberbackend.Controllers.Client.Requests.AddLoggedClientFundsRequest;
 import com.djuber.djuberbackend.Controllers.Client.Requests.UpdateClientRequest;
+import com.djuber.djuberbackend.Controllers.Client.Responses.BalanceResponse;
 import com.djuber.djuberbackend.Controllers._Common.Requests.IdRequest;
 import com.djuber.djuberbackend.Controllers._Common.Requests.ImageUpdateRequest;
 import com.djuber.djuberbackend.Controllers._Common.Requests.NoteUpdateRequest;
@@ -71,6 +73,18 @@ public class ClientController {
     @PreAuthorize("hasAnyRole('CLIENT')")
     public ResponseEntity<ClientResult> getLoggedClient(Principal user){
         return new ResponseEntity<>(clientService.getClientByEmail(user.getName()), HttpStatus.OK);
+    }
+
+    @GetMapping(value = "loggedClientBalance")
+    @PreAuthorize("hasAnyRole('CLIENT')")
+    public ResponseEntity<BalanceResponse> getLoggedClientBalance(Principal user){
+        return new ResponseEntity<>(new BalanceResponse(clientService.getClientBalanceByEmail(user.getName())), HttpStatus.OK);
+    }
+
+    @PutMapping(value = "addLoggedClientFunds")
+    @PreAuthorize("hasAnyRole('CLIENT')")
+    public void addLoggedClientFunds(Principal user, @RequestBody @Valid AddLoggedClientFundsRequest request){
+        this.clientService.addLoggedClientFunds(user.getName(), request.getAmount());
     }
 
     @GetMapping(value = "loggedClientPicture")

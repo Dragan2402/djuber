@@ -24,4 +24,9 @@ export class ClientService {
   public updateLoggedClient(request:UpdateClientRequest){
     return this.http.put("/api/client/updateLoggedClient",request);
   }
+
+  public addLoggedClientFunds(amount:number){
+    return this.http.put("/api/client/addLoggedClientFunds",{amount:amount});
+  }
+
 }

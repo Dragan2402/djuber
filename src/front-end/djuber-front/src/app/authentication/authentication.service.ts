@@ -160,4 +160,8 @@ export class AuthenticationService {
     this.route.navigate(['/'])
   }
 
+  public getLoggedClientBalance(){
+    return this.http.get("/api/client/loggedClientBalance");
+  }
+
 }

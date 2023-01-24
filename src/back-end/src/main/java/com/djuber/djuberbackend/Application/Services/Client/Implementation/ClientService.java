@@ -118,6 +118,33 @@ public class ClientService implements IClientService {
     }
 
     @Override
+    public Double getClientBalanceByEmail(String email) {
+        Identity identity = identityRepository.findByEmail(email);
+        if(identity == null){
+            throw new UserNotFoundException("Client with provided email does not exist.");
+        }
+        Client client = clientRepository.findByIdentityId(identity.getId());
+        if(client == null){
+            throw new UserNotFoundException("Client with provided email does not exist.");
+        }
+        return client.getBalance();
+    }
+
+    @Override
+    public void addLoggedClientFunds(String email, Double amount) {
+        Identity identity = identityRepository.findByEmail(email);
+        if(identity == null){
+            throw new UserNotFoundException("Client with provided email does not exist.");
+        }
+        Client client = clientRepository.findByIdentityId(identity.getId());
+        if(client == null){
+            throw new UserNotFoundException("Client with provided email does not exist.");
+        }
+        client.setBalance(client.getBalance() + amount);
+        clientRepository.save(client);
+    }
+
+    @Override
     public Page<ClientResult> readPageable(Pageable pageable) {
         return clientMapper.map(clientRepository.findAll(pageable));
     }
