@@ -1,6 +1,7 @@
 import { Component, Inject, OnInit } from '@angular/core';
 import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
 import { Router } from '@angular/router';
+import { RideSocketResponse } from '../../rideSocketResponse';
 
 @Component({
   selector: 'djuber-accept-ride-driver-dialog',
@@ -9,9 +10,9 @@ import { Router } from '@angular/router';
 })
 export class AcceptRideDriverDialogComponent implements OnInit {
 
-  dataToDisplay:any;
+  dataToDisplay:RideSocketResponse;
 
-  constructor(public dialogRef: MatDialogRef<AcceptRideDriverDialogComponent>, @Inject(MAT_DIALOG_DATA) public data: any, private router: Router) {
+  constructor(public dialogRef: MatDialogRef<AcceptRideDriverDialogComponent>, @Inject(MAT_DIALOG_DATA) public data: RideSocketResponse, private router: Router) {
     this.dataToDisplay = data;
   }
 
@@ -26,6 +27,6 @@ export class AcceptRideDriverDialogComponent implements OnInit {
   acceptRide(){
     console.log("Accepting");
     this.dialogRef.close();
-    this.router.navigate(["singleRideMap",1232131]);
+    this.router.navigate(["singleRideMap",this.dataToDisplay.rideId]);
   }
 }

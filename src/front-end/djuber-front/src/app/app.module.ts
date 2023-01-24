@@ -34,6 +34,7 @@ import {MatSelectModule} from '@angular/material/select';
 import { AcceptRideDriverDialogComponent } from './ride/dialogs/accept-ride-driver-dialog/accept-ride-driver-dialog.component';
 import {MatDialogModule} from '@angular/material/dialog';
 import { SingleRideMapComponent } from './ride/single-ride-map/single-ride-map.component';
+import { AcceptRideClientDialogComponent } from './ride/dialogs/accept-ride-client-dialog/accept-ride-client-dialog.component';
 
 @NgModule({
   declarations: [
@@ -46,7 +47,8 @@ import { SingleRideMapComponent } from './ride/single-ride-map/single-ride-map.c
     UserLiveChatComponent,
     MapComponent,
     AcceptRideDriverDialogComponent,
-    SingleRideMapComponent
+    SingleRideMapComponent,
+    AcceptRideClientDialogComponent
   ],
   imports: [
     BrowserModule,
