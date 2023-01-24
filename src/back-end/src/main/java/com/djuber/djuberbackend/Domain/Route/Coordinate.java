@@ -35,7 +35,4 @@ public class Coordinate {
     @ManyToOne
     @JoinColumn(name = "routeId", nullable = false)
     Route route;
-
-    @Column(name = "isStop", nullable = false)
-    Boolean isStop;
 }

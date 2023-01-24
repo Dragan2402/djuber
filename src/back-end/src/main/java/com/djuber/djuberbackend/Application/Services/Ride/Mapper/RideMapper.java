@@ -3,6 +3,7 @@ package com.djuber.djuberbackend.Application.Services.Ride.Mapper;
 import com.djuber.djuberbackend.Controllers.Ride.Requests.CoordinateRequest;
 import com.djuber.djuberbackend.Controllers.Ride.Requests.RideRequest;
 import com.djuber.djuberbackend.Domain.Client.Client;
+import com.djuber.djuberbackend.Domain.Driver.CarType;
 import com.djuber.djuberbackend.Domain.Driver.Driver;
 import com.djuber.djuberbackend.Domain.Review.Review;
 import com.djuber.djuberbackend.Domain.Ride.Ride;
@@ -21,12 +22,11 @@ public class RideMapper {
     public static Ride map(RideRequest rideRequest) {
         Ride ride = new Ride();
 
-//        ride.setRideType(rideRequest.getRideType());
+        RideType rideType = RideType.fromString(rideRequest.getRideType());
+        ride.setRideType(rideType);
 
 
         ride.setRoute(new Route());
-        ride.getRoute().setDeleted(false);
-
         for (CoordinateRequest cr : rideRequest.getCoordinates()) {
             Coordinate coordinate = new Coordinate();
             coordinate.setIndex(cr.getIndex());
@@ -35,6 +35,12 @@ public class RideMapper {
 
             ride.getRoute().getCoordinates().add(coordinate);
         }
+        ride.getRoute().setDeleted(false);
+
+
+        CarType carType = CarType.fromString(rideRequest.getCarType());
+
+        ride.setPrice(carType.getBasePrice() + rideRequest.getDistance() * 120);
         ride.setRideStatus(RideStatus.PENDING);
         ride.setDeleted(false);
 
