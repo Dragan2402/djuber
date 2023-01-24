@@ -57,7 +57,7 @@ public class RideMapper {
         RideResponse response = new RideResponse();
         response.setDriverName(ride.getDriver().getFirstName());
         response.setPrice(ride.getPrice());
-
+        response.setRideStatus(ride.getRideStatus().toString());
         response.setClientEmails(new HashSet<>());
         for (Client client : ride.getClients()) {
             response.getClientEmails().add(client.getIdentity().getEmail());

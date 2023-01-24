@@ -13,5 +13,6 @@ public class RideResponse {
     Set<String> clientEmails;
     String driverName;
     Double price;
+    String rideStatus;
     List<CoordinateResponse> coordinates;
 }

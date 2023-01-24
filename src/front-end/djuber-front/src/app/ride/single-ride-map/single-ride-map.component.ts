@@ -3,6 +3,12 @@ import { ActivatedRoute } from '@angular/router';
 import * as L from 'leaflet';
 import * as Stomp from 'stompjs';
 import * as SockJS from 'sockjs-client';
+import { RideService } from '../ride.service';
+import { RideResponse } from '../rideResponse';
+import { CoordinateResponse } from '../coordinateResponse';
+import { Coordinate } from 'src/app/home-page/map/coordinate';
+import { AuthenticationService } from 'src/app/authentication/authentication.service';
+import { HashService } from 'src/app/utility/hash-service.service';
 
 
 @Component({
@@ -12,7 +18,12 @@ import * as SockJS from 'sockjs-client';
 })
 export class SingleRideMapComponent implements OnInit {
 
-  routeId:string;
+  rideId:string;
+  ride:RideResponse;
+
+  routePolyLine : L.Polyline;
+  finish: L.Marker;
+  start: L.Marker;
 
   map!: L.Map;
 
@@ -26,11 +37,20 @@ export class SingleRideMapComponent implements OnInit {
     center: { lat: 45.25461307185434, lng:  19.842973257328783 }
   }
 
-  constructor(private route: ActivatedRoute) { }
+  constructor(private route: ActivatedRoute, private rideService:RideService, private authService : AuthenticationService, private hashService:HashService) { }
 
   ngOnInit(): void {
-    this.routeId = this.route.snapshot.paramMap.get('id');
+    this.rideId = this.route.snapshot.paramMap.get('id');
     this.openSocket();
+    this.rideService.getRideResponse(this.rideId).subscribe({
+      next:(response) =>{
+        this.ride = response;
+        this.ride.coordinates.sort((a: CoordinateResponse, b:Coordinate) => a.index - b.index);
+        this.drawRoute(this.ride);
+        this.start = this.drawMarker(this.ride.coordinates.find(coordinate => coordinate.index===0),"person","Starting location");
+        this.finish = this.drawMarker(this.ride.coordinates.find(coordinate => coordinate.index===(this.ride.coordinates.length-1)),"finish","Starting location");
+      }
+    });
   }
 
   onMapReady($event: L.Map) {
@@ -45,7 +65,7 @@ export class SingleRideMapComponent implements OnInit {
     this.stompClient.connect({}, (frame) => {
       //func = what to do when connection is established
       this.stompClient!.subscribe(
-        '/topic/singleRide/'+this.routeId ,
+        '/topic/singleRide/'+this.rideId ,
         (response) => {
           //func = what to do when client receives data (messages)
           console.log(response);
@@ -55,6 +75,33 @@ export class SingleRideMapComponent implements OnInit {
         }
       );
     });
+  }
+
+  drawRoute(ride:RideResponse){
+    const points = ride.coordinates.map(coordinate => {return {lat:coordinate.lat, lng:coordinate.lon}})
+    const polyline = new L.Polyline(points, { color: 'red' }).addTo(this.map);
+    polyline.bindTooltip("Your route");
+    this.routePolyLine = polyline;
+  }
+
+  private drawMarker(coordinate:CoordinateResponse, iconUrlPart:string, tooltipText:string){
+    const marker = L.marker([coordinate.lat, coordinate.lon], {
+      icon: L.icon({
+          iconUrl: 'assets/'+iconUrlPart+'.svg',
+          iconSize: [30, 30],
+          iconAnchor: [10, 10],
+          popupAnchor: [0, 0]
+      }),
+      title: 'Desired location'
+    }).addTo(this.map);
+    this.map.panTo([coordinate.lat, coordinate.lon]);
+    marker.bindTooltip(tooltipText);
+    return marker;
+  }
+
+  userIsDriver(){
+    const role = this.authService.getLoggedUserRole();
+    return (this.hashService.matchRoles("DRIVER",role));
   }
 
 }
