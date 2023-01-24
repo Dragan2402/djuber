@@ -11,4 +11,7 @@ import java.util.List;
 public interface ICoordinatesRepository extends JpaRepository<Coordinate, Long> {
     @Query("select c from Coordinate c where c.route.id = ?1")
     List<Coordinate> findByRouteId(Long id);
+
+    @Query("select c from Coordinate c where c.route.id = ?1 and c.index = 0")
+    Coordinate findFirstCoordinateByRideId(Long rideId);
 }

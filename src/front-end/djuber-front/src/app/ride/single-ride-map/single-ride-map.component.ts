@@ -9,6 +9,8 @@ import { CoordinateResponse } from '../coordinateResponse';
 import { Coordinate } from 'src/app/home-page/map/coordinate';
 import { AuthenticationService } from 'src/app/authentication/authentication.service';
 import { HashService } from 'src/app/utility/hash-service.service';
+import { RideUpdateResponse } from '../rideUpdateResponse';
+
 
 
 @Component({
@@ -36,8 +38,10 @@ export class SingleRideMapComponent implements OnInit {
     zoom: 16,
     center: { lat: 45.25461307185434, lng:  19.842973257328783 }
   }
+  driverMarker:L.Marker;
 
   constructor(private route: ActivatedRoute, private rideService:RideService, private authService : AuthenticationService, private hashService:HashService) { }
+
 
   ngOnInit(): void {
     this.rideId = this.route.snapshot.paramMap.get('id');
@@ -68,7 +72,8 @@ export class SingleRideMapComponent implements OnInit {
         '/topic/singleRide/'+this.rideId ,
         (response) => {
           //func = what to do when client receives data (messages)
-          console.log(response);
+          const RideUpdateResponse = JSON.parse(response["body"]) as RideUpdateResponse;
+          this.updateRideStatus(RideUpdateResponse);
         },
         (error) =>{
           console.log(error);
@@ -101,10 +106,30 @@ export class SingleRideMapComponent implements OnInit {
 
   userIsDriver(){
     const role = this.authService.getLoggedUserRole();
-    return (this.hashService.matchRoles("DRIVER",role));
-  }
+    return (this.hashService.matchRoles("DRIVER",role));}
 
-}
+  private updateRideStatus(rideUpdateResponse:RideUpdateResponse){
+    if(rideUpdateResponse.rideStatus==="DONE"){
+      console.log("RIDE DONE PLEASE NAVIGATE");
+    }else{
+      if(this.driverMarker !== undefined){
+        this.driverMarker.remove();
+      }
+      this.driverMarker = L.marker([rideUpdateResponse.lat, rideUpdateResponse.lon], {
+        icon: L.icon({
+            iconUrl: 'assets/car.svg',
+            iconSize: [30, 30],
+            iconAnchor: [10, 10],
+            popupAnchor: [0, 0]
+        }),
+        title: 'Driver'
+      }).addTo(this.map);
+      this.map.panTo([rideUpdateResponse.lat, rideUpdateResponse.lon]);
+      this.driverMarker.bindTooltip("Driver");
+    }
+  }}
+
+
 
 export const getLayers = (): L.Layer[] => {
   return [

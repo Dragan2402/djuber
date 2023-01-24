@@ -4,8 +4,11 @@ import com.djuber.djuberbackend.Application.Services.Ride.IRideService;
 import com.djuber.djuberbackend.Application.Services.Ride.Mapper.RideMapper;
 import com.djuber.djuberbackend.Application.Services.Ride.Results.RideMessageResult;
 import com.djuber.djuberbackend.Application.Services.Ride.Results.RideMessageStatus;
+import com.djuber.djuberbackend.Controllers.Ride.Requests.CoordinateRequest;
 import com.djuber.djuberbackend.Controllers.Ride.Requests.RideRequest;
+import com.djuber.djuberbackend.Controllers.Ride.Responses.CoordinateResponse;
 import com.djuber.djuberbackend.Controllers.Ride.Responses.RideResponse;
+import com.djuber.djuberbackend.Controllers.Ride.Responses.RideUpdateResponse;
 import com.djuber.djuberbackend.Domain.Authentication.Identity;
 import com.djuber.djuberbackend.Domain.Client.Client;
 import com.djuber.djuberbackend.Domain.Driver.Car;
@@ -15,6 +18,7 @@ import com.djuber.djuberbackend.Domain.Ride.RideStatus;
 import com.djuber.djuberbackend.Domain.Route.Coordinate;
 import com.djuber.djuberbackend.Infastructure.Repositories.Authentication.IIdentityRepository;
 import com.djuber.djuberbackend.Infastructure.Repositories.Client.IClientRepository;
+import com.djuber.djuberbackend.Infastructure.Repositories.Driver.ICarRepository;
 import com.djuber.djuberbackend.Infastructure.Repositories.Driver.IDriverRepository;
 import com.djuber.djuberbackend.Infastructure.Repositories.Ride.IRideRepository;
 import com.djuber.djuberbackend.Infastructure.Repositories.Route.ICoordinatesRepository;
@@ -26,8 +30,8 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.webjars.NotFoundException;
 
+import java.io.IOException;
 import java.util.List;
-import java.util.Objects;
 import java.util.Set;
 
 @Service
@@ -40,6 +44,7 @@ public class RideService implements IRideService {
     final IDriverRepository driverRepository;
     final ICoordinatesRepository coordinatesRepository;
     final SimpMessagingTemplate simpMessagingTemplate;
+    final ICarRepository carRepository;
 
     @Override
     @Transactional
@@ -90,6 +95,12 @@ public class RideService implements IRideService {
         }
     }
 
+    private boolean execute(Long rideId) throws IOException, InterruptedException {
+        Process p = new ProcessBuilder("locust", "-f", "script/djuber-simulation.py", "--conf", "script/locust.conf", "--data", rideId.toString()).start();
+        int exitVal = p.waitFor();
+        return true;
+    }
+
     @Override
     public void declineRideOffer(Long rideId) {
         Ride ride = rideRepository.findById(rideId).orElse(null);
@@ -116,6 +127,80 @@ public class RideService implements IRideService {
             Identity driverIdentity = nextFittingDriver.getIdentity();
             simpMessagingTemplate.convertAndSend("/topic/ride/" + driverIdentity.getId(), result);
         }
+    }
+
+    @Override
+    public CoordinateResponse getDriverStartingLocation(Long rideId) {
+        Ride ride = rideRepository.findById(rideId).orElse(null);
+        if (ride == null) {
+            throw new NotFoundException("Ride not found.");
+        }
+        CoordinateResponse driverCoordinate = new CoordinateResponse();
+        driverCoordinate.setIndex(0);
+        driverCoordinate.setLat(ride.getDriver().getCar().getLat());
+        driverCoordinate.setLon(ride.getDriver().getCar().getLon());
+        return driverCoordinate;
+    }
+
+    @Override
+    public CoordinateResponse getRideStartingLocation(Long rideId) {
+        Coordinate startingCoordinate = coordinatesRepository.findFirstCoordinateByRideId(rideId);
+        if (startingCoordinate == null) {
+            throw new NotFoundException("Coordinate not found");
+        }
+        return new CoordinateResponse(startingCoordinate);
+    }
+
+    @Override
+    public void updateVehicleLocation(Long rideId, CoordinateRequest request) {
+        Ride ride = rideRepository.findById(rideId).orElse(null);
+        if (ride == null) {
+            throw new NotFoundException("Ride not found.");
+        }
+        Car car = carRepository.findById(ride.getDriver().getCar().getId()).orElse(null);
+
+        if (car == null) {
+            throw new NotFoundException("Car not found.");
+        }
+
+        car.setLat(request.getLat());
+        car.setLon(request.getLon());
+
+        carRepository.save(car);
+
+        RideUpdateResponse rideUpdateResponse = new RideUpdateResponse(ride.getRideStatus().toString(), request.getLat(),request.getLon());
+
+        simpMessagingTemplate.convertAndSend("/topic/singleRide/" + rideId, rideUpdateResponse);
+    }
+
+    @Override
+    public List<CoordinateResponse> startRide(Long rideId) {
+        Ride ride = rideRepository.findById(rideId).orElse(null);
+        if (ride == null) {
+            throw new NotFoundException("Ride not found.");
+        }
+        ride.setRideStatus(RideStatus.ACTIVE);
+        rideRepository.save(ride);
+
+        List<Coordinate> coordinates = coordinatesRepository.findByRouteId(ride.getRoute().getId());
+
+        RideUpdateResponse rideUpdateResponse = new RideUpdateResponse(ride.getRideStatus().toString(), coordinates.get(0).getLat(),coordinates.get(0).getLon());
+
+        simpMessagingTemplate.convertAndSend("/topic/singleRide/" + rideId, rideUpdateResponse);
+
+        return RideMapper.map(coordinates);
+    }
+
+    @Override
+    public void endRide(Long rideId) {
+        Ride ride = rideRepository.findById(rideId).orElse(null);
+        if (ride == null) {
+            throw new NotFoundException("Ride not found.");
+        }
+        ride.setRideStatus(RideStatus.DONE);
+        rideRepository.save(ride);
+
+        simpMessagingTemplate.convertAndSend("/topic/singleRide/" + rideId, new RideUpdateResponse(ride.getRideStatus().toString(),0D,0D));
     }
 
     private static Driver getClosestFittingDriver(List<Driver> sortedAvailableDrivers, String carType, Set<String> additionalServices) {

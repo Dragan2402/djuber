@@ -46,6 +46,7 @@ public class SecurityConfig{
                 .antMatchers("/chat/**").permitAll()
                 .antMatchers("/ride/**").permitAll()
                 .antMatchers("/singleRide/**").permitAll()
+                .antMatchers("/api/ride/script/**").permitAll()
                 .anyRequest().authenticated()
                 .and()
                 .cors()
