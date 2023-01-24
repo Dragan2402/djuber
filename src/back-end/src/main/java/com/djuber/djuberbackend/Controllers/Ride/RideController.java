@@ -21,7 +21,7 @@ import org.springframework.web.bind.annotation.*;
 public class RideController {
     private final IRideService rideService;
 
-    @GetMapping("/driver")
+    @PostMapping("/driver")
     @PreAuthorize("hasAnyRole('CLIENT','DRIVER')")
     public ResponseEntity<Void> sendRideRequestToClosestFittingDriver(@RequestBody RideRequest rideRequest) {
         rideService.getClosestFittingDriver(rideRequest);

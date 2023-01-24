@@ -333,7 +333,8 @@ export class MapComponent implements OnInit {
       }
 
       const request = {clientEmail:this.authenticationService.loggedUserInfo$.value["email"], distance:this.routes[0].distance, carType:this.selectedCarType,
-                      additionalServices:this.getAdditionalServices(), coordinates:coordinates} as RideRequest;
+                      additionalServices:this.getAdditionalServices(), coordinates:coordinates,rideType:"Single"} as RideRequest;
+      this.mapService.orderRide(request).subscribe();
       this.orderStatus = 1;
       this._snackBar.openFromComponent(SnackbarComponent,{data:"Waiting for driver."});
     }

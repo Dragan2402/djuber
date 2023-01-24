@@ -13,10 +13,22 @@ export class AcceptRideClientDialogComponent implements OnInit {
   dataToDisplay:RideSocketResponse;
 
   constructor(public dialogRef: MatDialogRef<AcceptRideClientDialogComponent>, @Inject(MAT_DIALOG_DATA) public data: RideSocketResponse, private router: Router) {
-    this.dataToDisplay = data;
+    this.dataToDisplay = data["response"];
+
    }
 
   ngOnInit(): void {
+  }
+
+  declineRide(){
+    console.log("Declining");
+    this.dialogRef.close();
+  }
+
+  acceptRide(){
+    console.log("Accepting");
+    this.dialogRef.close();
+    this.router.navigate(["singleRideMap",this.dataToDisplay.rideId]);
   }
 
 }

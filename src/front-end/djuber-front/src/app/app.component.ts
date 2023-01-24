@@ -10,6 +10,7 @@ import { Router } from '@angular/router';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { SnackbarComponent } from './snackbar/snackbar.component';
 import { AcceptRideClientDialogComponent } from './ride/dialogs/accept-ride-client-dialog/accept-ride-client-dialog.component';
+import { JsonPipe } from '@angular/common';
 
 @Component({
   selector: 'djuber-root',
@@ -60,10 +61,10 @@ export class AppComponent implements DoCheck{
       //func = what to do when connection is established
       this.stompClient!.subscribe(
         '/topic/ride/'+this.identityId ,
-        (response : RideSocketResponse) => {
-          //func = what to do when client receives data (messages)
-          if(response.status === "RIDE_DRIVER_OFFER"){
-            this.toggleAcceptRideDriverDialog(response);
+        (response) => {
+          const rideSocketResponse = JSON.parse(response["body"]) as RideSocketResponse;
+          if(rideSocketResponse.status === "RIDE_DRIVER_OFFER"){
+            this.toggleAcceptRideDriverDialog(rideSocketResponse);
           }
         }
       );
@@ -79,13 +80,14 @@ export class AppComponent implements DoCheck{
       //func = what to do when connection is established
       this.stompClient!.subscribe(
         '/topic/ride/'+this.identityId ,
-        (response : RideSocketResponse) => {
+        (response) => {
           //func = what to do when client receives data (messages)
-          if(response.status === "RIDE_CLIENT_ACCEPTED"){
+          const rideSocketResponse = JSON.parse(response["body"]) as RideSocketResponse;
+          if(rideSocketResponse.status === "RIDE_CLIENT_ACCEPTED"){
             this.router.navigate(["singleRideMap",response.rideId]);
-          }else if(response.status === "RIDE_CLIENT_DECLINED"){
+          }else if(rideSocketResponse.status === "RIDE_CLIENT_DECLINED"){
             this._snackBar.openFromComponent(SnackbarComponent,{data:"Sorry, but we did not manage to find a driver for your ride."});
-          }else if(response.status === "RIDE_CLIENT_OFFER"){
+          }else if(rideSocketResponse.status === "RIDE_CLIENT_OFFER"){
            this.toggleAcceptRideClientDialog(response);
           }
           console.log(response);

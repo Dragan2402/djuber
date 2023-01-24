@@ -2,6 +2,7 @@ import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { AvailableDriver } from './availableDriver';
 import { Coordinate } from './coordinate';
+import { RideRequest } from './rideRequest';
 
 @Injectable({
   providedIn: 'root'
@@ -36,6 +37,11 @@ export class MapService {
     const body = {"coordinates":pointsBody,"geometry_simplify":"true","preference":preference,"units":"km"}
     const url = "https://api.openrouteservice.org/v2/directions/driving-car/geojson";
     return this.http.post(url, body);
+  }
+
+
+  orderRide(request:RideRequest){
+    return this.http.post("/api/ride/driver", request);
   }
 
 

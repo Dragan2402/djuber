@@ -13,7 +13,8 @@ export class AcceptRideDriverDialogComponent implements OnInit {
   dataToDisplay:RideSocketResponse;
 
   constructor(public dialogRef: MatDialogRef<AcceptRideDriverDialogComponent>, @Inject(MAT_DIALOG_DATA) public data: RideSocketResponse, private router: Router) {
-    this.dataToDisplay = data;
+    this.dataToDisplay = data["response"];
+    console.log(data);
   }
 
   ngOnInit(): void {
