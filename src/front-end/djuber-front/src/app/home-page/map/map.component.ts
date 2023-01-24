@@ -1,4 +1,3 @@
-import { HttpClient } from '@angular/common/http';
 import { Component, OnInit } from '@angular/core';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import * as L from 'leaflet';
@@ -49,9 +48,9 @@ export class MapComponent implements OnInit {
 
   orderStatus:number = 0;
 
-  selectedCarType:string = "Any";
+  selectedCarType:string = "Sedan";
 
-  carTypes:string[]= ["Any","Sedan","Station wagon","Van","Transporter"];
+  carTypes:string[]= ["Sedan","Station wagon","Van","Transporter"];
 
   extraLuggage: boolean;
   pets: boolean;
@@ -202,7 +201,7 @@ export class MapComponent implements OnInit {
     this.routePathAddresses.splice(0, this.routePathAddresses.length);
     this.routePathPoints.splice(0, this.routePathPoints.length);
     this.orderStatus = 0;
-    this.selectedCarType = "Any";
+    this.selectedCarType = "Sedan";
     this.extraLuggage = false;
     this.pets = false;
     this.luggageTransport = false;

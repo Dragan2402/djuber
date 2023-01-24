@@ -31,9 +31,7 @@ export class AuthenticationService {
       this.socialAuthService.authState.subscribe((user) => {this.socialLogin(user)});
     }
 
-
   public socialLogin(socialUser: SocialUser){
-
 
     this.http.post("/api/auth/socialSignIn",socialUser).pipe(tap(res => this.setToken(res)),
       catchError((error : HttpErrorResponse): Observable<any> => {

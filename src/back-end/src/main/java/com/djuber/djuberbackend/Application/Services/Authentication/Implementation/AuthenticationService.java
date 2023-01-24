@@ -155,6 +155,7 @@ public class AuthenticationService implements IAuthenticationService, UserDetail
         clientToSave.setClientSigningType(ClientSigningType.DEFAULT);
         clientToSave.setDeleted(false);
         clientToSave.setInRide(false);
+        clientToSave.setBalance(0D);
         clientToSave.setBlocked(false);
         clientToSave.setIdentity(identitySaved);
         String verificationToken = randomStringGenerator.generate(50);
@@ -210,6 +211,7 @@ public class AuthenticationService implements IAuthenticationService, UserDetail
         clientToSave.setVerified(true);
         clientToSave.setClientSigningType(this.getClientSigningType(request.getProvider()));
         clientToSave.setDeleted(false);
+        clientToSave.setBalance(0D);
         clientToSave.setInRide(false);
         clientToSave.setBlocked(false);
         clientToSave.setIdentity(identitySaved);
