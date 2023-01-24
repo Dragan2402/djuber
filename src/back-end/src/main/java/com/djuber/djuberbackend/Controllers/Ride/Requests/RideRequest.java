@@ -22,6 +22,9 @@ public class RideRequest {
     @NotEmpty(message = "Car type is required.")
     String carType;
 
+    @NotEmpty(message = "Ride type is required.")
+    String rideType;
+
     @NotEmpty(message = "Distance is required.")
     Double distance;
 

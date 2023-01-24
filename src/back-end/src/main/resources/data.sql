@@ -98,19 +98,19 @@ INSERT INTO route (id, deleted)
 VALUES (200000, false);
 
 --COORDINATES
-INSERT INTO coordinate(id, index, location_name, lat, lon, route_id, is_stop)
-VALUES (100000, 0, 'Promenada', 45.24473173439358, 19.84146283175646, 100000, true);
-INSERT INTO coordinate(id, index, location_name, lat, lon, route_id, is_stop)
-VALUES (200000, 1, NULL, 45.2480590388405, 19.839219531462838, 100000, false);
-INSERT INTO coordinate(id, index, location_name, lat, lon, route_id, is_stop)
-VALUES (300000, 2, 'Balans Palacinkarnica', 45.25258638691436, 19.83754453391027, 100000, true);
+INSERT INTO coordinate(id, index, location_name, lat, lon, route_id)
+VALUES (100000, 0, 'Promenada', 45.24473173439358, 19.84146283175646, 100000);
+INSERT INTO coordinate(id, index, location_name, lat, lon, route_id)
+VALUES (200000, 1, NULL, 45.2480590388405, 19.839219531462838, 100000);
+INSERT INTO coordinate(id, index, location_name, lat, lon, route_id)
+VALUES (300000, 2, 'Balans Palacinkarnica', 45.25258638691436, 19.83754453391027, 100000);
 
-INSERT INTO coordinate(id, index, location_name, lat, lon, route_id, is_stop)
-VALUES (400000, 0, 'Pekara Evropa', 45.240182962558684, 19.825826428862268, 200000, true);
-INSERT INTO coordinate(id, index, location_name, lat, lon, route_id, is_stop)
-VALUES (500000, 1, NULL, 45.2480590388405, 19.839219531462838, 200000, false);
-INSERT INTO coordinate(id, index, location_name, lat, lon, route_id, is_stop)
-VALUES (600000, 2, 'Medicinski Fakultet Novi Sad', 45.25328151383017, 19.824271073957725, 200000, true);
+INSERT INTO coordinate(id, index, location_name, lat, lon, route_id)
+VALUES (400000, 0, 'Pekara Evropa', 45.240182962558684, 19.825826428862268, 200000);
+INSERT INTO coordinate(id, index, location_name, lat, lon, route_id)
+VALUES (500000, 1, NULL, 45.2480590388405, 19.839219531462838, 200000);
+INSERT INTO coordinate(id, index, location_name, lat, lon, route_id)
+VALUES (600000, 2, 'Medicinski Fakultet Novi Sad', 45.25328151383017, 19.824271073957725, 200000);
 
 --RIDES
 INSERT INTO ride (id, driver_id, ride_type, start, finish, route_id, price, ride_status, deleted)
