@@ -31,6 +31,10 @@ public class Coordinate {
     Double lon;
 
     @ManyToOne
-    @JoinColumn(name = "routeId", nullable = false)
+    @JoinColumn(name = "routeId")
     Route route;
+
+    @ManyToOne
+    @JoinColumn(name = "favouriteRouteId")
+    FavouriteRoute favouriteRoute;
 }

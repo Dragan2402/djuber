@@ -4,6 +4,7 @@ import com.djuber.djuberbackend.Domain.Authentication.Identity;
 import com.djuber.djuberbackend.Domain.Review.Review;
 import com.djuber.djuberbackend.Domain.Ride.Reservation;
 import com.djuber.djuberbackend.Domain.Ride.Ride;
+import com.djuber.djuberbackend.Domain.Route.FavouriteRoute;
 import lombok.*;
 import lombok.experimental.FieldDefaults;
 import org.hibernate.annotations.SQLDelete;
@@ -62,6 +63,9 @@ public class Client{
 
     @OneToMany(mappedBy = "client", fetch = FetchType.LAZY, cascade = CascadeType.DETACH)
     Set<Review> reviews = new HashSet<>();
+
+    @OneToMany(mappedBy = "client", fetch = FetchType.LAZY, cascade = CascadeType.REMOVE)
+    Set<FavouriteRoute> favouriteRoutes = new HashSet<>();
 
     @Column(name = "blocked", nullable = false)
     Boolean blocked;
