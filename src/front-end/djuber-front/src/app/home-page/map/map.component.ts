@@ -10,6 +10,7 @@ import {Coordinate} from "./coordinate";
 import { Route } from './route';
 import {firstValueFrom, lastValueFrom} from "rxjs";
 import { RideRequest } from './rideRequest';
+import { Validators, FormControl } from '@angular/forms';
 
 @Component({
   selector: 'djuber-map',
@@ -17,6 +18,8 @@ import { RideRequest } from './rideRequest';
   styleUrls: ['./map.component.css']
 })
 export class MapComponent implements OnInit {
+
+  emailFormControl = new FormControl('', [Validators.email]);
 
   map!: L.Map;
 
@@ -46,7 +49,11 @@ export class MapComponent implements OnInit {
 
   logged! : boolean;
 
-  orderStatus:number = 0;
+  orderStatus:number = 2;
+
+  sharedRide: boolean = false;
+
+  sharedRideClientEmails: string[] = [];
 
   selectedCarType:string = "Sedan";
 
@@ -66,6 +73,8 @@ export class MapComponent implements OnInit {
   desiredAddress:string = '';
 
   startingAddress:string = '';
+
+  firstSharedRideClient: string = '';
 
   constructor(private mapService:MapService, private _snackBar: MatSnackBar, private authenticationService : AuthenticationService, private hashService:HashService) {
     this.authenticationService.logged$.subscribe((attr:boolean) =>{
@@ -142,8 +151,19 @@ export class MapComponent implements OnInit {
     this.routePathAddresses.splice(index, 1);
   }
 
+  addSharedRideClient(index: number) {
+    this.sharedRideClientEmails.splice(index+1, 0, "");
+  }
+
+  removeSharedRideClient(index: number) {
+    this.sharedRideClientEmails.splice(index, 1);
+  }
+
   onValueUpdate(event, index){
     this.routePathAddresses[index]=event.target.value;
+  }
+  onEmailUpdate(event, i) {
+    this.sharedRideClientEmails[i] = event.target.value;
   }
 
   setGeoLocation(position: { coords: { latitude: any; longitude: any } }) {
@@ -325,6 +345,13 @@ export class MapComponent implements OnInit {
   }
 
   orderRide(){
+    if (this.sharedRide) {
+      let clientEmails: string[] = [this.firstSharedRideClient].concat(this.sharedRideClientEmails);
+      if (!this.areSharedRideClientsValid(clientEmails)) {
+        return;
+      }
+    }
+    
     const coordinates = [];
     const points = this.routes[0].points;
     if(points.length >= 2){
@@ -338,6 +365,19 @@ export class MapComponent implements OnInit {
       this.orderStatus = 1;
       this._snackBar.openFromComponent(SnackbarComponent,{data:"Waiting for driver."});
     }
+  }
+
+  areSharedRideClientsValid(clientEmails: string[]): boolean {
+    for (let email of clientEmails) {
+      let formControl = new FormControl(email, [Validators.email]);
+      if (formControl.status === "INVALID") {
+        this._snackBar.openFromComponent(SnackbarComponent, {
+          data: `Input '${email}' is not a valid email.`
+        });
+        return false;
+      }
+    }
+    return true;
   }
 }
 
