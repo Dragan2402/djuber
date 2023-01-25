@@ -17,8 +17,8 @@
       </mat-card>
     </div>
   </div>
-  <div class="cancel-button" *ngIf="userIsDriver()">
-    <button mat-fab color="warn" matTooltip="Cancel ride" >
+  <div class="cancel-button" *ngIf="userIsDriver() && rideStatus!==undefined && rideStatus==='ON_THE_WAY'">
+    <button mat-fab color="warn" matTooltip="Cancel ride" (click)="cancelRide()">
       <mat-icon>close</mat-icon>
     </button>
   </div>

@@ -2,6 +2,7 @@ package com.djuber.djuberbackend.Controllers.Ride;
 
 import com.djuber.djuberbackend.Application.Services.Ride.IRideService;
 import com.djuber.djuberbackend.Application.Services.Ride.Mapper.RideMapper;
+import com.djuber.djuberbackend.Controllers.Ride.Requests.CancellingNoteRequest;
 import com.djuber.djuberbackend.Controllers.Ride.Requests.CoordinateRequest;
 import com.djuber.djuberbackend.Controllers.Ride.Requests.ReviewRideRequest;
 import com.djuber.djuberbackend.Controllers.Ride.Requests.RideRequest;
@@ -47,6 +48,20 @@ public class RideController {
     @PreAuthorize("hasAnyRole('DRIVER')")
     public ResponseEntity<Void> declineRideOffer(@PathVariable("rideId") Long rideId) {
         rideService.declineRideOffer(rideId);
+        return new ResponseEntity<>(HttpStatus.OK);
+    }
+
+    @PostMapping("/declineAssignedRide/{rideId}")
+    @PreAuthorize("hasAnyRole('DRIVER')")
+    public ResponseEntity<Void> declineAssignedRide(@PathVariable("rideId") Long rideId) {
+        rideService.declineAssignedRide(rideId);
+        return new ResponseEntity<>(HttpStatus.OK);
+    }
+
+    @PutMapping("/submitCancellingNote/{rideId}")
+    @PreAuthorize("hasAnyRole('DRIVER')")
+    public ResponseEntity<Void> submitCancellingNote(@PathVariable("rideId") Long rideId, @RequestBody CancellingNoteRequest request) {
+        rideService.submitCancellingNote(rideId, request.getNote());
         return new ResponseEntity<>(HttpStatus.OK);
     }
 

@@ -39,8 +39,11 @@ class QuickstartUser(HttpUser):
     def update_vehicle_coordinates(self):
         if len(self.coordinates) > 0:
             new_coordinate = self.coordinates.pop(0)
-            self.client.put(f'/ride/script/updateVehicleLocation/{rideId}',
-                            json={'index': 0, 'lat': new_coordinate[0], 'lon': new_coordinate[1]})
+            response = self.client.put(f'/ride/script/updateVehicleLocation/{rideId}',
+                                json={'index': 0, 'lat': new_coordinate[0], 'lon': new_coordinate[1]})
+
+            if response.status_code != 200:
+                self.end_ride()
         if len(self.coordinates) == 0 and self.driving_to_start_point:
             self.start_route()
         if len(self.coordinates) == 0 and self.driving_the_route:
@@ -77,4 +80,4 @@ class QuickstartUser(HttpUser):
         self.starting_point = response.json()
 
     def end_ride(self):
-        print("end")
+        self.environment.runner.quit()

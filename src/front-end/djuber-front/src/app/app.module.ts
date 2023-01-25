@@ -37,6 +37,7 @@ import { SingleRideMapComponent } from './ride/single-ride-map/single-ride-map.c
 import { AcceptRideClientDialogComponent } from './ride/dialogs/accept-ride-client-dialog/accept-ride-client-dialog.component';
 import { RideReviewComponent } from './ride/ride-review/ride-review.component';
 import {MatButtonToggleModule} from '@angular/material/button-toggle';
+import { CancelRideNoteDialogComponent } from './ride/dialogs/cancel-ride-note-dialog/cancel-ride-note-dialog.component';
 
 
 @NgModule({
@@ -52,7 +53,8 @@ import {MatButtonToggleModule} from '@angular/material/button-toggle';
     AcceptRideDriverDialogComponent,
     SingleRideMapComponent,
     AcceptRideClientDialogComponent,
-    RideReviewComponent
+    RideReviewComponent,
+    CancelRideNoteDialogComponent
   ],
   imports: [
     BrowserModule,

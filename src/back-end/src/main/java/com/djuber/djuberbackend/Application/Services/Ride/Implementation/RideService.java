@@ -20,10 +20,7 @@ import com.djuber.djuberbackend.Domain.Review.Review;
 import com.djuber.djuberbackend.Domain.Ride.Ride;
 import com.djuber.djuberbackend.Domain.Ride.RideStatus;
 import com.djuber.djuberbackend.Domain.Route.Coordinate;
-import com.djuber.djuberbackend.Infastructure.Exceptions.CustomExceptions.EntityNotFoundException;
-import com.djuber.djuberbackend.Infastructure.Exceptions.CustomExceptions.RideNotDoneException;
-import com.djuber.djuberbackend.Infastructure.Exceptions.CustomExceptions.RideReviewTimePassedException;
-import com.djuber.djuberbackend.Infastructure.Exceptions.CustomExceptions.UserNotFoundException;
+import com.djuber.djuberbackend.Infastructure.Exceptions.CustomExceptions.*;
 import com.djuber.djuberbackend.Infastructure.Repositories.Authentication.IIdentityRepository;
 import com.djuber.djuberbackend.Infastructure.Repositories.Client.IClientRepository;
 import com.djuber.djuberbackend.Infastructure.Repositories.Driver.ICarRepository;
@@ -43,6 +40,7 @@ import org.springframework.transaction.annotation.Transactional;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
+import java.time.OffsetDateTime;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
@@ -117,7 +115,7 @@ public class RideService implements IRideService {
     }
 
     public boolean execute(Long rideId) throws IOException, InterruptedException {
-        String[] commands = {"locust", "-f", "script/djuber-simulation.py", "--conf", "script/locust.conf", "--data", "{\\\"rideId\\\":\\\"1\\\"}"};
+        String[] commands = {"locust", "-f", "script/djuber-simulation.py", "--conf", "script/locust.conf", "--data", "{\\\"rideId\\\":\\\""+rideId.toString()+"\\\"}"};
         ProcessBuilder pb = new ProcessBuilder().command(commands);
 
         Process process = pb.start();
@@ -181,9 +179,15 @@ public class RideService implements IRideService {
 
     @Override
     public void updateVehicleLocation(Long rideId, CoordinateRequest request) {
+
         Ride ride = rideRepository.findById(rideId).orElse(null);
         if (ride == null) {
             throw new EntityNotFoundException("Ride not found.");
+        }
+        if(ride.getRideStatus() == RideStatus.CANCELED){
+            RideUpdateResponse rideUpdateResponse = new RideUpdateResponse(ride.getRideStatus().toString(), request.getLat(),request.getLon());
+            simpMessagingTemplate.convertAndSend("/topic/singleRide/" + rideId, rideUpdateResponse);
+            throw new CannotUpdateCanceledRideException("The ride you are trying to update has been canceled.");
         }
         Car car = carRepository.findById(ride.getDriver().getCar().getId()).orElse(null);
 
@@ -225,6 +229,7 @@ public class RideService implements IRideService {
         if (ride == null) {
             throw new EntityNotFoundException("Ride not found.");
         }
+        ride.setFinish(OffsetDateTime.now());
         ride.setRideStatus(RideStatus.DONE);
         rideRepository.save(ride);
 
@@ -297,6 +302,28 @@ public class RideService implements IRideService {
         review.setComment(request.getComment());
 
         reviewRepository.save(review);
+    }
+
+    @Override
+    public void declineAssignedRide(Long rideId) {
+        Ride ride = rideRepository.findById(rideId).orElse(null);
+        if (ride == null) {
+            throw new EntityNotFoundException("Ride to review not found.");
+        }
+        if(ride.getRideStatus() == RideStatus.ON_THE_WAY){
+            ride.setRideStatus(RideStatus.CANCELED);
+        }
+        rideRepository.save(ride);
+    }
+
+    @Override
+    public void submitCancellingNote(Long rideId, String note) {
+        Ride ride = rideRepository.findById(rideId).orElse(null);
+        if (ride == null) {
+            throw new EntityNotFoundException("Ride to review not found.");
+        }
+        ride.setCancellingNote(note);
+        rideRepository.save(ride);
     }
 
     private static Driver getClosestFittingDriver(List<Driver> sortedAvailableDrivers, String carType, Set<String> additionalServices) {

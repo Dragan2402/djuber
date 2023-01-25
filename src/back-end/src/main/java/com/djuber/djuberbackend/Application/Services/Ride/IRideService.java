@@ -30,4 +30,8 @@ public interface IRideService {
     RideReviewResponse getRideForReviewResponse(String email, Long rideId);
 
     void reviewRide(String email, ReviewRideRequest request);
+
+    void declineAssignedRide(Long rideId);
+
+    void submitCancellingNote(Long rideId, String note);
 }
