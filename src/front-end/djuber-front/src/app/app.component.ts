@@ -42,6 +42,7 @@ export class AppComponent implements DoCheck{
             this.openRideSocketClient();
           }else if (role === this.hashService.hashString("DRIVER")){
             this.openRideSocketDriver();
+            this.openDriverActiveSocket();
           }
         }
       });
@@ -65,6 +66,24 @@ export class AppComponent implements DoCheck{
           const rideSocketResponse = JSON.parse(response["body"]) as RideSocketResponse;
           if(rideSocketResponse.status === "RIDE_DRIVER_OFFER"){
             this.toggleAcceptRideDriverDialog(rideSocketResponse);
+          }
+        }
+      );
+    });
+  }
+
+  private openDriverActiveSocket(){
+    this.socket = new SockJS(this.url + '/driverActivate',{
+      transports: ['xhr-streaming']
+    });
+    this.stompClient = Stomp.over(this.socket);
+    this.stompClient.connect({}, (frame) => {
+      //func = what to do when connection is established
+      this.stompClient!.subscribe(
+        '/topic/active/'+this.identityId ,
+        (response) => {
+          if(response["body"] === "You have hours reached limit."){
+            this._snackBar.openFromComponent(SnackbarComponent, {data:"You have hours reached limit and your account has been deactivated for now."});
           }
         }
       );

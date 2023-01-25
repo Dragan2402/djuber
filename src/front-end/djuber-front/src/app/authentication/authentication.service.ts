@@ -89,6 +89,10 @@ export class AuthenticationService {
   }
 
   public logout():void {
+    const role = this.getLoggedUserRole();
+    if (role === this.hashService.hashString("DRIVER")){
+      this.deactivateLoggedDriver().subscribe();
+    };
     this.localStorage.removeItem("jwt");
     this.localStorage.removeItem("user-email");
     this.localStorage.removeItem("user-first-name");
@@ -160,6 +164,14 @@ export class AuthenticationService {
 
   public getLoggedClientBalance(){
     return this.http.get("/api/client/loggedClientBalance");
+  }
+
+  public activateLoggedDriver(){
+    return this.http.put("/api/driver/activate", {});
+  }
+
+  public deactivateLoggedDriver(){
+    return this.http.put("/api/driver/deactivate", {});
   }
 
 }

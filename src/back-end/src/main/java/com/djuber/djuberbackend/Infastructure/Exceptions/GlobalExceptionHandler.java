@@ -46,6 +46,11 @@ public class GlobalExceptionHandler {
         return new ResponseEntity<>(getErrorObject(ex.getMessage(), HttpStatus.BAD_REQUEST), HttpStatus.BAD_REQUEST);
     }
 
+    @ExceptionHandler({DriverReachedLimitOfActiveHoursException.class})
+    public ResponseEntity<ErrorObject> handleDriverReachedLimitOfActiveHoursException(DriverReachedLimitOfActiveHoursException ex, WebRequest request){
+        return new ResponseEntity<>(getErrorObject(ex.getMessage(), HttpStatus.BAD_REQUEST), HttpStatus.BAD_REQUEST);
+    }
+
     @ExceptionHandler({EntityNotFoundException.class})
     public ResponseEntity<ErrorObject> handleEntityNotFoundException(EntityNotFoundException ex, WebRequest request){
         return new ResponseEntity<>(getErrorObject(ex.getMessage(), HttpStatus.BAD_REQUEST), HttpStatus.BAD_REQUEST);

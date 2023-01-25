@@ -14,6 +14,7 @@ public class WebSocketConfiguration implements WebSocketMessageBrokerConfigurer{
         registry.addEndpoint("/chat").setAllowedOrigins("http://localhost:4200").withSockJS();
         registry.addEndpoint("/ride").setAllowedOrigins("http://localhost:4200").withSockJS();
         registry.addEndpoint("/singleRide").setAllowedOrigins("http://localhost:4200").withSockJS();
+        registry.addEndpoint("/driverActivate").setAllowedOrigins("http://localhost:4200").withSockJS();
     }
 
     @Override

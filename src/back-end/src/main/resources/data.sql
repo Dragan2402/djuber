@@ -73,16 +73,21 @@ VALUES (100000, 'pets');
 
 --DRIVERS
 INSERT INTO driver (id, identity_id, first_name, last_name, city, phone_number, active, car_id,
-                    duration_active, blocked, in_ride,
+                    last_activation_time, blocked, in_ride,
                     deleted)
-VALUES (100000, 500000, 'Haso', 'Hasic', 'Novi Sad', '0691777778', true, 100000, 0, false,
+VALUES (100000, 500000, 'Haso', 'Hasic', 'Novi Sad', '0691777778', true, 100000, '2023-01-25 20:13', false,
         false, false);
 
 INSERT INTO driver (id, identity_id, first_name, last_name, city, phone_number, active, car_id,
-                    duration_active, blocked, in_ride,
+                    last_activation_time, blocked, in_ride,
                     deleted)
-VALUES (200000, 600000, 'Mujo', 'Mujic', 'Novi Sad', '067123423', true, 200000, 0, false,
+VALUES (200000, 600000, 'Mujo', 'Mujic', 'Novi Sad', '067123423', false, 200000, '2023-01-25 14:15', false,
         false, false);
+
+-- --DRIVER LOGS
+-- INSERT INTO driver_active_log(id, driver_id, log_start, log_end) VALUES (100000, 100000, '2023-01-24 14:15', '2023-01-24 16:15' );
+-- INSERT INTO driver_active_log(id, driver_id, log_start, log_end) VALUES (200000, 100000, '2023-01-24 18:15', '2023-01-25 03:50' );
+-- INSERT INTO driver_active_log(id, driver_id, log_start, log_end) VALUES (300000, 100000, '2023-01-25 10:15', '2023-01-25 11:15' );
 
 --ROUTES
 INSERT INTO route (id, deleted)

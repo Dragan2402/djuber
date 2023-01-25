@@ -11,6 +11,7 @@ import org.hibernate.annotations.Where;
 
 import javax.persistence.*;
 import java.time.Duration;
+import java.time.OffsetDateTime;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -60,8 +61,8 @@ public class Driver {
     @JoinColumn(name = "carId")
     Car car;
 
-    @Column(name = "durationActive", nullable = false)
-    Duration durationActive;
+    @Column(name = "lastActivationTime")
+    OffsetDateTime lastActivationTime;
 
     @Column(name = "blocked", nullable = false)
     Boolean blocked;

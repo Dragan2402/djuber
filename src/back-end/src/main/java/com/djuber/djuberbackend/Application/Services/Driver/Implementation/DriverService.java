@@ -1,5 +1,6 @@
 package com.djuber.djuberbackend.Application.Services.Driver.Implementation;
 
+import com.djuber.djuberbackend.Application.Services.Driver.IDriverLogService;
 import com.djuber.djuberbackend.Application.Services.Driver.IDriverService;
 import com.djuber.djuberbackend.Application.Services.Driver.Mapper.DriverMapper;
 import com.djuber.djuberbackend.Application.Services.Driver.Results.DriverResult;
@@ -33,6 +34,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.time.Duration;
+import java.time.OffsetDateTime;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
@@ -60,6 +62,8 @@ public class DriverService implements IDriverService {
     final MediaService mediaService;
 
     final DriverMapper driverMapper;
+
+    final IDriverLogService driverLogService;
 
     @Override
     public Long registerNewDriver(RegisterDriverRequest request) {
@@ -101,7 +105,7 @@ public class DriverService implements IDriverService {
         driverToSave.setInRide(false);
         driverToSave.setBlocked(false);
         driverToSave.setActive(false);
-        driverToSave.setDurationActive(Duration.ZERO);
+        driverToSave.setLastActivationTime(OffsetDateTime.now());
         driverToSave.setIdentity(identitySaved);
 
         Driver saved = driverRepository.save(driverToSave);
@@ -288,6 +292,37 @@ public class DriverService implements IDriverService {
     @Override
     public List<AvailableDriverResponse> getAvailableDrivers() {
         return driverMapper.mapAvailableDrivers(driverRepository.getAvailableDrivers());
+    }
+
+    @Override
+    public void activateSelf(String email) {
+        Identity identity = identityRepository.findByEmail(email);
+        if(identity == null){
+            throw new UserNotFoundException("Driver with provided email does not exist.");
+        }
+        Driver driver = driverRepository.findByIdentityId(identity.getId());
+
+        if(driverLogService.driverReachedLimit(driver)){
+            throw new DriverReachedLimitOfActiveHoursException("Driver that is trying to get active has reached limit in 24 hours.");
+        }
+        driver.setActive(true);
+        driver.setLastActivationTime(OffsetDateTime.now());
+
+        driverRepository.save(driver);
+    }
+
+    @Override
+    public void deactivateSelf(String email) {
+        Identity identity = identityRepository.findByEmail(email);
+        if(identity == null){
+            throw new UserNotFoundException("Driver with provided email does not exist.");
+        }
+        Driver driver = driverRepository.findByIdentityId(identity.getId());
+
+        driver.setActive(false);
+
+        driverLogService.logDriverDeactivation(driver);
+        driverRepository.save(driver);
     }
 
     private CarType getCarType(String type){
