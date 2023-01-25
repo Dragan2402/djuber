@@ -5,6 +5,8 @@ import com.djuber.djuberbackend.Controllers.Client.Requests.UpdateClientRequest;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 
+import java.util.List;
+
 public interface IClientService {
     ClientResult getClientByEmail(String email);
 
@@ -29,4 +31,8 @@ public interface IClientService {
     Double getClientBalanceByEmail(String email);
 
     void addLoggedClientFunds(String email, Double amount);
+
+    String checkIfClientsExist(List<String> clientEmails);
+
+    String checkIfClientsAreBlocked(List<String> clientEmails);
 }

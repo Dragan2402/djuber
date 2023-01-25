@@ -49,7 +49,7 @@ export class MapComponent implements OnInit {
 
   logged! : boolean;
 
-  orderStatus:number = 2;
+  orderStatus:number = 0;
 
   sharedRide: boolean = false;
 
@@ -344,10 +344,11 @@ export class MapComponent implements OnInit {
 
   }
 
-  orderRide(){
+  async orderRide(){
     if (this.sharedRide) {
       let clientEmails: string[] = [this.firstSharedRideClient].concat(this.sharedRideClientEmails);
-      if (!this.areSharedRideClientsValid(clientEmails)) {
+      let valid = await this.areSharedRideClientsValid(clientEmails);
+      if (!valid) {
         return;
       }
     }
@@ -367,16 +368,64 @@ export class MapComponent implements OnInit {
     }
   }
 
-  areSharedRideClientsValid(clientEmails: string[]): boolean {
+  async areSharedRideClientsValid(clientEmails: string[]): Promise<boolean> {
     for (let email of clientEmails) {
       let formControl = new FormControl(email, [Validators.email]);
       if (formControl.status === "INVALID") {
         this._snackBar.openFromComponent(SnackbarComponent, {
-          data: `Input '${email}' is not a valid email.`
+          data: `Input '${email}' is not a valid email address.`
+        });
+        return false;
+      }
+
+      let loggedUserEmail = this.authenticationService.getLoggedUserEmail();
+      if (email == loggedUserEmail) {
+        this._snackBar.openFromComponent(SnackbarComponent, {
+          data: `Do not add your own e-mail address to passenger addresses.`
         });
         return false;
       }
     }
+
+    // const result$ = this.mapService.searchLocationAsync(address).pipe();
+    // const response = await firstValueFrom(result$);
+
+    const resultExist$ = this.mapService.checkIfClientsExist(clientEmails).pipe();
+    const responseExist = await firstValueFrom(resultExist$);
+    if (responseExist !== null) {
+      this._snackBar.openFromComponent(SnackbarComponent, {
+        data: `Client with e-mail '${responseExist}' not found.`
+      });
+      return false;
+    }
+
+    // this.mapService.checkIfClientsExist(clientEmails).subscribe(response => {
+    //   if (response !== null) {
+    //     this._snackBar.openFromComponent(SnackbarComponent, {
+    //       data: `Client with e-mail '${response}' not found.`
+    //     });
+    //     return false;
+    //   }
+    // });
+
+    const resultBlocked$ = this.mapService.checkIfClientsAreBlocked(clientEmails).pipe();
+    const responseBlocked = await firstValueFrom(resultBlocked$);
+    if (responseBlocked !== null) {
+      this._snackBar.openFromComponent(SnackbarComponent, {
+        data: `Client with e-mail '${responseBlocked}' is blocked.`
+      });
+      return false;
+    }
+
+    // this.mapService.checkIfClientsAreBlocked(clientEmails).subscribe(response => {
+    //   if (response !== null) {
+    //     this._snackBar.openFromComponent(SnackbarComponent, {
+    //       data: `Client with e-mail '${response}' is blocked.`
+    //     });
+    //     return false;
+    //   }
+    // });
+
     return true;
   }
 }
