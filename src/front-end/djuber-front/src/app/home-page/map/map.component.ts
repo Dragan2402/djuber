@@ -329,11 +329,11 @@ export class MapComponent implements OnInit {
     const points = this.routes[0].points;
     if(points.length >= 2){
       for(let i = 0; i < points.length ; i++){
-        coordinates.push({lat:points[i]["lat"], lon:points[i]["lon"],index:i} as Coordinate)
-      }
 
+        coordinates.push({lat:points[i]["lat"], lon:points[i]["lng"],index:i} as Coordinate)
+      };
       const request = {clientEmail:this.authenticationService.loggedUserInfo$.value["email"], distance:this.routes[0].distance, carType:this.selectedCarType,
-                      additionalServices:this.getAdditionalServices(), coordinates:coordinates,rideType:"Single"} as RideRequest;
+                        additionalServices:this.getAdditionalServices(), coordinates:coordinates,rideType:"Single"} as RideRequest;
       this.mapService.orderRide(request).subscribe();
       this.orderStatus = 1;
       this._snackBar.openFromComponent(SnackbarComponent,{data:"Waiting for driver."});

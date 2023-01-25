@@ -26,11 +26,15 @@ import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
 import org.springframework.messaging.simp.SimpMessagingTemplate;
+import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.webjars.NotFoundException;
 
+import java.io.BufferedReader;
 import java.io.IOException;
+import java.io.InputStreamReader;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
 
@@ -65,6 +69,7 @@ public class RideService implements IRideService {
         } else {
             ride.setDriver(closestFittingDriver);
             ride = rideRepository.save(ride);
+            coordinatesRepository.saveAll(ride.getRoute().getCoordinates());
             RideMessageResult result = new RideMessageResult(RideMessageStatus.RIDE_DRIVER_OFFER, ride.getId());
 
             Identity driverIdentity = closestFittingDriver.getIdentity();
@@ -74,6 +79,7 @@ public class RideService implements IRideService {
 
     @Override
     public RideResponse getRideResponse(Long rideId) {
+
         Ride ride = rideRepository.findById(rideId).orElse(null);
         if (ride == null) {
             throw new NotFoundException("Ride not found.");
@@ -83,7 +89,7 @@ public class RideService implements IRideService {
     }
 
     @Override
-    public void acceptRideOffer(Long rideId) {
+    public void acceptRideOffer(Long rideId) throws IOException, InterruptedException {
         Ride ride = rideRepository.findById(rideId).orElse(null);
         if (ride == null) {
             throw new NotFoundException("Ride not found.");
@@ -93,11 +99,19 @@ public class RideService implements IRideService {
         for (Client client : ride.getClients()) {
             simpMessagingTemplate.convertAndSend("/topic/ride/" + client.getIdentity().getId(), result);
         }
+        rideRepository.save(ride);
+
+        this.execute(rideId);
+
     }
 
-    private boolean execute(Long rideId) throws IOException, InterruptedException {
-        Process p = new ProcessBuilder("locust", "-f", "script/djuber-simulation.py", "--conf", "script/locust.conf", "--data", rideId.toString()).start();
-        int exitVal = p.waitFor();
+    public boolean execute(Long rideId) throws IOException, InterruptedException {
+        String[] commands = {"locust", "-f", "script/djuber-simulation.py", "--conf", "script/locust.conf", "--data", "{\\\"rideId\\\":\\\"1\\\"}"};
+        ProcessBuilder pb = new ProcessBuilder().command(commands);
+
+        Process process = pb.start();
+
+        process.waitFor();
         return true;
     }
 
@@ -127,6 +141,7 @@ public class RideService implements IRideService {
             Identity driverIdentity = nextFittingDriver.getIdentity();
             simpMessagingTemplate.convertAndSend("/topic/ride/" + driverIdentity.getId(), result);
         }
+        rideRepository.save(ride);
     }
 
     @Override
@@ -139,11 +154,13 @@ public class RideService implements IRideService {
         driverCoordinate.setIndex(0);
         driverCoordinate.setLat(ride.getDriver().getCar().getLat());
         driverCoordinate.setLon(ride.getDriver().getCar().getLon());
+
         return driverCoordinate;
     }
 
     @Override
     public CoordinateResponse getRideStartingLocation(Long rideId) {
+
         Coordinate startingCoordinate = coordinatesRepository.findFirstCoordinateByRideId(rideId);
         if (startingCoordinate == null) {
             throw new NotFoundException("Coordinate not found");

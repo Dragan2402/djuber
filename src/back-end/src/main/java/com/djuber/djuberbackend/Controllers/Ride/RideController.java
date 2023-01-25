@@ -15,6 +15,7 @@ import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
+import java.io.IOException;
 import java.util.List;
 
 @Tag(name = "Ride API", description = "Provides Ride CRUD end-points")
@@ -34,7 +35,7 @@ public class RideController {
 
     @PostMapping("/accept/{rideId}")
     @PreAuthorize("hasAnyRole('DRIVER')")
-    public ResponseEntity<Void> acceptRideOffer(@PathVariable("rideId") Long rideId) {
+    public ResponseEntity<Void> acceptRideOffer(@PathVariable("rideId") Long rideId) throws IOException, InterruptedException {
         rideService.acceptRideOffer(rideId);
         return new ResponseEntity<>(HttpStatus.OK);
     }

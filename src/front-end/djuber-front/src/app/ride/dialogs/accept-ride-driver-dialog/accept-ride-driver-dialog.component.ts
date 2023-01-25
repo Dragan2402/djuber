@@ -1,6 +1,7 @@
 import { Component, Inject, OnInit } from '@angular/core';
 import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
 import { Router } from '@angular/router';
+import { RideService } from '../../ride.service';
 import { RideSocketResponse } from '../../rideSocketResponse';
 
 @Component({
@@ -12,7 +13,7 @@ export class AcceptRideDriverDialogComponent implements OnInit {
 
   dataToDisplay:RideSocketResponse;
 
-  constructor(public dialogRef: MatDialogRef<AcceptRideDriverDialogComponent>, @Inject(MAT_DIALOG_DATA) public data: RideSocketResponse, private router: Router) {
+  constructor(public dialogRef: MatDialogRef<AcceptRideDriverDialogComponent>, @Inject(MAT_DIALOG_DATA) public data: RideSocketResponse, private router: Router, private rideService:RideService) {
     this.dataToDisplay = data["response"];
     console.log(data);
   }
@@ -21,12 +22,11 @@ export class AcceptRideDriverDialogComponent implements OnInit {
   }
 
   declineRide(){
-    console.log("Declining");
     this.dialogRef.close();
   }
 
   acceptRide(){
-    console.log("Accepting");
+    this.rideService.acceptRide(this.dataToDisplay.rideId).subscribe();
     this.dialogRef.close();
     this.router.navigate(["singleRideMap",this.dataToDisplay.rideId]);
   }

@@ -6,12 +6,13 @@ import com.djuber.djuberbackend.Controllers.Ride.Responses.CoordinateResponse;
 import com.djuber.djuberbackend.Controllers.Ride.Responses.RideResponse;
 import com.djuber.djuberbackend.Domain.Ride.Ride;
 
+import java.io.IOException;
 import java.util.List;
 
 public interface IRideService {
     void getClosestFittingDriver(RideRequest rideRequest);
     RideResponse getRideResponse(Long rideId);
-    void acceptRideOffer(Long rideId);
+    void acceptRideOffer(Long rideId) throws IOException, InterruptedException;
     void declineRideOffer(Long rideId);
 
     CoordinateResponse getDriverStartingLocation(Long rideId);

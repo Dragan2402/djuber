@@ -52,7 +52,6 @@ class QuickstartUser(HttpUser):
         for step in response_json:
             coordinate = [step["lat"], step["lon"]]
             self.coordinates.append(coordinate)
-        print(self.coordinates)
         self.driving_to_start_point = False
         self.driving_the_route = True
 
@@ -62,11 +61,12 @@ class QuickstartUser(HttpUser):
 
     def get_coordinates(self):
         response = requests.get(
-            f'https://routing.openstreetmap.de/routed-car/route/v1/driving/{self.driver_location["lat"]},{self.driver_location["lon"]};{self.starting_point["lat"]},{self.starting_point["lon"]}?geometries=geojson&overview=false&alternatives=true&steps=true')
+            f'https://graphhopper.com/api/1/route?point={self.starting_point["lat"]},{self.starting_point["lon"]}&point={self.driver_location["lat"]},{self.driver_location["lon"]}&points_encoded=false&alternative_route.max_paths=5&alternative_route.max_weight_factor=2000&key=7682fe6b-4550-4ee9-a316-9a4c1a083109')
         self.routeGeoJSON = response.json()
         self.coordinates = []
-        for step in self.routeGeoJSON['routes'][0]['legs'][0]['steps']:
-            self.coordinates = [*self.coordinates, *step['geometry']['coordinates']]
+        for step in self.routeGeoJSON['paths'][0]["points"]["coordinates"]:
+            coordinate = [step[1], step[0]]
+            self.coordinates.append(coordinate)
 
     def get_ride_starting_point(self):
         response = self.client.get(f'/ride/script/getRideStartingLocation/{rideId}')

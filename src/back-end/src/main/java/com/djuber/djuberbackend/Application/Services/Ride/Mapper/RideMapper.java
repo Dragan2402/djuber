@@ -32,6 +32,7 @@ public class RideMapper {
         ride.setRoute(new Route());
         for (CoordinateRequest cr : rideRequest.getCoordinates()) {
             Coordinate coordinate = new Coordinate();
+            coordinate.setRoute(ride.getRoute());
             coordinate.setIndex(cr.getIndex());
             coordinate.setLat(cr.getLat());
             coordinate.setLon(cr.getLon());
@@ -43,9 +44,10 @@ public class RideMapper {
 
         CarType carType = CarType.fromString(rideRequest.getCarType());
 
-        Double price = carType.getBasePrice() + rideRequest.getDistance() * 120;
-        DecimalFormat twoDForm = new DecimalFormat("#.##");
-        ride.setPrice(Double.valueOf(twoDForm.format(price)));
+        double price = carType.getBasePrice() + rideRequest.getDistance() * 120;
+        price = (double) Math.round(price * 100);
+        price = price/100;
+        ride.setPrice(price);
 
 
         ride.setRideStatus(RideStatus.PENDING);
@@ -53,6 +55,7 @@ public class RideMapper {
 
         return ride;
     }
+
 
     public static List<CoordinateResponse> map(List<Coordinate> coordinates){
         List<CoordinateResponse> coordinateResponses = new ArrayList<>();

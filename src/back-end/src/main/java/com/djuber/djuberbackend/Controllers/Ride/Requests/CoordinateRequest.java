@@ -6,6 +6,7 @@ import lombok.Data;
 import lombok.experimental.FieldDefaults;
 
 import javax.validation.constraints.NotEmpty;
+import javax.validation.constraints.NotNull;
 
 @Data
 @FieldDefaults(level = AccessLevel.PRIVATE)
@@ -13,9 +14,9 @@ public class CoordinateRequest {
     @NotEmpty(message = "Index is required.")
     Integer index;
 
-    @NotEmpty(message = "Latitude is required.")
+    @NotNull(message = "The latitude is required.")
     Double lat;
 
-    @NotEmpty(message = "Longitude is required.")
+    @NotNull(message = "The longitude is required.")
     Double lon;
 }

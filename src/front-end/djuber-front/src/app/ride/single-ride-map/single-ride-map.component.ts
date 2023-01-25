@@ -22,7 +22,7 @@ export class SingleRideMapComponent implements OnInit {
 
   rideId:string;
   ride:RideResponse;
-
+  rideStatus:string ="Pending";
   routePolyLine : L.Polyline;
   finish: L.Marker;
   start: L.Marker;
@@ -126,6 +126,7 @@ export class SingleRideMapComponent implements OnInit {
       }).addTo(this.map);
       this.map.panTo([rideUpdateResponse.lat, rideUpdateResponse.lon]);
       this.driverMarker.bindTooltip("Driver");
+      this.rideStatus = rideUpdateResponse.rideStatus;
     }
   }}
 

@@ -84,7 +84,7 @@ export class AppComponent implements DoCheck{
           //func = what to do when client receives data (messages)
           const rideSocketResponse = JSON.parse(response["body"]) as RideSocketResponse;
           if(rideSocketResponse.status === "RIDE_CLIENT_ACCEPTED"){
-            this.router.navigate(["singleRideMap",response.rideId]);
+            this.router.navigate(["singleRideMap",rideSocketResponse.rideId]);
           }else if(rideSocketResponse.status === "RIDE_CLIENT_DECLINED"){
             this._snackBar.openFromComponent(SnackbarComponent,{data:"Sorry, but we did not manage to find a driver for your ride."});
           }else if(rideSocketResponse.status === "RIDE_CLIENT_OFFER"){

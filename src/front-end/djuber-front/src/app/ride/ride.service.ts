@@ -12,4 +12,8 @@ export class RideService {
   getRideResponse(rideId:string){
     return this.http.get<RideResponse>(`/api/ride/${rideId}`);
   }
+
+  acceptRide(rideId:number){
+    return this.http.post(`/api/ride/accept/${rideId}`,null);
+  }
 }
