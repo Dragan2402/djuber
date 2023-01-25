@@ -3,9 +3,11 @@ package com.djuber.djuberbackend.Controllers.Ride;
 import com.djuber.djuberbackend.Application.Services.Ride.IRideService;
 import com.djuber.djuberbackend.Application.Services.Ride.Mapper.RideMapper;
 import com.djuber.djuberbackend.Controllers.Ride.Requests.CoordinateRequest;
+import com.djuber.djuberbackend.Controllers.Ride.Requests.ReviewRideRequest;
 import com.djuber.djuberbackend.Controllers.Ride.Requests.RideRequest;
 import com.djuber.djuberbackend.Controllers.Ride.Responses.CoordinateResponse;
 import com.djuber.djuberbackend.Controllers.Ride.Responses.RideResponse;
+import com.djuber.djuberbackend.Controllers.Ride.Responses.RideReviewResponse;
 import com.djuber.djuberbackend.Domain.Ride.Ride;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
@@ -16,6 +18,7 @@ import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
 import java.io.IOException;
+import java.security.Principal;
 import java.util.List;
 
 @Tag(name = "Ride API", description = "Provides Ride CRUD end-points")
@@ -51,6 +54,18 @@ public class RideController {
     @PreAuthorize("hasAnyRole('CLIENT', 'DRIVER')")
     public ResponseEntity<RideResponse> getRide(@PathVariable("rideId") Long rideId) {
         return new ResponseEntity<>(rideService.getRideResponse(rideId), HttpStatus.OK);
+    }
+
+    @GetMapping("/rideForReview/{rideId}")
+    @PreAuthorize("hasAnyRole('CLIENT')")
+    public ResponseEntity<RideReviewResponse> getRideForReview(Principal principal, @PathVariable("rideId") Long rideId) {
+        return new ResponseEntity<>(rideService.getRideForReviewResponse(principal.getName(),rideId), HttpStatus.OK);
+    }
+
+    @PostMapping("/reviewRide")
+    @PreAuthorize("hasAnyRole('CLIENT')")
+    public void reviewRide(Principal principal, @RequestBody @Valid ReviewRideRequest request) {
+        rideService.reviewRide(principal.getName(),request);
     }
 
     @GetMapping("/script/getDriverStartingLocation/{rideId}")

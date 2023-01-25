@@ -1,27 +1,37 @@
 package com.djuber.djuberbackend.Application.Services.Ride.Implementation;
 
+import com.djuber.djuberbackend.Application.Services.Client.Results.ClientResult;
 import com.djuber.djuberbackend.Application.Services.Ride.IRideService;
 import com.djuber.djuberbackend.Application.Services.Ride.Mapper.RideMapper;
 import com.djuber.djuberbackend.Application.Services.Ride.Results.RideMessageResult;
 import com.djuber.djuberbackend.Application.Services.Ride.Results.RideMessageStatus;
 import com.djuber.djuberbackend.Controllers.Ride.Requests.CoordinateRequest;
+import com.djuber.djuberbackend.Controllers.Ride.Requests.ReviewRideRequest;
 import com.djuber.djuberbackend.Controllers.Ride.Requests.RideRequest;
 import com.djuber.djuberbackend.Controllers.Ride.Responses.CoordinateResponse;
 import com.djuber.djuberbackend.Controllers.Ride.Responses.RideResponse;
+import com.djuber.djuberbackend.Controllers.Ride.Responses.RideReviewResponse;
 import com.djuber.djuberbackend.Controllers.Ride.Responses.RideUpdateResponse;
 import com.djuber.djuberbackend.Domain.Authentication.Identity;
 import com.djuber.djuberbackend.Domain.Client.Client;
 import com.djuber.djuberbackend.Domain.Driver.Car;
 import com.djuber.djuberbackend.Domain.Driver.Driver;
+import com.djuber.djuberbackend.Domain.Review.Review;
 import com.djuber.djuberbackend.Domain.Ride.Ride;
 import com.djuber.djuberbackend.Domain.Ride.RideStatus;
 import com.djuber.djuberbackend.Domain.Route.Coordinate;
+import com.djuber.djuberbackend.Infastructure.Exceptions.CustomExceptions.EntityNotFoundException;
+import com.djuber.djuberbackend.Infastructure.Exceptions.CustomExceptions.RideNotDoneException;
+import com.djuber.djuberbackend.Infastructure.Exceptions.CustomExceptions.RideReviewTimePassedException;
+import com.djuber.djuberbackend.Infastructure.Exceptions.CustomExceptions.UserNotFoundException;
 import com.djuber.djuberbackend.Infastructure.Repositories.Authentication.IIdentityRepository;
 import com.djuber.djuberbackend.Infastructure.Repositories.Client.IClientRepository;
 import com.djuber.djuberbackend.Infastructure.Repositories.Driver.ICarRepository;
 import com.djuber.djuberbackend.Infastructure.Repositories.Driver.IDriverRepository;
+import com.djuber.djuberbackend.Infastructure.Repositories.Review.IReviewRepository;
 import com.djuber.djuberbackend.Infastructure.Repositories.Ride.IRideRepository;
 import com.djuber.djuberbackend.Infastructure.Repositories.Route.ICoordinatesRepository;
+import com.djuber.djuberbackend.Infastructure.Util.DateCalculator;
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
@@ -29,7 +39,6 @@ import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import org.webjars.NotFoundException;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -49,6 +58,8 @@ public class RideService implements IRideService {
     final ICoordinatesRepository coordinatesRepository;
     final SimpMessagingTemplate simpMessagingTemplate;
     final ICarRepository carRepository;
+    final DateCalculator dateCalculator;
+    final IReviewRepository reviewRepository;
 
     @Override
     @Transactional
@@ -82,7 +93,7 @@ public class RideService implements IRideService {
 
         Ride ride = rideRepository.findById(rideId).orElse(null);
         if (ride == null) {
-            throw new NotFoundException("Ride not found.");
+            throw new EntityNotFoundException("Ride not found.");
         }
         List<Coordinate> coordinates = coordinatesRepository.findByRouteId(ride.getRoute().getId());
         return RideMapper.mapResponse(ride, coordinates);
@@ -92,7 +103,7 @@ public class RideService implements IRideService {
     public void acceptRideOffer(Long rideId) throws IOException, InterruptedException {
         Ride ride = rideRepository.findById(rideId).orElse(null);
         if (ride == null) {
-            throw new NotFoundException("Ride not found.");
+            throw new EntityNotFoundException("Ride not found.");
         }
         ride.setRideStatus(RideStatus.ON_THE_WAY);
         RideMessageResult result = new RideMessageResult(RideMessageStatus.RIDE_CLIENT_ACCEPTED, ride.getId());
@@ -119,7 +130,7 @@ public class RideService implements IRideService {
     public void declineRideOffer(Long rideId) {
         Ride ride = rideRepository.findById(rideId).orElse(null);
         if (ride == null) {
-            throw new NotFoundException("Ride not found.");
+            throw new EntityNotFoundException("Ride not found.");
         }
 
         Coordinate startCoordinate = ride.getRoute().getStartCoordinate();
@@ -148,7 +159,7 @@ public class RideService implements IRideService {
     public CoordinateResponse getDriverStartingLocation(Long rideId) {
         Ride ride = rideRepository.findById(rideId).orElse(null);
         if (ride == null) {
-            throw new NotFoundException("Ride not found.");
+            throw new EntityNotFoundException("Ride not found.");
         }
         CoordinateResponse driverCoordinate = new CoordinateResponse();
         driverCoordinate.setIndex(0);
@@ -163,7 +174,7 @@ public class RideService implements IRideService {
 
         Coordinate startingCoordinate = coordinatesRepository.findFirstCoordinateByRideId(rideId);
         if (startingCoordinate == null) {
-            throw new NotFoundException("Coordinate not found");
+            throw new EntityNotFoundException("Coordinate not found");
         }
         return new CoordinateResponse(startingCoordinate);
     }
@@ -172,12 +183,12 @@ public class RideService implements IRideService {
     public void updateVehicleLocation(Long rideId, CoordinateRequest request) {
         Ride ride = rideRepository.findById(rideId).orElse(null);
         if (ride == null) {
-            throw new NotFoundException("Ride not found.");
+            throw new EntityNotFoundException("Ride not found.");
         }
         Car car = carRepository.findById(ride.getDriver().getCar().getId()).orElse(null);
 
         if (car == null) {
-            throw new NotFoundException("Car not found.");
+            throw new EntityNotFoundException("Car not found.");
         }
 
         car.setLat(request.getLat());
@@ -194,7 +205,7 @@ public class RideService implements IRideService {
     public List<CoordinateResponse> startRide(Long rideId) {
         Ride ride = rideRepository.findById(rideId).orElse(null);
         if (ride == null) {
-            throw new NotFoundException("Ride not found.");
+            throw new EntityNotFoundException("Ride not found.");
         }
         ride.setRideStatus(RideStatus.ACTIVE);
         rideRepository.save(ride);
@@ -212,12 +223,80 @@ public class RideService implements IRideService {
     public void endRide(Long rideId) {
         Ride ride = rideRepository.findById(rideId).orElse(null);
         if (ride == null) {
-            throw new NotFoundException("Ride not found.");
+            throw new EntityNotFoundException("Ride not found.");
         }
         ride.setRideStatus(RideStatus.DONE);
         rideRepository.save(ride);
 
         simpMessagingTemplate.convertAndSend("/topic/singleRide/" + rideId, new RideUpdateResponse(ride.getRideStatus().toString(),0D,0D));
+    }
+
+    @Override
+    public RideReviewResponse getRideForReviewResponse(String email, Long rideId) {
+        Ride ride = rideRepository.findById(rideId).orElse(null);
+        if (ride == null) {
+            throw new EntityNotFoundException("Ride not found.");
+        }
+        if(ride.getRideStatus() != RideStatus.DONE){
+            throw new RideNotDoneException("Ride is not done.");
+        }
+        Identity identity = identityRepository.findByEmail(email);
+        if(identity == null){
+            throw new UserNotFoundException("Client with provided email does not exist.");
+        }
+        Client client = clientRepository.findByIdentityId(identity.getId());
+
+        if(!ride.getClients().contains(client)){
+            throw new UserNotFoundException("Client is not part of this ride.");
+        }
+        RideReviewResponse response = new RideReviewResponse();
+        response.setRideId(ride.getId());
+        response.setDriverId(ride.getDriver().getId());
+        response.setDriverName(ride.getDriver().getFirstName());
+
+        if(!dateCalculator.isWithinThreeDays(ride.getFinish())){
+            response.setCanRate(false);
+            return response;
+        }
+        Review review = reviewRepository.findByClientIdAndRideId(client.getId(), ride.getId());
+        response.setCanRate(review == null);
+
+        return response;
+
+    }
+
+    @Override
+    public void reviewRide(String email, ReviewRideRequest request) {
+        Ride ride = rideRepository.findById(request.getRideId()).orElse(null);
+        if (ride == null) {
+            throw new EntityNotFoundException("Ride to review not found.");
+        }
+        if(ride.getRideStatus() != RideStatus.DONE){
+            throw new RideNotDoneException("Ride to review is not done.");
+        }
+        Identity identity = identityRepository.findByEmail(email);
+        if(identity == null){
+            throw new UserNotFoundException("Client with provided email does not exist.");
+        }
+        Client client = clientRepository.findByIdentityId(identity.getId());
+
+        if(!ride.getClients().contains(client)){
+            throw new UserNotFoundException("Client is not part of this ride.");
+        }
+        if(!dateCalculator.isWithinThreeDays(ride.getFinish())){
+            throw new RideReviewTimePassedException("Ride review time has passed.");
+        }
+
+        Review review = new Review();
+        review.setCarRating(request.getCarRating());
+        review.setDriverRating(request.getDriverRating());
+        review.setDriver(ride.getDriver());
+        review.setRide(ride);
+        review.setClient(client);
+        review.setDeleted(false);
+        review.setComment(request.getComment());
+
+        reviewRepository.save(review);
     }
 
     private static Driver getClosestFittingDriver(List<Driver> sortedAvailableDrivers, String carType, Set<String> additionalServices) {

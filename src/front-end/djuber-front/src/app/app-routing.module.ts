@@ -6,10 +6,12 @@ import { HomePageComponent } from './home-page/home-page.component';
 import { SingleRideMapComponent } from './ride/single-ride-map/single-ride-map.component';
 import { LiveChatComponent } from './live-chat/live-chat.component';
 import { NotFoundComponent } from './not-found/not-found.component';
+import { RideReviewComponent } from './ride/ride-review/ride-review.component';
 
 const routes: Routes = [
   {path:"homePage", component: HomePageComponent},
   {path:"singleRideMap/:id", component: SingleRideMapComponent, canActivate: [LoginGuard], canActivateChild: [LoginGuard], canLoad: [LoginGuard]},
+  {path:"rideReview/:id", component: RideReviewComponent, canActivate: [LoginGuard,RolesGuard], canActivateChild: [LoginGuard,RolesGuard], canLoad: [LoginGuard,RolesGuard],data: {role:"CLIENT"}},
   {path:"authentication", loadChildren: ()=>
         import('./authentication/authentication.module').then((m) => m.AuthenticationModule)},
   {path:"admin", loadChildren: ()=>

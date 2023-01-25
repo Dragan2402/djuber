@@ -45,17 +45,19 @@ INSERT INTO admin (id, identity_id, first_name, last_name, city, phone_number, d
 VALUES (200000, 200000, 'Dimitrije', 'Petrov', 'Novi Sad', '067123456', false);
 
 --CLIENTS
-INSERT INTO client (id, identity_id, first_name, last_name, city, phone_number, verified,balance, signing_type, blocked,
+INSERT INTO client (id, identity_id, first_name, last_name, city, phone_number, verified, balance, signing_type,
+                    blocked,
                     in_ride, note,
                     deleted)
 VALUES (100000, 300000, 'Pero', 'Peric', 'Novi Sad', '0691777778', true, 10000, 0, false, false,
         'Client has been reporting drivers without valid reason.',
         false);
 
-INSERT INTO client (id, identity_id, first_name, last_name, city, phone_number, verified,balance,  signing_type, blocked,
+INSERT INTO client (id, identity_id, first_name, last_name, city, phone_number, verified, balance, signing_type,
+                    blocked,
                     in_ride,
                     deleted)
-VALUES (200000, 400000, 'Jovo', 'Jovic', 'Novi Sad', '067123423', true,15000, 0, true, false,
+VALUES (200000, 400000, 'Jovo', 'Jovic', 'Novi Sad', '067123423', true, 15000, 0, true, false,
         false);
 
 --CARS
@@ -73,7 +75,7 @@ VALUES (100000, 'pets');
 INSERT INTO driver (id, identity_id, first_name, last_name, city, phone_number, active, car_id,
                     duration_active, blocked, in_ride,
                     deleted)
-VALUES (100000, 500000, 'Haso', 'Hasic', 'Novi Sad', '0691777778', true, 100000, 0, false ,
+VALUES (100000, 500000, 'Haso', 'Hasic', 'Novi Sad', '0691777778', true, 100000, 0, false,
         false, false);
 
 INSERT INTO driver (id, identity_id, first_name, last_name, city, phone_number, active, car_id,
@@ -89,6 +91,9 @@ VALUES (100000, false);
 INSERT INTO route (id, deleted)
 VALUES (200000, false);
 
+INSERT INTO route (id, deleted)
+VALUES (300000, false);
+
 --COORDINATES
 INSERT INTO coordinate(id, index, location_name, lat, lon, route_id)
 VALUES (100000, 0, 'Promenada', 45.24473173439358, 19.84146283175646, 100000);
@@ -97,16 +102,27 @@ VALUES (200000, 1, NULL, 45.2480590388405, 19.839219531462838, 100000);
 INSERT INTO coordinate(id, index, location_name, lat, lon, route_id)
 VALUES (300000, 2, 'Balans Palacinkarnica', 45.25258638691436, 19.83754453391027, 100000);
 
+
 INSERT INTO coordinate(id, index, location_name, lat, lon, route_id)
 VALUES (400000, 0, 'Pekara Evropa', 45.240182962558684, 19.825826428862268, 200000);
 INSERT INTO coordinate(id, index, location_name, lat, lon, route_id)
 VALUES (500000, 1, NULL, 45.2480590388405, 19.839219531462838, 200000);
 INSERT INTO coordinate(id, index, location_name, lat, lon, route_id)
-VALUES (600000, 2, 'Medicinski Fakultet Novi Sad', 45.25328151383017, 19.824271073957725, 200000);
+VALUES (600000, 2, 'Medicinski Fakultet Novi Sad', 45.25328151383017, 19.824271073957725, 300000);
+
+INSERT INTO coordinate(id, index, location_name, lat, lon, route_id)
+VALUES (700000, 0, 'Pekara Evropa', 45.240182962558684, 19.825826428862268, 300000);
+INSERT INTO coordinate(id, index, location_name, lat, lon, route_id)
+VALUES (800000, 1, NULL, 45.2480590388405, 19.839219531462838, 300000);
+INSERT INTO coordinate(id, index, location_name, lat, lon, route_id)
+VALUES (900000, 2, 'Medicinski Fakultet Novi Sad', 45.25328151383017, 19.824271073957725, 300000);
 
 --RIDES
 INSERT INTO ride (id, driver_id, ride_type, start, finish, route_id, price, ride_status, deleted)
 VALUES (100000, 100000, 0, '2022-10-23 00:00', NULL, 100000, 110, 0, false);
+
+INSERT INTO ride (id, driver_id, ride_type, start, finish, route_id, price, ride_status, deleted)
+VALUES (200000, 100000, 0, '2023-01-25 12:00', '2023-01-25 14:15', 300000, 110, 2, false);
 
 --REQUESTED_SERVICES
 INSERT INTO RIDE_REQUESTED_SERVICES (ride_id, REQUESTED_SERVICES)
@@ -114,6 +130,9 @@ VALUES (100000, 'pets');
 
 INSERT INTO clients_rides (client_id, ride_id)
 VALUES (100000, 100000);
+
+INSERT INTO clients_rides (client_id, ride_id)
+VALUES (100000, 200000);
 
 --RESERVATIONS
 INSERT INTO reservation (id, driver_id, ride_type, start, route_id, price, deleted)
@@ -123,8 +142,11 @@ INSERT INTO clients_reservations (RESERVATION_ID, CLIENT_ID)
 VALUES (100000, 200000);
 
 --REVIEWS
-INSERT INTO review (id, driver_id, client_id, ride_id, rating, comment, deleted)
-VALUES (100000, 100000, 100000, 100000, 4.8, 'Fin i kulturan vozac', false);
+INSERT INTO review (id, driver_id, client_id, ride_id, car_rating,driver_rating, comment, deleted)
+VALUES (100000, 100000, 100000, 100000, 4.8, 2.2, 'Fin i kulturan vozac', false);
+
+-- INSERT INTO review (id, driver_id, client_id, ride_id, car_rating,driver_rating, comment, deleted)
+-- VALUES (200000, 100000, 100000, 200000, 4.8, 2.2, 'Fin i kulturan vozac', false );
 
 --CHATS
 INSERT INTO chat (id, subject_identity_id, deleted)
@@ -138,8 +160,8 @@ VALUES (300000, 600000, false);
 INSERT INTO message (id, chat_id, sender_name, content, time, from_admin, deleted)
 VALUES (100000, 100000, 'Jovo Jovic', 'Pozdrav admine imam problem', CURRENT_TIMESTAMP, false, false);
 INSERT INTO message (id, chat_id, sender_name, content, time, from_admin, deleted)
-VALUES (300000, 200000, 'Haso Hasic', 'Pozdrav admine imam dvjesta problem', CURRENT_TIMESTAMP,false , false);
-INSERT INTO message (id, chat_id, sender_name, content, time,from_admin, deleted)
-VALUES (400000, 300000, 'Mujo Mujic', 'Pozdrav admine imam trista problem', CURRENT_TIMESTAMP, false,false);
+VALUES (300000, 200000, 'Haso Hasic', 'Pozdrav admine imam dvjesta problem', CURRENT_TIMESTAMP, false, false);
+INSERT INTO message (id, chat_id, sender_name, content, time, from_admin, deleted)
+VALUES (400000, 300000, 'Mujo Mujic', 'Pozdrav admine imam trista problem', CURRENT_TIMESTAMP, false, false);
 INSERT INTO message (id, chat_id, sender_name, content, time, from_admin, deleted)
 VALUES (200000, 100000, 'Andrej Culjak', 'Kazite gospodine', CURRENT_TIMESTAMP, true, false);

@@ -35,6 +35,9 @@ import { AcceptRideDriverDialogComponent } from './ride/dialogs/accept-ride-driv
 import {MatDialogModule} from '@angular/material/dialog';
 import { SingleRideMapComponent } from './ride/single-ride-map/single-ride-map.component';
 import { AcceptRideClientDialogComponent } from './ride/dialogs/accept-ride-client-dialog/accept-ride-client-dialog.component';
+import { RideReviewComponent } from './ride/ride-review/ride-review.component';
+import {MatButtonToggleModule} from '@angular/material/button-toggle';
+
 
 @NgModule({
   declarations: [
@@ -48,7 +51,8 @@ import { AcceptRideClientDialogComponent } from './ride/dialogs/accept-ride-clie
     MapComponent,
     AcceptRideDriverDialogComponent,
     SingleRideMapComponent,
-    AcceptRideClientDialogComponent
+    AcceptRideClientDialogComponent,
+    RideReviewComponent
   ],
   imports: [
     BrowserModule,
@@ -72,7 +76,8 @@ import { AcceptRideClientDialogComponent } from './ride/dialogs/accept-ride-clie
     MatTooltipModule,
     MatProgressBarModule,
     MatSelectModule,
-    MatDialogModule
+    MatDialogModule,
+    MatButtonToggleModule
   ],
   providers: [
     { provide: ErrorHandler, useClass: GlobalErroHandler },

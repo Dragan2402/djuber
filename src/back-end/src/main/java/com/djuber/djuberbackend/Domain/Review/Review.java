@@ -36,8 +36,11 @@ public class Review {
     @JoinColumn(name = "rideId", nullable = false)
     Ride ride;
 
-    @Column(name = "rating", nullable = false)
-    Double rating;
+    @Column(name = "carRating", nullable = false)
+    Double carRating;
+
+    @Column(name = "driverRating", nullable = false)
+    Double driverRating;
 
     @Column(name = "comment")
     String comment;

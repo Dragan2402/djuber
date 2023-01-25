@@ -1,5 +1,6 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
+import { RideReviewResponse } from './ride-review/rideReviewResponse';
 import { RideResponse } from './rideResponse';
 
 @Injectable({
@@ -15,5 +16,13 @@ export class RideService {
 
   acceptRide(rideId:number){
     return this.http.post(`/api/ride/accept/${rideId}`,null);
+  }
+
+  getRideForReview(rideId:string){
+    return this.http.get<RideReviewResponse>(`/api/ride/rideForReview/${rideId}`);
+  }
+
+  reviewRide(reviewRide){
+    return this.http.post("/api/ride/reviewRide",reviewRide);
   }
 }

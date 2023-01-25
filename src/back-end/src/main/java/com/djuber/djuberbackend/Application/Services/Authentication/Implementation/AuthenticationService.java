@@ -73,7 +73,7 @@ public class AuthenticationService implements IAuthenticationService, UserDetail
         identity.getRoles().forEach(role -> {
             authorities.add(new SimpleGrantedAuthority(role.getName()));
         });
-        return new User(identity.getEmail(), identity.getPassword(), isAccountVerified(identity), true,true,isAccountNonBlocked(identity) ,authorities);
+        return new User(identity.getEmail(), identity.getPassword(), isAccountVerified(identity), true,true, true ,authorities);
     }
 
     private boolean isAccountVerified(Identity identity){
@@ -83,18 +83,6 @@ public class AuthenticationService implements IAuthenticationService, UserDetail
         Client client = clientRepository.findByIdentityId(identity.getId());
         return client.getVerified();
     }
-
-    private boolean isAccountNonBlocked(Identity identity){
-        if(identity.getUserType()==UserType.CLIENT){
-            Client client = clientRepository.findByIdentityId(identity.getId());
-            return !client.getBlocked();
-        }else if(identity.getUserType() == UserType.DRIVER){
-            Driver driver = driverRepository.findByIdentityId(identity.getId());
-            return !driver.getBlocked();
-        }
-        return true;
-    }
-
 
     @Override
     public LoggedUserInfoResponse getLoggedUserInfo(String email) {
