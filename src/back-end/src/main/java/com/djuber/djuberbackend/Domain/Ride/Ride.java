@@ -35,7 +35,7 @@ public class Ride implements Serializable {
     @JoinColumn(name = "driverId", nullable = false)
     Driver driver;
 
-    @ManyToMany(fetch = FetchType.EAGER)
+    @ManyToMany(fetch = FetchType.LAZY)
     @JoinTable(name = "clients_rides",joinColumns = @JoinColumn(name = "ride_id", referencedColumnName = "id"), inverseJoinColumns = @JoinColumn(name = "client_id", referencedColumnName = "id"))
     List<Client> clients = new ArrayList<>();
 

@@ -13,7 +13,21 @@ export class RideService {
     return this.http.get<RideResponse>(`/api/ride/${rideId}`);
   }
 
-  acceptRide(rideId:number){
-    return this.http.post(`/api/ride/accept/${rideId}`,null);
+  acceptRideDriver(rideId:number){
+    return this.http.post(`/api/ride/driver/accept/${rideId}`, null);
   }
+
+  declineRideDriver(rideId:number){
+    return this.http.post(`/api/ride/driver/decline/${rideId}`, null);
+  }
+
+  acceptRideClient(rideId:number){
+    return this.http.post(`/api/ride/driver/accept/${rideId}`, null);
+  }
+
+  declineRideClient(rideId:number){
+    return this.http.post(`/api/ride/driver/decline/${rideId}`, null);
+  }
+
+
 }

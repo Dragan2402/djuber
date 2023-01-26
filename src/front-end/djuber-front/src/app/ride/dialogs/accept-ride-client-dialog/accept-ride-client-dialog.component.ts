@@ -2,6 +2,7 @@ import { Component, Inject, OnInit } from '@angular/core';
 import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
 import { Router } from '@angular/router';
 import { RideSocketResponse } from '../../rideSocketResponse';
+import { RideService } from '../../ride.service';
 
 @Component({
   selector: 'djuber-accept-ride-client-dialog',
@@ -12,7 +13,7 @@ export class AcceptRideClientDialogComponent implements OnInit {
 
   dataToDisplay:RideSocketResponse;
 
-  constructor(public dialogRef: MatDialogRef<AcceptRideClientDialogComponent>, @Inject(MAT_DIALOG_DATA) public data: RideSocketResponse, private router: Router) {
+  constructor(public dialogRef: MatDialogRef<AcceptRideClientDialogComponent>, @Inject(MAT_DIALOG_DATA) public data: RideSocketResponse, private router: Router, private rideService: RideService) {
     this.dataToDisplay = data["response"];
 
    }
@@ -21,12 +22,12 @@ export class AcceptRideClientDialogComponent implements OnInit {
   }
 
   declineRide(){
-    console.log("Declining");
+    this.rideService.declineRideClient(this.dataToDisplay.rideId).subscribe();
     this.dialogRef.close();
   }
 
   acceptRide(){
-    console.log("Accepting");
+    this.rideService.acceptRideClient(this.dataToDisplay.rideId).subscribe();
     this.dialogRef.close();
     this.router.navigate(["singleRideMap",this.dataToDisplay.rideId]);
   }

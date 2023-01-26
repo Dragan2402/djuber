@@ -22,11 +22,12 @@ export class AcceptRideDriverDialogComponent implements OnInit {
   }
 
   declineRide(){
+    this.rideService.declineRideDriver(this.dataToDisplay.rideId).subscribe();
     this.dialogRef.close();
   }
 
   acceptRide(){
-    this.rideService.acceptRide(this.dataToDisplay.rideId).subscribe();
+    this.rideService.acceptRideDriver(this.dataToDisplay.rideId).subscribe();
     this.dialogRef.close();
     this.router.navigate(["singleRideMap",this.dataToDisplay.rideId]);
   }

@@ -68,20 +68,24 @@ public class RideService implements IRideService {
     }
 
     @Override
-    public void offerSharedRideToClients(RideRequest rideRequest) {
+    public void offerSharedRideToClients(RideRequest rideRequest, String clientEmail) {
         Ride ride = createRide(rideRequest);
 
         if (ride.getDriver() == null) {
             RideMessageResult result = new RideMessageResult(RideMessageStatus.RIDE_CLIENT_DECLINED, null);
             Client client = ride.getClients().get(0);
             simpMessagingTemplate.convertAndSend(TOPIC_PATH + client.getIdentity().getId(), result);
+
         } else {
+            ride.getClientsAccepted().add(clientEmail);
             ride = rideRepository.save(ride);
             coordinatesRepository.saveAll(ride.getRoute().getCoordinates());
 
             RideMessageResult result = new RideMessageResult(RideMessageStatus.RIDE_CLIENT_OFFER, ride.getId());
             for (Client client : ride.getClients()) {
-                simpMessagingTemplate.convertAndSend(TOPIC_PATH + client.getIdentity().getId(), result);
+                if (!client.getIdentity().getEmail().equals(clientEmail)) {
+                    simpMessagingTemplate.convertAndSend(TOPIC_PATH + client.getIdentity().getId(), result);
+                }
             }
         }
     }

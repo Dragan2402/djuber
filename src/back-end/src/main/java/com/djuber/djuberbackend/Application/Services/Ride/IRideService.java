@@ -10,7 +10,7 @@ import java.util.List;
 
 public interface IRideService {
     void offerSingleRideToDriver(RideRequest rideRequest);
-    void offerSharedRideToClients(RideRequest rideRequest);
+    void offerSharedRideToClients(RideRequest rideRequest, String clientEmail);
     RideResponse getRideResponse(Long rideId);
     void acceptRideDriverOffer(Long rideId) throws IOException, InterruptedException;
     void declineRideDriverOffer(Long rideId);

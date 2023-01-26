@@ -32,6 +32,5 @@ public class RideRequest {
     Set<String> additionalServices;
 
     @NotEmpty(message = "Email is required.")
-    @Email(message = "The email address is invalid.", flags = {Pattern.Flag.CASE_INSENSITIVE})
     List<String> clientEmails;
 }
