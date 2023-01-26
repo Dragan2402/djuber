@@ -12,7 +12,9 @@ import org.hibernate.annotations.Where;
 import javax.persistence.*;
 import java.io.Serializable;
 import java.time.OffsetDateTime;
+import java.util.ArrayList;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 
 @Entity
@@ -35,7 +37,7 @@ public class Ride implements Serializable {
 
     @ManyToMany(fetch = FetchType.EAGER)
     @JoinTable(name = "clients_rides",joinColumns = @JoinColumn(name = "ride_id", referencedColumnName = "id"), inverseJoinColumns = @JoinColumn(name = "client_id", referencedColumnName = "id"))
-    Set<Client> clients = new HashSet<>();
+    List<Client> clients = new ArrayList<>();
 
     @OneToMany(mappedBy = "ride",fetch = FetchType.LAZY, cascade = CascadeType.DETACH)
     Set<Review> reviews = new HashSet<>();
@@ -62,6 +64,10 @@ public class Ride implements Serializable {
     @Column(name = "requested_services")
     @ElementCollection(targetClass = String.class, fetch = FetchType.EAGER)
     private Set<String> requestedServices;
+
+    @Column(name = "clients_accepted")
+    @ElementCollection(targetClass = String.class, fetch = FetchType.EAGER)
+    private Set<String> clientsAccepted;
 
     @Column(name = "deleted", nullable = false)
     Boolean deleted;

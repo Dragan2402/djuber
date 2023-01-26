@@ -345,8 +345,8 @@ export class MapComponent implements OnInit {
   }
 
   async orderRide(){
+    let clientEmails: string[] = [this.firstSharedRideClient].concat(this.sharedRideClientEmails);
     if (this.sharedRide) {
-      let clientEmails: string[] = [this.firstSharedRideClient].concat(this.sharedRideClientEmails);
       let valid = await this.areSharedRideClientsValid(clientEmails);
       if (!valid) {
         return;
@@ -360,8 +360,15 @@ export class MapComponent implements OnInit {
 
         coordinates.push({lat:points[i]["lat"], lon:points[i]["lng"],index:i} as Coordinate)
       };
-      const request = {clientEmail:this.authenticationService.loggedUserInfo$.value["email"], distance:this.routes[0].distance, carType:this.selectedCarType,
-                        additionalServices:this.getAdditionalServices(), coordinates:coordinates,rideType:"Single"} as RideRequest;
+
+      let passengerEmails: string[] = [this.authenticationService.getLoggedUserEmail()].concat(clientEmails);
+      const request = {
+        clientEmails: passengerEmails, 
+        distance: this.routes[0].distance,
+        carType: this.selectedCarType,
+        additionalServices: this.getAdditionalServices(),
+        coordinates: coordinates,rideType:"Single"
+      } as RideRequest;
       this.mapService.orderRide(request).subscribe();
       this.orderStatus = 1;
       this._snackBar.openFromComponent(SnackbarComponent,{data:"Waiting for driver."});
@@ -387,9 +394,6 @@ export class MapComponent implements OnInit {
       }
     }
 
-    // const result$ = this.mapService.searchLocationAsync(address).pipe();
-    // const response = await firstValueFrom(result$);
-
     const resultExist$ = this.mapService.checkIfClientsExist(clientEmails).pipe();
     const responseExist = await firstValueFrom(resultExist$);
     if (responseExist !== null) {
@@ -399,15 +403,6 @@ export class MapComponent implements OnInit {
       return false;
     }
 
-    // this.mapService.checkIfClientsExist(clientEmails).subscribe(response => {
-    //   if (response !== null) {
-    //     this._snackBar.openFromComponent(SnackbarComponent, {
-    //       data: `Client with e-mail '${response}' not found.`
-    //     });
-    //     return false;
-    //   }
-    // });
-
     const resultBlocked$ = this.mapService.checkIfClientsAreBlocked(clientEmails).pipe();
     const responseBlocked = await firstValueFrom(resultBlocked$);
     if (responseBlocked !== null) {
@@ -416,15 +411,6 @@ export class MapComponent implements OnInit {
       });
       return false;
     }
-
-    // this.mapService.checkIfClientsAreBlocked(clientEmails).subscribe(response => {
-    //   if (response !== null) {
-    //     this._snackBar.openFromComponent(SnackbarComponent, {
-    //       data: `Client with e-mail '${response}' is blocked.`
-    //     });
-    //     return false;
-    //   }
-    // });
 
     return true;
   }

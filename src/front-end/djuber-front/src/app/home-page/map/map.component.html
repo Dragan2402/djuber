@@ -68,7 +68,7 @@
                     <input matInput placeholder="Enter e-mail" [(ngModel)]="firstSharedRideClient"/>
                   </mat-card-content>
                 </mat-form-field>
-                <button mat-button style="height: 60px;width: 20px;" matTooltip="Add passenger" (click)="addSharedRideClient(0)"><mat-icon>add</mat-icon></button>
+                <button [disabled]="sharedRideClientEmails.length > 1" mat-button style="height: 60px;width: 20px;" matTooltip="Add passenger" (click)="addSharedRideClient(0)"><mat-icon>add</mat-icon></button>
               </div>
             </div>
             <div *ngFor="let email of sharedRideClientEmails; let i = index">
@@ -76,8 +76,8 @@
                 <mat-form-field style="width: 250px;" >
                     <input matInput placeholder="Enter e-mail" [ngModel]="sharedRideClientEmails[i]" (change)="onEmailUpdate($event, i)"/>
                 </mat-form-field>
-                <button mat-button style="height: 60px;width: 20px;" matTooltip="Add passenger" (click)="addSharedRideClient(i)"><mat-icon>add</mat-icon></button>
-                <button mat-button style="height: 60px;width: 20px;" matTooltip="Remove route point" (click)="removeSharedRideClient(i)"><mat-icon>remove</mat-icon></button>
+                <!-- <button [disabled]="sharedRideClientEmails.length > 1" mat-button style="height: 60px;width: 20px;" matTooltip="Add passenger" (click)="addSharedRideClient(i)"><mat-icon>add</mat-icon></button> -->
+                <button mat-button style="height: 60px;width: 20px;" matTooltip="Remove passenger" (click)="removeSharedRideClient(i)"><mat-icon>remove</mat-icon></button>
               </div>
             </div>
 

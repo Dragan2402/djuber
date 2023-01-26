@@ -26,15 +26,11 @@ import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
 import org.springframework.messaging.simp.SimpMessagingTemplate;
-import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.webjars.NotFoundException;
 
-import java.io.BufferedReader;
 import java.io.IOException;
-import java.io.InputStreamReader;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
 
@@ -50,30 +46,43 @@ public class RideService implements IRideService {
     final SimpMessagingTemplate simpMessagingTemplate;
     final ICarRepository carRepository;
 
+    private static final String TOPIC_PATH = "/topic/ride/";
+
     @Override
     @Transactional
-    public void getClosestFittingDriver(RideRequest rideRequest) {
-        Ride ride = RideMapper.map(rideRequest);
-        Identity clientIdentity = identityRepository.findByEmail(rideRequest.getClientEmail());
-        Client client = clientRepository.findByIdentityId(clientIdentity.getId());
-        ride.getClients().add(client);
+    public void offerSingleRideToDriver(RideRequest rideRequest) {
+        Ride ride = createRide(rideRequest);
 
-        Coordinate startCoordinate = ride.getRoute().getStartCoordinate();
-        List<Driver> sortedAvailableDrivers = driverRepository.findAvailableDriversSortedByDistanceFromCoordinate(startCoordinate);
-        Driver closestFittingDriver = getClosestFittingDriver(sortedAvailableDrivers, rideRequest.getCarType(), rideRequest.getAdditionalServices());
-
-        if (closestFittingDriver == null) {
+        if (ride.getDriver() == null) {
             RideMessageResult result = new RideMessageResult(RideMessageStatus.RIDE_CLIENT_DECLINED, null);
-            simpMessagingTemplate.convertAndSend("/topic/ride/" + clientIdentity.getId(), result);
-
+            Client client = ride.getClients().get(0);
+            simpMessagingTemplate.convertAndSend(TOPIC_PATH + client.getIdentity().getId(), result);
         } else {
-            ride.setDriver(closestFittingDriver);
             ride = rideRepository.save(ride);
             coordinatesRepository.saveAll(ride.getRoute().getCoordinates());
-            RideMessageResult result = new RideMessageResult(RideMessageStatus.RIDE_DRIVER_OFFER, ride.getId());
 
-            Identity driverIdentity = closestFittingDriver.getIdentity();
-            simpMessagingTemplate.convertAndSend("/topic/ride/" + driverIdentity.getId(), result);
+            RideMessageResult result = new RideMessageResult(RideMessageStatus.RIDE_DRIVER_OFFER, ride.getId());
+            Identity driverIdentity = ride.getDriver().getIdentity();
+            simpMessagingTemplate.convertAndSend(TOPIC_PATH + driverIdentity.getId(), result);
+        }
+    }
+
+    @Override
+    public void offerSharedRideToClients(RideRequest rideRequest) {
+        Ride ride = createRide(rideRequest);
+
+        if (ride.getDriver() == null) {
+            RideMessageResult result = new RideMessageResult(RideMessageStatus.RIDE_CLIENT_DECLINED, null);
+            Client client = ride.getClients().get(0);
+            simpMessagingTemplate.convertAndSend(TOPIC_PATH + client.getIdentity().getId(), result);
+        } else {
+            ride = rideRepository.save(ride);
+            coordinatesRepository.saveAll(ride.getRoute().getCoordinates());
+
+            RideMessageResult result = new RideMessageResult(RideMessageStatus.RIDE_CLIENT_OFFER, ride.getId());
+            for (Client client : ride.getClients()) {
+                simpMessagingTemplate.convertAndSend(TOPIC_PATH + client.getIdentity().getId(), result);
+            }
         }
     }
 
@@ -89,7 +98,7 @@ public class RideService implements IRideService {
     }
 
     @Override
-    public void acceptRideOffer(Long rideId) throws IOException, InterruptedException {
+    public void acceptRideDriverOffer(Long rideId) throws IOException, InterruptedException {
         Ride ride = rideRepository.findById(rideId).orElse(null);
         if (ride == null) {
             throw new NotFoundException("Ride not found.");
@@ -97,26 +106,15 @@ public class RideService implements IRideService {
         ride.setRideStatus(RideStatus.ON_THE_WAY);
         RideMessageResult result = new RideMessageResult(RideMessageStatus.RIDE_CLIENT_ACCEPTED, ride.getId());
         for (Client client : ride.getClients()) {
-            simpMessagingTemplate.convertAndSend("/topic/ride/" + client.getIdentity().getId(), result);
+            simpMessagingTemplate.convertAndSend(TOPIC_PATH + client.getIdentity().getId(), result);
         }
         rideRepository.save(ride);
 
         this.execute(rideId);
-
-    }
-
-    public boolean execute(Long rideId) throws IOException, InterruptedException {
-        String[] commands = {"locust", "-f", "script/djuber-simulation.py", "--conf", "script/locust.conf", "--data", "{\\\"rideId\\\":\\\"1\\\"}"};
-        ProcessBuilder pb = new ProcessBuilder().command(commands);
-
-        Process process = pb.start();
-
-        process.waitFor();
-        return true;
     }
 
     @Override
-    public void declineRideOffer(Long rideId) {
+    public void declineRideDriverOffer(Long rideId) {
         Ride ride = rideRepository.findById(rideId).orElse(null);
         if (ride == null) {
             throw new NotFoundException("Ride not found.");
@@ -128,9 +126,10 @@ public class RideService implements IRideService {
         Driver nextFittingDriver = getNextFittingDriver(sortedAvailableDrivers, carType, ride.getRequestedServices(), ride.getDriver().getId());
 
         if (nextFittingDriver == null) {
+            rideRepository.delete(ride);
             RideMessageResult result = new RideMessageResult(RideMessageStatus.RIDE_CLIENT_DECLINED, null);
             for (Client client : ride.getClients()) {
-                simpMessagingTemplate.convertAndSend("/topic/ride/" + client.getIdentity().getId(), result);
+                simpMessagingTemplate.convertAndSend(TOPIC_PATH + client.getIdentity().getId(), result);
             }
 
         } else {
@@ -139,9 +138,50 @@ public class RideService implements IRideService {
             RideMessageResult result = new RideMessageResult(RideMessageStatus.RIDE_DRIVER_OFFER, ride.getId());
 
             Identity driverIdentity = nextFittingDriver.getIdentity();
-            simpMessagingTemplate.convertAndSend("/topic/ride/" + driverIdentity.getId(), result);
+            simpMessagingTemplate.convertAndSend(TOPIC_PATH + driverIdentity.getId(), result);
         }
         rideRepository.save(ride);
+    }
+
+    @Override
+    public void acceptRideClientOfferAndSendDriverOffer(Long rideId, String clientEmail) {
+        Ride ride = rideRepository.findById(rideId).orElse(null);
+        if (ride == null) {
+            throw new NotFoundException("Ride not found.");
+        }
+        ride.getClientsAccepted().add(clientEmail);
+        ride = rideRepository.save(ride);
+
+        if (ride.getClients().size() == ride.getClientsAccepted().size()) {
+            RideMessageResult result = new RideMessageResult(RideMessageStatus.RIDE_DRIVER_OFFER, ride.getId());
+            Identity driverIdentity = ride.getDriver().getIdentity();
+            simpMessagingTemplate.convertAndSend(TOPIC_PATH + driverIdentity.getId(), result);
+        }
+    }
+
+    @Override
+    public void declineRideClientOffer(Long rideId) {
+        Ride ride = rideRepository.findById(rideId).orElse(null);
+        if (ride == null) {
+            throw new NotFoundException("Ride not found.");
+        }
+
+        rideRepository.delete(ride);
+        RideMessageResult result = new RideMessageResult(RideMessageStatus.RIDE_CLIENT_DECLINED, null);
+        for (String otherClientEmail : ride.getClientsAccepted()) {
+            Identity identity = identityRepository.findByEmail(otherClientEmail);
+            simpMessagingTemplate.convertAndSend(TOPIC_PATH + identity.getId(), result);
+        }
+    }
+
+    public boolean execute(Long rideId) throws IOException, InterruptedException {
+        String[] commands = {"locust", "-f", "script/djuber-simulation.py", "--conf", "script/locust.conf", "--data", "{\\\"rideId\\\":\\\"1\\\"}"};
+        ProcessBuilder pb = new ProcessBuilder().command(commands);
+
+        Process process = pb.start();
+
+        process.waitFor();
+        return true;
     }
 
     @Override
@@ -218,6 +258,21 @@ public class RideService implements IRideService {
         rideRepository.save(ride);
 
         simpMessagingTemplate.convertAndSend("/topic/singleRide/" + rideId, new RideUpdateResponse(ride.getRideStatus().toString(),0D,0D));
+    }
+
+    private Ride createRide(RideRequest rideRequest) {
+        Ride ride = RideMapper.map(rideRequest);
+        for (String clientEmail : rideRequest.getClientEmails()) {
+            Identity clientIdentity = identityRepository.findByEmail(clientEmail);
+            Client client = clientRepository.findByIdentityId(clientIdentity.getId());
+            ride.getClients().add(client);
+        }
+
+        Coordinate startCoordinate = ride.getRoute().getStartCoordinate();
+        List<Driver> sortedAvailableDrivers = driverRepository.findAvailableDriversSortedByDistanceFromCoordinate(startCoordinate);
+        Driver closestFittingDriver = getClosestFittingDriver(sortedAvailableDrivers, rideRequest.getCarType(), rideRequest.getAdditionalServices());
+        ride.setDriver(closestFittingDriver);
+        return ride;
     }
 
     private static Driver getClosestFittingDriver(List<Driver> sortedAvailableDrivers, String carType, Set<String> additionalServices) {

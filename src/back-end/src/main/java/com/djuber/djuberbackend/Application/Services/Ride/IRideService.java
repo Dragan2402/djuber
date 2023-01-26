@@ -4,16 +4,19 @@ import com.djuber.djuberbackend.Controllers.Ride.Requests.CoordinateRequest;
 import com.djuber.djuberbackend.Controllers.Ride.Requests.RideRequest;
 import com.djuber.djuberbackend.Controllers.Ride.Responses.CoordinateResponse;
 import com.djuber.djuberbackend.Controllers.Ride.Responses.RideResponse;
-import com.djuber.djuberbackend.Domain.Ride.Ride;
 
 import java.io.IOException;
 import java.util.List;
 
 public interface IRideService {
-    void getClosestFittingDriver(RideRequest rideRequest);
+    void offerSingleRideToDriver(RideRequest rideRequest);
+    void offerSharedRideToClients(RideRequest rideRequest);
     RideResponse getRideResponse(Long rideId);
-    void acceptRideOffer(Long rideId) throws IOException, InterruptedException;
-    void declineRideOffer(Long rideId);
+    void acceptRideDriverOffer(Long rideId) throws IOException, InterruptedException;
+    void declineRideDriverOffer(Long rideId);
+    void acceptRideClientOfferAndSendDriverOffer(Long rideId, String clientEmail);
+
+    void declineRideClientOffer(Long rideId);
 
     CoordinateResponse getDriverStartingLocation(Long rideId);
 
