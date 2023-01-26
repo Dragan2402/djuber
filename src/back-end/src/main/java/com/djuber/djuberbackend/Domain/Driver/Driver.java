@@ -52,9 +52,6 @@ public class Driver {
     Set<Ride> rides = new HashSet<>();
 
     @OneToMany(mappedBy = "driver",fetch = FetchType.LAZY, cascade = CascadeType.DETACH)
-    Set<Reservation> reservations = new HashSet<>();
-
-    @OneToMany(mappedBy = "driver",fetch = FetchType.LAZY, cascade = CascadeType.DETACH)
     Set<Review> reviews = new HashSet<>();
 
     @OneToOne(cascade = CascadeType.ALL)
