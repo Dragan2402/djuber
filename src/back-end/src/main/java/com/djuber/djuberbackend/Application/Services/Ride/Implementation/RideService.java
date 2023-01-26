@@ -164,7 +164,7 @@ public class RideService implements IRideService {
     public void acceptRideClientOfferAndSendDriverOffer(Long rideId, String clientEmail) {
         Ride ride = rideRepository.findById(rideId).orElse(null);
         if (ride == null) {
-            throw new NotFoundException("Ride not found.");
+            throw new EntityNotFoundException("Ride not found.");
         }
         ride.getClientsAccepted().add(clientEmail);
         ride = rideRepository.save(ride);
@@ -180,7 +180,7 @@ public class RideService implements IRideService {
     public void declineRideClientOffer(Long rideId) {
         Ride ride = rideRepository.findById(rideId).orElse(null);
         if (ride == null) {
-            throw new NotFoundException("Ride not found.");
+            throw new EntityNotFoundException("Ride not found.");
         }
 
         rideRepository.delete(ride);
