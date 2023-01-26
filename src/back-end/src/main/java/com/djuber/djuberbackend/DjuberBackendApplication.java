@@ -10,7 +10,7 @@ import org.springframework.web.socket.config.annotation.EnableWebSocket;
 
 @SpringBootApplication
 @OpenAPIDefinition(info = @Info(title = "Djuber", version = "1.0", description = "Djuber application APIs"))
-@EnableJpaRepositories
+//@EnableJpaRepositories
 @EnableAsync
 @EnableWebSocket
 public class DjuberBackendApplication {

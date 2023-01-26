@@ -57,7 +57,7 @@ public class GlobalExceptionHandler {
 
     @ExceptionHandler({EntityNotFoundException.class})
     public ResponseEntity<ErrorObject> handleEntityNotFoundException(EntityNotFoundException ex, WebRequest request){
-        return new ResponseEntity<>(getErrorObject(ex.getMessage(), HttpStatus.BAD_REQUEST), HttpStatus.BAD_REQUEST);
+        return new ResponseEntity<>(getErrorObject(ex.getMessage(), HttpStatus.NOT_FOUND), HttpStatus.NOT_FOUND);
     }
 
     @ExceptionHandler({ChatNotFoundException.class})

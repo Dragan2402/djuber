@@ -169,10 +169,13 @@ public class RideService implements IRideService {
 
     @Override
     public CoordinateResponse getRideStartingLocation(Long rideId) {
-
-        Coordinate startingCoordinate = coordinatesRepository.findFirstCoordinateByRideId(rideId);
+        Ride ride = rideRepository.findById(rideId).orElse(null);
+        if (ride == null) {
+            throw new EntityNotFoundException("Ride not found.");
+        }
+        Coordinate startingCoordinate = coordinatesRepository.findFirstCoordinateByRideId(ride.getId());
         if (startingCoordinate == null) {
-            throw new EntityNotFoundException("Coordinate not found");
+            throw new EntityNotFoundException("Coordinate not found.");
         }
         return new CoordinateResponse(startingCoordinate);
     }
@@ -189,16 +192,11 @@ public class RideService implements IRideService {
             simpMessagingTemplate.convertAndSend("/topic/singleRide/" + rideId, rideUpdateResponse);
             throw new CannotUpdateCanceledRideException("The ride you are trying to update has been canceled.");
         }
-        Car car = carRepository.findById(ride.getDriver().getCar().getId()).orElse(null);
 
-        if (car == null) {
-            throw new EntityNotFoundException("Car not found.");
-        }
+        ride.getDriver().getCar().setLat(request.getLat());
+        ride.getDriver().getCar().setLon(request.getLon());
 
-        car.setLat(request.getLat());
-        car.setLon(request.getLon());
-
-        carRepository.save(car);
+        carRepository.save(ride.getDriver().getCar());
 
         RideUpdateResponse rideUpdateResponse = new RideUpdateResponse(ride.getRideStatus().toString(), request.getLat(),request.getLon());
 
