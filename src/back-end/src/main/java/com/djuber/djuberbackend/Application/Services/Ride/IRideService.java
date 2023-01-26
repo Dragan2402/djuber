@@ -6,7 +6,6 @@ import com.djuber.djuberbackend.Controllers.Ride.Requests.RideRequest;
 import com.djuber.djuberbackend.Controllers.Ride.Responses.CoordinateResponse;
 import com.djuber.djuberbackend.Controllers.Ride.Responses.RideResponse;
 import com.djuber.djuberbackend.Controllers.Ride.Responses.RideReviewResponse;
-import com.djuber.djuberbackend.Domain.Ride.Ride;
 
 import java.io.IOException;
 import java.util.List;

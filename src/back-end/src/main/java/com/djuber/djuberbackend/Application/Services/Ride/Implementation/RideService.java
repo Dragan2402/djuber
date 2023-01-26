@@ -1,6 +1,5 @@
 package com.djuber.djuberbackend.Application.Services.Ride.Implementation;
 
-import com.djuber.djuberbackend.Application.Services.Client.Results.ClientResult;
 import com.djuber.djuberbackend.Application.Services.Ride.IRideService;
 import com.djuber.djuberbackend.Application.Services.Ride.Mapper.RideMapper;
 import com.djuber.djuberbackend.Application.Services.Ride.Results.RideMessageResult;
@@ -37,9 +36,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.io.IOException;
-import java.io.InputStreamReader;
 import java.time.OffsetDateTime;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
 

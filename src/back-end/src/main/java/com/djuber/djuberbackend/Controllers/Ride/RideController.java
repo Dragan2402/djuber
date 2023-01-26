@@ -1,7 +1,6 @@
 package com.djuber.djuberbackend.Controllers.Ride;
 
 import com.djuber.djuberbackend.Application.Services.Ride.IRideService;
-import com.djuber.djuberbackend.Application.Services.Ride.Mapper.RideMapper;
 import com.djuber.djuberbackend.Controllers.Ride.Requests.CancellingNoteRequest;
 import com.djuber.djuberbackend.Controllers.Ride.Requests.CoordinateRequest;
 import com.djuber.djuberbackend.Controllers.Ride.Requests.ReviewRideRequest;
@@ -9,7 +8,6 @@ import com.djuber.djuberbackend.Controllers.Ride.Requests.RideRequest;
 import com.djuber.djuberbackend.Controllers.Ride.Responses.CoordinateResponse;
 import com.djuber.djuberbackend.Controllers.Ride.Responses.RideResponse;
 import com.djuber.djuberbackend.Controllers.Ride.Responses.RideReviewResponse;
-import com.djuber.djuberbackend.Domain.Ride.Ride;
 import com.djuber.djuberbackend.Domain.Ride.RideType;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;

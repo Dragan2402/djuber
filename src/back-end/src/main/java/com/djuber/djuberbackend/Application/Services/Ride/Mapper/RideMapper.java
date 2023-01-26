@@ -28,7 +28,6 @@ public class RideMapper {
         ride.setRideType(rideType);
         ride.setRequestedServices(rideRequest.getAdditionalServices());
 
-
         ride.setRoute(new Route());
         for (CoordinateRequest cr : rideRequest.getCoordinates()) {
             Coordinate coordinate = new Coordinate();
@@ -40,7 +39,6 @@ public class RideMapper {
             ride.getRoute().getCoordinates().add(coordinate);
         }
         ride.getRoute().setDeleted(false);
-
 
         CarType carType = CarType.fromString(rideRequest.getCarType());
 
