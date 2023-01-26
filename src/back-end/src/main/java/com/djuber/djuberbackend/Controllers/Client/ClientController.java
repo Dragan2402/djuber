@@ -13,8 +13,10 @@ import com.djuber.djuberbackend.Controllers._Common.Requests.ImageUpdateRequest;
 import com.djuber.djuberbackend.Controllers._Common.Requests.NoteUpdateRequest;
 import com.djuber.djuberbackend.Controllers._Common.Responses.ImageResponse;
 import com.djuber.djuberbackend.Controllers._Common.Responses.NoteResponse;
+import com.djuber.djuberbackend.Infastructure.Repositories.Authentication.IIdentityRepository;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
+import org.apache.tomcat.util.json.JSONParser;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
@@ -25,6 +27,7 @@ import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
 import java.security.Principal;
+import java.util.List;
 
 @Tag(name="Client API",description = "Provides Client CRUD end-points.")
 @RestController
@@ -103,5 +106,25 @@ public class ClientController {
     @PreAuthorize("hasAnyRole('CLIENT')")
     public void updateLoggedClient(Principal user, @RequestBody @Valid UpdateClientRequest request){
         this.clientService.updateLoggedClient(user.getName(),request);
+    }
+
+    @PostMapping(value = "checkIfClientsExist")
+    @PreAuthorize("hasAnyRole('CLIENT')")
+    public ResponseEntity<String> checkIfClientsExist(@RequestBody List<String> clientEmails) {
+        String nonExistingClientEmail = this.clientService.checkIfClientsExist(clientEmails);
+        if (nonExistingClientEmail != null) {
+            nonExistingClientEmail = '\"' + nonExistingClientEmail + '\"';
+        }
+        return new ResponseEntity<>(nonExistingClientEmail, HttpStatus.OK);
+    }
+
+    @PostMapping(value = "checkIfClientsAreBlocked")
+    @PreAuthorize("hasAnyRole('CLIENT')")
+    public ResponseEntity<String> checkIfClientsAreBlocked(@RequestBody List<String> clientEmails) {
+        String blockedClientEmail = this.clientService.checkIfClientsAreBlocked(clientEmails);
+        if (blockedClientEmail != null) {
+            blockedClientEmail = '\"' + blockedClientEmail + '\"';
+        }
+        return new ResponseEntity<>(blockedClientEmail, HttpStatus.OK);
     }
 }

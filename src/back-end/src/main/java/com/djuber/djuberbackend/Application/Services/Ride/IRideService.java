@@ -12,10 +12,14 @@ import java.io.IOException;
 import java.util.List;
 
 public interface IRideService {
-    void getClosestFittingDriver(RideRequest rideRequest);
+    void offerSingleRideToDriver(RideRequest rideRequest);
+    void offerSharedRideToClients(RideRequest rideRequest);
     RideResponse getRideResponse(Long rideId);
-    void acceptRideOffer(Long rideId) throws IOException, InterruptedException;
-    void declineRideOffer(Long rideId);
+    void acceptRideDriverOffer(Long rideId) throws IOException, InterruptedException;
+    void declineRideDriverOffer(Long rideId);
+    void acceptRideClientOfferAndSendDriverOffer(Long rideId, String clientEmail);
+
+    void declineRideClientOffer(Long rideId);
 
     CoordinateResponse getDriverStartingLocation(Long rideId);
 

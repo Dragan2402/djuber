@@ -14,8 +14,8 @@ export class RideService {
     return this.http.get<RideResponse>(`/api/ride/${rideId}`);
   }
 
-  acceptRide(rideId:number){
-    return this.http.post(`/api/ride/accept/${rideId}`,null);
+  acceptRideDriver(rideId:number){
+    return this.http.post(`/api/ride/driver/accept/${rideId}`, null);
   }
 
   getRideForReview(rideId:string){
@@ -32,5 +32,17 @@ export class RideService {
 
   submitCancellingNote(rideId:string, note:string){
     return this.http.put(`/api/ride/submitCancellingNote/${rideId}`,{note:note});
+  }
+
+  declineRideDriver(rideId:number){
+    return this.http.post(`/api/ride/driver/decline/${rideId}`, null);
+  }
+
+  acceptRideClient(rideId:number){
+    return this.http.post(`/api/ride/client/accept/${rideId}`, null);
+  }
+
+  declineRideClient(rideId:number){
+    return this.http.post(`/api/ride/client/decline/${rideId}`, null);
   }
 }

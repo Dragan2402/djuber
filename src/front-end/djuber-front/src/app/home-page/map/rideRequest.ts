@@ -6,5 +6,5 @@ export interface RideRequest{
   rideType:string;
   additionalServices:string[];
   coordinates:Coordinate[];
-  clientEmail:string;
+  clientEmails:string[];
 }

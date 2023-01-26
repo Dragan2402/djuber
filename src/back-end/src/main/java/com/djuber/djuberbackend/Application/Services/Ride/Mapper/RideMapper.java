@@ -45,7 +45,7 @@ public class RideMapper {
         CarType carType = CarType.fromString(rideRequest.getCarType());
 
         double price = carType.getBasePrice() + rideRequest.getDistance() * 120;
-        price = (double) Math.round(price * 100);
+        price = Math.round(price * 100);
         price = price/100;
         ride.setPrice(price);
 
