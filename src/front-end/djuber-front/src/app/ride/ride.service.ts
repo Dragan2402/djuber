@@ -25,4 +25,12 @@ export class RideService {
   reviewRide(reviewRide){
     return this.http.post("/api/ride/reviewRide",reviewRide);
   }
+
+  declineAssignedRide(rideId:string){
+    return this.http.post(`/api/ride/declineAssignedRide/${rideId}`,{});
+  }
+
+  submitCancellingNote(rideId:string, note:string){
+    return this.http.put(`/api/ride/submitCancellingNote/${rideId}`,{note:note});
+  }
 }

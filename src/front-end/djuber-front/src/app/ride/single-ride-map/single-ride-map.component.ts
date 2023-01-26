@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { ActivatedRoute } from '@angular/router';
+import { ActivatedRoute, Router } from '@angular/router';
 import * as L from 'leaflet';
 import * as Stomp from 'stompjs';
 import * as SockJS from 'sockjs-client';
@@ -10,6 +10,10 @@ import { Coordinate } from 'src/app/home-page/map/coordinate';
 import { AuthenticationService } from 'src/app/authentication/authentication.service';
 import { HashService } from 'src/app/utility/hash-service.service';
 import { RideUpdateResponse } from '../rideUpdateResponse';
+import { MatSnackBar } from '@angular/material/snack-bar';
+import { SnackbarComponent } from 'src/app/snackbar/snackbar.component';
+import { MatDialog, MatDialogConfig } from '@angular/material/dialog';
+import { CancelRideNoteDialogComponent } from '../dialogs/cancel-ride-note-dialog/cancel-ride-note-dialog.component';
 
 
 
@@ -40,7 +44,7 @@ export class SingleRideMapComponent implements OnInit {
   }
   driverMarker:L.Marker;
 
-  constructor(private route: ActivatedRoute, private rideService:RideService, private authService : AuthenticationService, private hashService:HashService) { }
+  constructor(private route: ActivatedRoute, private rideService:RideService,public matDialog: MatDialog , private snackBar : MatSnackBar, private authService : AuthenticationService, private hashService:HashService, private router:Router) { }
 
 
   ngOnInit(): void {
@@ -108,9 +112,30 @@ export class SingleRideMapComponent implements OnInit {
     const role = this.authService.getLoggedUserRole();
     return (this.hashService.matchRoles("DRIVER",role));}
 
+  cancelRide(){
+    this.rideService.declineAssignedRide(this.rideId).subscribe({complete:() =>{
+      const dialogConfig = new MatDialogConfig();
+      dialogConfig.disableClose = true;
+      dialogConfig.id = "driver-note-modal";
+      dialogConfig.data = {data:this.rideId};
+      dialogConfig.height = "40%";
+      dialogConfig.width = "20%";
+      this.matDialog.open(CancelRideNoteDialogComponent, dialogConfig);
+    }});
+  }
+
   private updateRideStatus(rideUpdateResponse:RideUpdateResponse){
+    if(rideUpdateResponse.rideStatus === "CANCELED"){
+      this.snackBar.openFromComponent(SnackbarComponent,{data:"Ride has been canceled by the driver"});
+      this.router.navigate(["/"]);
+    }
     if(rideUpdateResponse.rideStatus==="DONE"){
-      console.log("RIDE DONE PLEASE NAVIGATE");
+      if(this.userIsDriver()){
+        this.router.navigate(["/"]);
+      }else{
+        this.snackBar.openFromComponent(SnackbarComponent,{data:"Thank you for using our services"});
+        this.router.navigate(["rideReview",this.rideId]);
+      }
     }else{
       if(this.driverMarker !== undefined){
         this.driverMarker.remove();

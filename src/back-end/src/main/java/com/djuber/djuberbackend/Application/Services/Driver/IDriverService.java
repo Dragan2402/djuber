@@ -42,4 +42,8 @@ public interface IDriverService {
     void acceptChangeRequest(long id);
 
     List<AvailableDriverResponse> getAvailableDrivers();
+
+    void activateSelf(String email);
+
+    void deactivateSelf(String email);
 }

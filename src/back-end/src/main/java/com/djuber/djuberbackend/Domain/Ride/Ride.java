@@ -49,6 +49,9 @@ public class Ride implements Serializable {
     @Column(name = "finish")
     OffsetDateTime finish;
 
+    @Column(name = "cancellingNote")
+    String cancellingNote;
+
     @OneToOne(cascade = CascadeType.ALL)
     @JoinColumn(name = "route_id", nullable = false)
     Route route;

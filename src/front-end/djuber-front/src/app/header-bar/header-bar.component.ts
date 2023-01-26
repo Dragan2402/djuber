@@ -1,8 +1,10 @@
 import { Component, OnInit , OnChanges, SimpleChanges} from '@angular/core';
+import { MatSnackBar } from '@angular/material/snack-bar';
 import { Router } from '@angular/router';
 import {AuthenticationService} from "../authentication/authentication.service";
 import { LoggedUser } from '../authentication/loggedUser';
 import { ClientService } from '../client/client.service';
+import { SnackbarComponent } from '../snackbar/snackbar.component';
 import { HashService } from '../utility/hash-service.service';
 
 @Component({
@@ -18,7 +20,9 @@ export class HeaderBarComponent implements OnInit {
 
   balance:number = 0;
 
-  constructor(private authenticationService : AuthenticationService, private router:Router, private hashService: HashService) {
+  status:string = "Active";
+
+  constructor(private authenticationService : AuthenticationService, private router:Router, private hashService: HashService, private matSnackbar:MatSnackBar) {
     this.authenticationService.logged$.subscribe((attr:boolean) =>{
       this.logged = attr;
     });
@@ -28,9 +32,37 @@ export class HeaderBarComponent implements OnInit {
    }
 
   ngOnInit(): void {
-    this.authenticationService.getLoggedClientBalance().subscribe({next:(v) =>{
-      this.balance = v["balance"];
-    }})
+    if(this.loggedUserClient){
+      this.authenticationService.getLoggedClientBalance().subscribe({next:(v) =>{
+        this.balance = v["balance"];
+      }})
+    }else if(this.loggedUserDriver()){
+      this.authenticationService.activateLoggedDriver().subscribe({complete:()=>{
+        this.status ="Active";
+      }, error:(err)=>{
+        this.status = "Inactive";
+      }})
+    }
+  }
+
+  changeStatus(){
+    if(this.status==="Inactive"){
+      this.authenticationService.activateLoggedDriver().subscribe({complete:()=>{
+        this.status ="Active";
+        this.matSnackbar.openFromComponent(SnackbarComponent,{data:"You are now active."});
+      }, error:(err)=>{
+        this.status = "Inactive";
+        this.matSnackbar.openFromComponent(SnackbarComponent,{data:"You have reached ours limit. You have been moved to inactive drivers."});
+      }})
+    }else{
+      this.authenticationService.deactivateLoggedDriver().subscribe({complete:()=>{
+        this.status ="Inactive";
+        this.matSnackbar.openFromComponent(SnackbarComponent,{data:"You are now inactive."});
+      }, error:(err)=>{
+        this.status = "Inactive";
+        this.matSnackbar.openFromComponent(SnackbarComponent,{data:"You are now inactive."});
+      }})
+    }
   }
 
   logout():void{
@@ -40,6 +72,11 @@ export class HeaderBarComponent implements OnInit {
   loggedUserClient(){
     const role = this.authenticationService.getLoggedUserRole();
     return (role === this.hashService.hashString("CLIENT"));
+  }
+
+  loggedUserDriver(){
+    const role = this.authenticationService.getLoggedUserRole();
+    return (role === this.hashService.hashString("DRIVER"));
   }
 
   loggedClientBalance(){

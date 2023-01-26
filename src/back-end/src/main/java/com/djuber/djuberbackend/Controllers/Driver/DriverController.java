@@ -87,11 +87,24 @@ public class DriverController {
         return new ResponseEntity<>(driverService.getDriverProfileUpdates(), HttpStatus.OK);
     }
 
+    @PutMapping(value = "activate")
+    @PreAuthorize("hasAnyRole('DRIVER')")
+    public void activateSelf(Principal principal){
+        driverService.activateSelf(principal.getName());
+    }
+
+    @PutMapping(value = "deactivate")
+    @PreAuthorize("hasAnyRole('DRIVER')")
+    public void deactivateSelf(Principal principal){
+        driverService.deactivateSelf(principal.getName());
+    }
+
     @PutMapping(value = "declineChange")
     @PreAuthorize("hasAnyRole('ADMIN')")
     public void declineChange(@RequestBody @Valid IdRequest request){
         driverService.declineChangeRequest(request.getId());
     }
+
 
     @PutMapping(value = "acceptChange")
     @PreAuthorize("hasAnyRole('ADMIN')")
