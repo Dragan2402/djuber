@@ -1,21 +1,19 @@
-package com.djuber.djuberbackend.Controllers.Ride.Requests;
+package com.djuber.djuberbackend.Controllers.Reservation.Requests;
 
-import com.djuber.djuberbackend.Domain.Driver.CarType;
-import com.djuber.djuberbackend.Domain.Route.Coordinate;
+import com.djuber.djuberbackend.Controllers.Ride.Requests.CoordinateRequest;
 import lombok.AccessLevel;
 import lombok.Data;
 import lombok.experimental.FieldDefaults;
 
-import javax.validation.constraints.Email;
 import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.NotNull;
-import javax.validation.constraints.Pattern;
+import java.time.OffsetDateTime;
 import java.util.List;
 import java.util.Set;
 
 @Data
 @FieldDefaults(level = AccessLevel.PRIVATE)
-public class RideRequest {
+public class CreateReservationRequest {
     @NotEmpty(message = "Coordinates are required.")
     List<CoordinateRequest> coordinates;
 
@@ -27,6 +25,9 @@ public class RideRequest {
 
     @NotNull(message = "The distance is required.")
     Double distance;
+
+    @NotNull(message = "Start date of the reservation is necessary")
+    OffsetDateTime start;
 
     @NotNull(message = "Must provide additional services set. Can be empty.")
     Set<String> additionalServices;

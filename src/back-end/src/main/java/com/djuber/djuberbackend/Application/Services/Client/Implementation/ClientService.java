@@ -21,6 +21,8 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
+
 @Service
 @RequiredArgsConstructor
 @FieldDefaults(level = AccessLevel.PRIVATE)
@@ -142,6 +144,42 @@ public class ClientService implements IClientService {
         }
         client.setBalance(client.getBalance() + amount);
         clientRepository.save(client);
+    }
+
+    @Override
+    public String checkIfClientsExist(List<String> clientEmails) {
+        for (String clientEmail : clientEmails) {
+            Identity clientIdentity = identityRepository.findByEmail(clientEmail);
+            if (clientIdentity == null) {
+                return clientEmail;
+            }
+
+            Client client = clientRepository.findByIdentityId(clientIdentity.getId());
+            if (client == null) {
+                return clientEmail;
+            }
+        }
+        return null;
+    }
+
+    @Override
+    public String checkIfClientsAreBlocked(List<String> clientEmails) {
+        for (String clientEmail : clientEmails) {
+            Identity clientIdentity = identityRepository.findByEmail(clientEmail);
+            if (clientIdentity == null) {
+                throw new UserNotFoundException("Client with email " + clientEmail + " not found.");
+            }
+
+            Client client = clientRepository.findByIdentityId(clientIdentity.getId());
+            if (client == null) {
+                throw new UserNotFoundException("Client with email " + clientEmail + " not found.");
+            }
+
+            if (client.getBlocked().equals(true)) {
+                return clientEmail;
+            }
+        }
+        return null;
     }
 
     @Override

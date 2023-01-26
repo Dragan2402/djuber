@@ -32,7 +32,6 @@ public class RideMapper {
         ride.setRideType(rideType);
         ride.setRequestedServices(rideRequest.getAdditionalServices());
 
-
         ride.setRoute(new Route());
         for (CoordinateRequest cr : rideRequest.getCoordinates()) {
             Coordinate coordinate = new Coordinate();
@@ -45,11 +44,10 @@ public class RideMapper {
         }
         ride.getRoute().setDeleted(false);
 
-
         CarType carType = CarType.fromString(rideRequest.getCarType());
 
         double price = carType.getBasePrice() + rideRequest.getDistance() * 120;
-        price = (double) Math.round(price * 100);
+        price = Math.round(price * 100);
         price = price/100;
         ride.setPrice(price);
 

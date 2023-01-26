@@ -44,6 +44,13 @@ export class MapService {
     return this.http.post("/api/ride/driver", request);
   }
 
+  checkIfClientsExist(clientEmails: string[]) {
+    const url = "/api/client/checkIfClientsExist";
+    return this.http.post(url, clientEmails);
+  }
 
-
+  checkIfClientsAreBlocked(clientEmails: string[]) {
+    const url = "/api/client/checkIfClientsAreBlocked";
+    return this.http.post(url, clientEmails);
+  }
 }

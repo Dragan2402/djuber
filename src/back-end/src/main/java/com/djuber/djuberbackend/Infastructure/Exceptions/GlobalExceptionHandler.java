@@ -4,7 +4,6 @@ import com.djuber.djuberbackend.Infastructure.Exceptions.CustomExceptions.*;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.http.converter.HttpMessageNotReadableException;
-import org.springframework.security.authentication.AuthenticationCredentialsNotFoundException;
 import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.authentication.DisabledException;
 import org.springframework.security.authentication.LockedException;
@@ -48,6 +47,11 @@ public class GlobalExceptionHandler {
 
     @ExceptionHandler({DriverReachedLimitOfActiveHoursException.class})
     public ResponseEntity<ErrorObject> handleDriverReachedLimitOfActiveHoursException(DriverReachedLimitOfActiveHoursException ex, WebRequest request){
+        return new ResponseEntity<>(getErrorObject(ex.getMessage(), HttpStatus.BAD_REQUEST), HttpStatus.BAD_REQUEST);
+    }
+
+    @ExceptionHandler({InvalidReservationStartException.class})
+    public ResponseEntity<ErrorObject> handleInvalidReservationStartException(InvalidReservationStartException ex, WebRequest request){
         return new ResponseEntity<>(getErrorObject(ex.getMessage(), HttpStatus.BAD_REQUEST), HttpStatus.BAD_REQUEST);
     }
 

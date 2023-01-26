@@ -107,7 +107,7 @@ export class AppComponent implements DoCheck{
           }else if(rideSocketResponse.status === "RIDE_CLIENT_DECLINED"){
             this._snackBar.openFromComponent(SnackbarComponent,{data:"Sorry, but we did not manage to find a driver for your ride."});
           }else if(rideSocketResponse.status === "RIDE_CLIENT_OFFER"){
-           this.toggleAcceptRideClientDialog(response);
+           this.toggleAcceptRideClientDialog(rideSocketResponse);
           }
           console.log(response);
         },

@@ -1,8 +1,6 @@
 package com.djuber.djuberbackend.Controllers.Ride;
 
-import com.djuber.djuberbackend.Application.Services.Admin.Results.AdminResult;
 import com.djuber.djuberbackend.Application.Services.Ride.IRideService;
-import com.djuber.djuberbackend.Application.Services.Ride.Mapper.RideMapper;
 import com.djuber.djuberbackend.Application.Services.Ride.Results.RideResult;
 import com.djuber.djuberbackend.Controllers.Ride.Requests.CancellingNoteRequest;
 import com.djuber.djuberbackend.Controllers.Ride.Requests.CoordinateRequest;
@@ -11,7 +9,7 @@ import com.djuber.djuberbackend.Controllers.Ride.Requests.RideRequest;
 import com.djuber.djuberbackend.Controllers.Ride.Responses.CoordinateResponse;
 import com.djuber.djuberbackend.Controllers.Ride.Responses.RideResponse;
 import com.djuber.djuberbackend.Controllers.Ride.Responses.RideReviewResponse;
-import com.djuber.djuberbackend.Domain.Ride.Ride;
+import com.djuber.djuberbackend.Domain.Ride.RideType;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
@@ -42,22 +40,41 @@ public class RideController {
 
     @PostMapping("/driver")
     @PreAuthorize("hasAnyRole('CLIENT')")
-    public ResponseEntity<Void> sendRideRequestToClosestFittingDriver(@RequestBody @Valid RideRequest rideRequest) {
-        rideService.getClosestFittingDriver(rideRequest);
+    public ResponseEntity<Void> offerRideToDriver(@RequestBody @Valid RideRequest rideRequest) {
+        RideType rideType = RideType.fromString(rideRequest.getRideType());
+        if (rideType == RideType.SINGLE) {
+            rideService.offerSingleRideToDriver(rideRequest);
+        } else {
+            rideService.offerSharedRideToClients(rideRequest);
+        }
         return new ResponseEntity<>(HttpStatus.OK);
     }
 
-    @PostMapping("/accept/{rideId}")
+    @PostMapping("/driver/accept/{rideId}")
     @PreAuthorize("hasAnyRole('DRIVER')")
-    public ResponseEntity<Void> acceptRideOffer(@PathVariable("rideId") Long rideId) throws IOException, InterruptedException {
-        rideService.acceptRideOffer(rideId);
+    public ResponseEntity<Void> acceptRideDriverOffer(@PathVariable("rideId") Long rideId) throws IOException, InterruptedException {
+        rideService.acceptRideDriverOffer(rideId);
         return new ResponseEntity<>(HttpStatus.OK);
     }
 
-    @PostMapping("/decline/{rideId}")
+    @PostMapping("/driver/decline/{rideId}")
     @PreAuthorize("hasAnyRole('DRIVER')")
-    public ResponseEntity<Void> declineRideOffer(@PathVariable("rideId") Long rideId) {
-        rideService.declineRideOffer(rideId);
+    public ResponseEntity<Void> declineRideDriverOffer(@PathVariable("rideId") Long rideId) {
+        rideService.declineRideDriverOffer(rideId);
+        return new ResponseEntity<>(HttpStatus.OK);
+    }
+
+    @PostMapping("/client/accept/{rideId}")
+    @PreAuthorize("hasAnyRole('CLIENT')")
+    public ResponseEntity<Void> acceptRideClientOffer(@PathVariable("rideId") Long rideId, Principal principal) {
+        rideService.acceptRideClientOfferAndSendDriverOffer(rideId, principal.getName());
+        return new ResponseEntity<>(HttpStatus.OK);
+    }
+
+    @PostMapping("/client/decline/{rideId}")
+    @PreAuthorize("hasAnyRole('CLIENT')")
+    public ResponseEntity<Void> declineRideClientOffer(@PathVariable("rideId") Long rideId) {
+        rideService.declineRideClientOffer(rideId);
         return new ResponseEntity<>(HttpStatus.OK);
     }
 

@@ -10,6 +10,7 @@ import {Coordinate} from "./coordinate";
 import { Route } from './route';
 import {firstValueFrom, lastValueFrom} from "rxjs";
 import { RideRequest } from './rideRequest';
+import { Validators, FormControl } from '@angular/forms';
 
 @Component({
   selector: 'djuber-map',
@@ -17,6 +18,8 @@ import { RideRequest } from './rideRequest';
   styleUrls: ['./map.component.css']
 })
 export class MapComponent implements OnInit {
+
+  emailFormControl = new FormControl('', [Validators.email]);
 
   map!: L.Map;
 
@@ -48,6 +51,10 @@ export class MapComponent implements OnInit {
 
   orderStatus:number = 0;
 
+  sharedRide: boolean = false;
+
+  sharedRideClientEmails: string[] = [];
+
   selectedCarType:string = "Sedan";
 
   carTypes:string[]= ["Sedan","Station wagon","Van","Transporter"];
@@ -66,6 +73,8 @@ export class MapComponent implements OnInit {
   desiredAddress:string = '';
 
   startingAddress:string = '';
+
+  firstSharedRideClient: string = '';
 
   constructor(private mapService:MapService, private _snackBar: MatSnackBar, private authenticationService : AuthenticationService, private hashService:HashService) {
     this.authenticationService.logged$.subscribe((attr:boolean) =>{
@@ -142,8 +151,19 @@ export class MapComponent implements OnInit {
     this.routePathAddresses.splice(index, 1);
   }
 
+  addSharedRideClient(index: number) {
+    this.sharedRideClientEmails.splice(index+1, 0, "");
+  }
+
+  removeSharedRideClient(index: number) {
+    this.sharedRideClientEmails.splice(index, 1);
+  }
+
   onValueUpdate(event, index){
     this.routePathAddresses[index]=event.target.value;
+  }
+  onEmailUpdate(event, i) {
+    this.sharedRideClientEmails[i] = event.target.value;
   }
 
   setGeoLocation(position: { coords: { latitude: any; longitude: any } }) {
@@ -324,7 +344,15 @@ export class MapComponent implements OnInit {
 
   }
 
-  orderRide(){
+  async orderRide(){
+    let clientEmails: string[] = [this.firstSharedRideClient].concat(this.sharedRideClientEmails);
+    if (this.sharedRide) {
+      let valid = await this.areSharedRideClientsValid(clientEmails);
+      if (!valid) {
+        return;
+      }
+    }
+    
     const coordinates = [];
     const points = this.routes[0].points;
     if(points.length >= 2){
@@ -332,12 +360,61 @@ export class MapComponent implements OnInit {
 
         coordinates.push({lat:points[i]["lat"], lon:points[i]["lng"],index:i} as Coordinate)
       };
-      const request = {clientEmail:this.authenticationService.loggedUserInfo$.value["email"], distance:this.routes[0].distance, carType:this.selectedCarType,
-                        additionalServices:this.getAdditionalServices(), coordinates:coordinates,rideType:"Single"} as RideRequest;
+
+      let passengerEmails: string[] = [this.authenticationService.getLoggedUserEmail()].concat(clientEmails);
+      const request = {
+        clientEmails: passengerEmails, 
+        distance: this.routes[0].distance,
+        carType: this.selectedCarType,
+        additionalServices: this.getAdditionalServices(),
+        coordinates: coordinates,
+        rideType: this.sharedRide ? "Share ride" : "Single"
+      } as RideRequest;
+
       this.mapService.orderRide(request).subscribe();
       this.orderStatus = 1;
       this._snackBar.openFromComponent(SnackbarComponent,{data:"Waiting for driver."});
     }
+  }
+
+  async areSharedRideClientsValid(clientEmails: string[]): Promise<boolean> {
+    for (let email of clientEmails) {
+      let formControl = new FormControl(email, [Validators.email]);
+      if (formControl.status === "INVALID") {
+        this._snackBar.openFromComponent(SnackbarComponent, {
+          data: `Input '${email}' is not a valid email address.`
+        });
+        return false;
+      }
+
+      let loggedUserEmail = this.authenticationService.getLoggedUserEmail();
+      if (email == loggedUserEmail) {
+        this._snackBar.openFromComponent(SnackbarComponent, {
+          data: `Do not add your own e-mail address to passenger addresses.`
+        });
+        return false;
+      }
+    }
+
+    const resultExist$ = this.mapService.checkIfClientsExist(clientEmails).pipe();
+    const responseExist = await firstValueFrom(resultExist$);
+    if (responseExist !== null) {
+      this._snackBar.openFromComponent(SnackbarComponent, {
+        data: `Client with e-mail '${responseExist}' not found.`
+      });
+      return false;
+    }
+
+    const resultBlocked$ = this.mapService.checkIfClientsAreBlocked(clientEmails).pipe();
+    const responseBlocked = await firstValueFrom(resultBlocked$);
+    if (responseBlocked !== null) {
+      this._snackBar.openFromComponent(SnackbarComponent, {
+        data: `Client with e-mail '${responseBlocked}' is blocked.`
+      });
+      return false;
+    }
+
+    return true;
   }
 }
 

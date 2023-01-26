@@ -27,16 +27,16 @@ public class Reservation {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     Long id;
 
-    @ManyToOne
-    @JoinColumn(name = "driverId", nullable = false)
-    Driver driver;
+    @Column(name = "rideType", nullable = false)
+    RideType rideType;
 
     @ManyToMany(fetch = FetchType.EAGER)
     @JoinTable(name = "clients_reservations",joinColumns = @JoinColumn(name = "reservation_id", referencedColumnName = "id"), inverseJoinColumns = @JoinColumn(name = "client_id", referencedColumnName = "id"))
     Set<Client> clients = new HashSet<>();
 
-    @Column(name = "rideType", nullable = false)
-    RideType rideType;
+    @Column(name = "requested_services")
+    @ElementCollection(targetClass = String.class, fetch = FetchType.EAGER)
+    private Set<String> requestedServices;
 
     @Column(name = "start")
     OffsetDateTime start;
