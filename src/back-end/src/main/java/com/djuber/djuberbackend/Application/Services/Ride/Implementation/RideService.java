@@ -1,10 +1,10 @@
 package com.djuber.djuberbackend.Application.Services.Ride.Implementation;
 
-import com.djuber.djuberbackend.Application.Services.Client.Results.ClientResult;
 import com.djuber.djuberbackend.Application.Services.Ride.IRideService;
 import com.djuber.djuberbackend.Application.Services.Ride.Mapper.RideMapper;
 import com.djuber.djuberbackend.Application.Services.Ride.Results.RideMessageResult;
 import com.djuber.djuberbackend.Application.Services.Ride.Results.RideMessageStatus;
+import com.djuber.djuberbackend.Application.Services.Ride.Results.RideResult;
 import com.djuber.djuberbackend.Controllers.Ride.Requests.CoordinateRequest;
 import com.djuber.djuberbackend.Controllers.Ride.Requests.ReviewRideRequest;
 import com.djuber.djuberbackend.Controllers.Ride.Requests.RideRequest;
@@ -35,15 +35,13 @@ import com.djuber.djuberbackend.Infastructure.Util.DateCalculator;
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.messaging.simp.SimpMessagingTemplate;
-import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.io.BufferedReader;
 import java.io.IOException;
-import java.io.InputStreamReader;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
 
@@ -60,6 +58,10 @@ public class RideService implements IRideService {
     final ICarRepository carRepository;
     final DateCalculator dateCalculator;
     final IReviewRepository reviewRepository;
+    @Override
+    public Page<RideResult> readPageable(Pageable pageable) {
+        return RideMapper.mapRides(rideRepository.findAll(pageable));
+    }
 
     @Override
     @Transactional

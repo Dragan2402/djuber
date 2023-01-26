@@ -30,6 +30,11 @@ export class ClientPageComponent implements OnInit {
     this.router.navigate(["/authentication/changePassword"]);
   }
 
+  rides(){
+    this.router.navigateByUrl('client')
+    this.router.navigate(['client', {outlets: { co:['rides']} }], {skipLocationChange: true})
+  }
+
   toggleProfilePage(){
     this.router.navigateByUrl('client');
     this.router.navigate(['client',{outlets: { co:['profile']} }],{ skipLocationChange: true });

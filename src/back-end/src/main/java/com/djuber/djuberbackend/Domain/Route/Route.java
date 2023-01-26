@@ -47,4 +47,9 @@ public class Route {
         }
         return firstCoordinate;
     }
+
+    public Coordinate getLastCoordinate() {
+        Coordinate lastCoordinate = coordinates.get(coordinates.size() - 1);
+        return lastCoordinate;
+    }
 }

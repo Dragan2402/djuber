@@ -9,3 +9,12 @@ export interface Client{
   note:string,
   blocked:boolean,
 }
+
+export interface Ride {
+  id: number
+  startCoordinateName: string
+  endCoordinateName: string
+  price: number
+  start: Date
+  finish: Date
+}

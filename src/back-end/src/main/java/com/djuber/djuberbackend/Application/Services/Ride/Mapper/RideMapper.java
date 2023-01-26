@@ -1,5 +1,6 @@
 package com.djuber.djuberbackend.Application.Services.Ride.Mapper;
 
+import com.djuber.djuberbackend.Application.Services.Ride.Results.RideResult;
 import com.djuber.djuberbackend.Controllers.Ride.Requests.CoordinateRequest;
 import com.djuber.djuberbackend.Controllers.Ride.Requests.RideRequest;
 import com.djuber.djuberbackend.Controllers.Ride.Responses.CoordinateResponse;
@@ -11,15 +12,18 @@ import com.djuber.djuberbackend.Domain.Ride.RideStatus;
 import com.djuber.djuberbackend.Domain.Ride.RideType;
 import com.djuber.djuberbackend.Domain.Route.Coordinate;
 import com.djuber.djuberbackend.Domain.Route.Route;
+import org.springframework.data.domain.Page;
 
-import javax.validation.constraints.AssertTrue;
-import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 
 public class RideMapper {
     private RideMapper() {}
+
+    public static Page<RideResult> mapRides(Page<Ride> ridePage) {
+        return ridePage.map(RideResult::new);
+    }
 
     public static Ride map(RideRequest rideRequest) {
         Ride ride = new Ride();

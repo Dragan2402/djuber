@@ -1,7 +1,9 @@
 package com.djuber.djuberbackend.Controllers.Ride;
 
+import com.djuber.djuberbackend.Application.Services.Admin.Results.AdminResult;
 import com.djuber.djuberbackend.Application.Services.Ride.IRideService;
 import com.djuber.djuberbackend.Application.Services.Ride.Mapper.RideMapper;
+import com.djuber.djuberbackend.Application.Services.Ride.Results.RideResult;
 import com.djuber.djuberbackend.Controllers.Ride.Requests.CoordinateRequest;
 import com.djuber.djuberbackend.Controllers.Ride.Requests.ReviewRideRequest;
 import com.djuber.djuberbackend.Controllers.Ride.Requests.RideRequest;
@@ -11,6 +13,8 @@ import com.djuber.djuberbackend.Controllers.Ride.Responses.RideReviewResponse;
 import com.djuber.djuberbackend.Domain.Ride.Ride;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -28,6 +32,12 @@ import java.util.List;
 @RequestMapping(value = "api/ride")
 public class RideController {
     private final IRideService rideService;
+
+    @GetMapping
+    @PreAuthorize("hasAnyRole('CLIENT')")
+    public ResponseEntity<Page<RideResult>> getRides(Principal ride, Pageable pageable){
+        return new ResponseEntity<>(rideService.readPageable(pageable), HttpStatus.OK);
+    }
 
     @PostMapping("/driver")
     @PreAuthorize("hasAnyRole('CLIENT')")
