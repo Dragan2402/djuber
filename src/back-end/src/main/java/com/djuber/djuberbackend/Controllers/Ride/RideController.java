@@ -28,12 +28,12 @@ public class RideController {
 
     @PostMapping("/driver")
     @PreAuthorize("hasAnyRole('CLIENT')")
-    public ResponseEntity<Void> offerRideToDriver(@RequestBody @Valid RideRequest rideRequest, Principal principal) {
+    public ResponseEntity<Void> offerRideToDriver(@RequestBody @Valid RideRequest rideRequest) {
         RideType rideType = RideType.fromString(rideRequest.getRideType());
         if (rideType == RideType.SINGLE) {
             rideService.offerSingleRideToDriver(rideRequest);
         } else {
-            rideService.offerSharedRideToClients(rideRequest, principal.getName());
+            rideService.offerSharedRideToClients(rideRequest);
         }
         return new ResponseEntity<>(HttpStatus.OK);
     }
@@ -53,14 +53,14 @@ public class RideController {
     }
 
     @PostMapping("/client/accept/{rideId}")
-    @PreAuthorize("hasAnyRole('DRIVER')")
+    @PreAuthorize("hasAnyRole('CLIENT')")
     public ResponseEntity<Void> acceptRideClientOffer(@PathVariable("rideId") Long rideId, Principal principal) {
         rideService.acceptRideClientOfferAndSendDriverOffer(rideId, principal.getName());
         return new ResponseEntity<>(HttpStatus.OK);
     }
 
     @PostMapping("/client/decline/{rideId}")
-    @PreAuthorize("hasAnyRole('DRIVER')")
+    @PreAuthorize("hasAnyRole('CLIENT')")
     public ResponseEntity<Void> declineRideClientOffer(@PathVariable("rideId") Long rideId) {
         rideService.declineRideClientOffer(rideId);
         return new ResponseEntity<>(HttpStatus.OK);

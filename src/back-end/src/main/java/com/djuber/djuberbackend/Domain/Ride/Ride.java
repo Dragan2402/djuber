@@ -63,11 +63,11 @@ public class Ride implements Serializable {
 
     @Column(name = "requested_services")
     @ElementCollection(targetClass = String.class, fetch = FetchType.EAGER)
-    private Set<String> requestedServices;
+    private Set<String> requestedServices = new HashSet<>();
 
     @Column(name = "clients_accepted")
     @ElementCollection(targetClass = String.class, fetch = FetchType.EAGER)
-    private Set<String> clientsAccepted;
+    private Set<String> clientsAccepted = new HashSet<>();
 
     @Column(name = "deleted", nullable = false)
     Boolean deleted;

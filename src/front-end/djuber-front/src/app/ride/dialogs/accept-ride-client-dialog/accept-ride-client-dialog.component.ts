@@ -15,7 +15,7 @@ export class AcceptRideClientDialogComponent implements OnInit {
 
   constructor(public dialogRef: MatDialogRef<AcceptRideClientDialogComponent>, @Inject(MAT_DIALOG_DATA) public data: RideSocketResponse, private router: Router, private rideService: RideService) {
     this.dataToDisplay = data["response"];
-
+    console.log(data);
    }
 
   ngOnInit(): void {
@@ -27,6 +27,7 @@ export class AcceptRideClientDialogComponent implements OnInit {
   }
 
   acceptRide(){
+    console.log(this.dataToDisplay.rideId);
     this.rideService.acceptRideClient(this.dataToDisplay.rideId).subscribe();
     this.dialogRef.close();
     this.router.navigate(["singleRideMap",this.dataToDisplay.rideId]);

@@ -68,7 +68,7 @@ public class RideService implements IRideService {
     }
 
     @Override
-    public void offerSharedRideToClients(RideRequest rideRequest, String clientEmail) {
+    public void offerSharedRideToClients(RideRequest rideRequest) {
         Ride ride = createRide(rideRequest);
 
         if (ride.getDriver() == null) {
@@ -77,6 +77,7 @@ public class RideService implements IRideService {
             simpMessagingTemplate.convertAndSend(TOPIC_PATH + client.getIdentity().getId(), result);
 
         } else {
+            String clientEmail = rideRequest.getClientEmails().get(0);
             ride.getClientsAccepted().add(clientEmail);
             ride = rideRepository.save(ride);
             coordinatesRepository.saveAll(ride.getRoute().getCoordinates());

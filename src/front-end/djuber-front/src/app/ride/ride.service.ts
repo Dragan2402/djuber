@@ -22,11 +22,11 @@ export class RideService {
   }
 
   acceptRideClient(rideId:number){
-    return this.http.post(`/api/ride/driver/accept/${rideId}`, null);
+    return this.http.post(`/api/ride/client/accept/${rideId}`, null);
   }
 
   declineRideClient(rideId:number){
-    return this.http.post(`/api/ride/driver/decline/${rideId}`, null);
+    return this.http.post(`/api/ride/client/decline/${rideId}`, null);
   }
 
 
