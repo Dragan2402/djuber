@@ -155,10 +155,9 @@ public class RideService implements IRideService {
 
     @Override
     public CoordinateResponse getDriverStartingLocation(Long rideId) {
-        Ride ride = rideRepository.findById(rideId).orElse(null);
-        if (ride == null) {
+        Ride ride = rideRepository.findById(rideId).orElseThrow(()->{
             throw new EntityNotFoundException("Ride not found.");
-        }
+        });
         CoordinateResponse driverCoordinate = new CoordinateResponse();
         driverCoordinate.setIndex(0);
         driverCoordinate.setLat(ride.getDriver().getCar().getLat());
