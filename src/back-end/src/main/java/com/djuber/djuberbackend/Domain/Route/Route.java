@@ -33,6 +33,10 @@ public class Route {
     @OneToMany(mappedBy = "route", fetch = FetchType.LAZY, cascade = CascadeType.DETACH)
     List<Coordinate> coordinates = new ArrayList<>();
 
+    @Column(name = "stopNames", nullable = false)
+    @ElementCollection(targetClass = String.class, fetch = FetchType.LAZY)
+    List<String> stopNames;
+
     @Column(name = "deleted", nullable = false)
     Boolean deleted;
 

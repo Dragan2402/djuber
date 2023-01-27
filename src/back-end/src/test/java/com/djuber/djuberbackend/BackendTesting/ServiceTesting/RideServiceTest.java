@@ -88,7 +88,7 @@ public class RideServiceTest {
         coordinateList.add(coordinate2);
         coordinateList.add(coordinate3);
 
-        Route route = new Route(1L, null, null ,coordinateList, false);
+        Route route = new Route(1L, null, null ,coordinateList, new ArrayList<>(),false);
 
         Ride ride = new Ride(1L, driver, clients ,new HashSet<>(), RideType.SINGLE, OffsetDateTime.now(), null, null, route, 213D, RideStatus.ON_THE_WAY, new HashSet<>(), new HashSet<>(),false);
         client.getRides().add(ride);

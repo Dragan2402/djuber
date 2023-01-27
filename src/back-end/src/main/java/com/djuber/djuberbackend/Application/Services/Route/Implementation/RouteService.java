@@ -45,6 +45,7 @@ public class RouteService implements IRouteService {
 
         FavouriteRoute newFavouriteRoute = RouteMapper.map(request);
         newFavouriteRoute.setClient(client);
+        newFavouriteRoute.setDistance(request.getDistance());
         FavouriteRoute saved = favouriteRouteRepository.save(newFavouriteRoute);
         coordinatesRepository.saveAll(newFavouriteRoute.getCoordinates());
         return saved.getId();
@@ -64,6 +65,7 @@ public class RouteService implements IRouteService {
             FavouriteRouteResponse newResponse = new FavouriteRouteResponse();
             newResponse.setId(favouriteRoute.getId());
             newResponse.setStopNames(favouriteRoute.getStopNames());
+            newResponse.setDistance(favouriteRoute.getDistance());
             newResponse.setCoordinates(RouteMapper.mapCoordinates(coordinatesRepository.findCoordinatesByFavouriteRouteId(favouriteRoute.getId())));
             responses.add(newResponse);
         }

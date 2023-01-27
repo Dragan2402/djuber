@@ -53,6 +53,7 @@ export class SingleRideMapComponent implements OnInit {
     this.rideService.getRideResponse(this.rideId).subscribe({
       next:(response) =>{
         this.ride = response;
+        this.rideStatus = response.rideStatus;
         this.ride.coordinates.sort((a: CoordinateResponse, b:Coordinate) => a.index - b.index);
         this.drawRoute(this.ride);
         this.start = this.drawMarker(this.ride.coordinates.find(coordinate => coordinate.index===0),"person","Starting location");

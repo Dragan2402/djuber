@@ -18,13 +18,15 @@ import { MatInputModule } from '@angular/material/input';
 import {FormsModule, ReactiveFormsModule} from '@angular/forms';
 import { ClientPaymentComponent } from './client-page/client-payment/client-payment.component';
 import {MatDialogModule, MatDialogRef} from '@angular/material/dialog';
-
+import { ClientFavouriteRidesDialogComponent } from '../home-page/map/client-favourite-rides-dialog/client-favourite-rides-dialog.component';
+import {MatTableModule} from '@angular/material/table';
 
 @NgModule({
   declarations: [
     ClientPageComponent,
     ClientProfileComponent,
-    ClientPaymentComponent
+    ClientPaymentComponent,
+    ClientFavouriteRidesDialogComponent
   ],
   providers:[ClientService ,{
     provide: MatDialogRef,
@@ -45,7 +47,8 @@ import {MatDialogModule, MatDialogRef} from '@angular/material/dialog';
     MatInputModule,
     FormsModule,
     ReactiveFormsModule,
-    MatDialogModule
+    MatDialogModule,
+    MatTableModule
   ]
 })
 export class ClientModule { }

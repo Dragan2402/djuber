@@ -11,6 +11,8 @@ import { Route } from './route';
 import {firstValueFrom, lastValueFrom} from "rxjs";
 import { RideRequest } from './rideRequest';
 import { Validators, FormControl } from '@angular/forms';
+import { MatDialog, MatDialogConfig } from '@angular/material/dialog';
+import { ClientFavouriteRidesDialogComponent } from 'src/app/home-page/map/client-favourite-rides-dialog/client-favourite-rides-dialog.component';
 
 @Component({
   selector: 'djuber-map',
@@ -57,6 +59,8 @@ export class MapComponent implements OnInit {
 
   selectedCarType:string = "Sedan";
 
+  stopNames:string[] =[];
+
   carTypes:string[]= ["Sedan","Station wagon","Van","Transporter"];
 
   extraLuggage: boolean;
@@ -76,7 +80,7 @@ export class MapComponent implements OnInit {
 
   firstSharedRideClient: string = '';
 
-  constructor(private mapService:MapService, private _snackBar: MatSnackBar, private authenticationService : AuthenticationService, private hashService:HashService) {
+  constructor(private mapService:MapService, private _snackBar: MatSnackBar, private authenticationService : AuthenticationService, private hashService:HashService, public matDialog: MatDialog) {
     this.authenticationService.logged$.subscribe((attr:boolean) =>{
       this.logged = attr;
     });
@@ -220,6 +224,7 @@ export class MapComponent implements OnInit {
     this.checkPrice = 2;
     this.routePathAddresses.splice(0, this.routePathAddresses.length);
     this.routePathPoints.splice(0, this.routePathPoints.length);
+    this.stopNames.splice(0, this.stopNames.length);
     this.orderStatus = 0;
     this.selectedCarType = "Sedan";
     this.extraLuggage = false;
@@ -241,6 +246,7 @@ export class MapComponent implements OnInit {
   private async getCoordinateFromAddress(address:string, id:number){
     const result$ = this.mapService.searchLocationAsync(address).pipe();
     const response = await firstValueFrom(result$);
+    this.stopNames.push(response["features"][0]["properties"]["name"]);
     if(response["features"].length > 0){
       return {lat:response["features"][0]["geometry"]["coordinates"][1] , lon : response["features"][0]["geometry"]["coordinates"][0], index:id} as Coordinate;
     }
@@ -264,6 +270,25 @@ export class MapComponent implements OnInit {
           this._snackBar.openFromComponent(SnackbarComponent, {data:"Can not find route."});
         }
       }
+    })
+  }
+
+  toggleFavourteRidesDialog(){
+    const dialogConfig = new MatDialogConfig();
+    // The user can't close the dialog by clicking outside its body
+    dialogConfig.disableClose = false;
+    dialogConfig.id = "fav-routes-dialog";
+    dialogConfig.height = "55%";
+    dialogConfig.width = "50%";
+    // https://material.angular.io/components/dialog/overview
+    const dialogRef = this.matDialog.open(ClientFavouriteRidesDialogComponent, dialogConfig);
+    dialogRef.afterClosed().subscribe(route =>{
+      if(route !== undefined){
+        this.routes.push(route);
+        this.stopNames = route.stopNames;
+        this.drawRoute(route);
+        this.orderStatus=2;
+    }
     })
   }
 
@@ -291,6 +316,10 @@ export class MapComponent implements OnInit {
       this.clientMarker.remove();
     }
     const clientPoint = this.differentStartingPoint ? await this.getCoordinateFromAddress(this.startingAddress,0) : this.clientLocation;
+    if(!this.differentStartingPoint){
+      const name = await this.mapService.getClientLocationName(this.clientLocation);
+      this.stopNames.push(name);
+    }
     this.routePathPoints.push(clientPoint);
     this.clientMarker = this.drawMarker(clientPoint,"person","Starting location");
 
@@ -299,14 +328,12 @@ export class MapComponent implements OnInit {
     }
 
     const desiredPoint = await this.getCoordinateFromAddress(this.desiredAddress,9999);
-
     this.routePathPoints.push(desiredPoint);
     this.desireMarker = this.drawMarker(desiredPoint, "finish",this.desiredAddress.toUpperCase());
 
     this.routePathPoints.sort((a, b) => {return a.index - b.index});
 
     const preference = this.fastestRoute ? "fastest": "shortest";
-
     this.getRoutesFromCoordinates(this.routePathPoints, preference);
   }
 
@@ -352,7 +379,7 @@ export class MapComponent implements OnInit {
         return;
       }
     }
-    
+
     const coordinates = [];
     const points = this.routes[0].points;
     if(points.length >= 2){
@@ -361,17 +388,22 @@ export class MapComponent implements OnInit {
         coordinates.push({lat:points[i]["lat"], lon:points[i]["lng"],index:i} as Coordinate)
       };
 
-      let passengerEmails: string[] = [this.authenticationService.getLoggedUserEmail()].concat(clientEmails);
+      let passengerEmails: string[] = this.sharedRide? [this.authenticationService.getLoggedUserEmail()].concat(clientEmails):[this.authenticationService.getLoggedUserEmail()];
+      console.log(passengerEmails);
       const request = {
-        clientEmails: passengerEmails, 
+        clientEmails: passengerEmails,
         distance: this.routes[0].distance,
         carType: this.selectedCarType,
         additionalServices: this.getAdditionalServices(),
         coordinates: coordinates,
-        rideType: this.sharedRide ? "Share ride" : "Single"
+        rideType: this.sharedRide ? "Share ride" : "Single",
+        stopNames:this.stopNames
       } as RideRequest;
-
-      this.mapService.orderRide(request).subscribe();
+      console.log(request);
+      this.mapService.orderRide(request).subscribe({error:(err)=>{
+        this._snackBar.openFromComponent(SnackbarComponent,{data:"Error while trying to order ride."});
+        this.orderStatus = 0;
+      }});
       this.orderStatus = 1;
       this._snackBar.openFromComponent(SnackbarComponent,{data:"Waiting for driver."});
     }

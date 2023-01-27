@@ -372,6 +372,9 @@ public class RideService implements IRideService {
         Ride ride = RideMapper.map(rideRequest);
         for (String clientEmail : rideRequest.getClientEmails()) {
             Identity clientIdentity = identityRepository.findByEmail(clientEmail);
+            if(clientIdentity == null){
+                throw new UserNotFoundException("User not found.");
+            }
             Client client = clientRepository.findByIdentityId(clientIdentity.getId());
             ride.getClients().add(client);
         }

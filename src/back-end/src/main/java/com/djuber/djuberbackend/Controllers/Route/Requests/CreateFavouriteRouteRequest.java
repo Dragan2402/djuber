@@ -6,6 +6,7 @@ import lombok.Data;
 import lombok.experimental.FieldDefaults;
 
 import javax.validation.constraints.NotEmpty;
+import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 import java.util.List;
 
@@ -20,4 +21,7 @@ public class CreateFavouriteRouteRequest {
     @NotEmpty(message = "Coordinates are required.")
     @Size(min = 2)
     List<CoordinateRequest> coordinates;
+
+    @NotNull(message = "The distance is required.")
+    Double distance;
 }

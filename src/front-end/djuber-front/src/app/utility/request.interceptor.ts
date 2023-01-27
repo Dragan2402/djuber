@@ -30,6 +30,10 @@ export class RequestInterceptor implements HttpInterceptor {
     return next.handle(request);
     }
 
+    if(request.url.includes("api/route")){
+      return this.handleRouteRequests(request,next);
+    }
+
     if(request.url.includes("api/ride")){
       return this.handleRideRequests(request,next);
     }
@@ -66,7 +70,17 @@ export class RequestInterceptor implements HttpInterceptor {
         }
       });
     return next.handle(request);
+  }
 
+  private handleRouteRequests(request: HttpRequest<unknown>, next: HttpHandler): Observable<HttpEvent<unknown>> {
+
+    this.authenticationService.refreshToken();
+    request = request.clone({
+        setHeaders: {
+          Authorization: `Bearer ${this.localStorage.getItem("jwt")}`
+        }
+      });
+    return next.handle(request);
   }
 
   private handleRideRequests(request: HttpRequest<unknown>, next: HttpHandler): Observable<HttpEvent<unknown>> {

@@ -25,7 +25,10 @@
         <div *ngIf="checkPrice==1" style="max-height: 400px;overflow-y: auto;">
           <div  *ngIf="orderStatus === 0">
             <div style="display: flex; flex-direction: column;width: 100%;">
-              <mat-checkbox style="margin-left: 2%; margin-right: auto;margin-bottom: 2%; margin-top: 2%;" [(ngModel)]="differentStartingPoint">Use different starting point</mat-checkbox>
+              <div style="display: flex;flex-direction: row;align-items: center;justify-content: space-between;">
+                <mat-checkbox style="margin-left: 2%; margin-right: auto;margin-bottom: 2%; margin-top: 2%;" [(ngModel)]="differentStartingPoint">Use different starting point</mat-checkbox>
+                <button mat-button matTooltip="Select route from favourites" color="accent" style="height: 45px;align-content: center;" (click)="toggleFavourteRidesDialog()"><mat-icon>stars</mat-icon></button>
+              </div>
               <div style="display: flex;flex-direction: row;">
                 <mat-form-field style="width: 250px;" >
                   <mat-card-content style="display: flex;flex-direction:row;">

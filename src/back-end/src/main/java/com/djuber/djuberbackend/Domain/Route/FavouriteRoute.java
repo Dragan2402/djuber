@@ -43,6 +43,9 @@ public class FavouriteRoute {
         return firstCoordinate;
     }
 
+    @Column(name = "distance", nullable = false)
+    Double distance;
+
     @ManyToOne
     @JoinColumn(name = "clientId", nullable = false)
     Client client;
