@@ -73,7 +73,7 @@ public class RideServiceTest {
         Identity clientIdentity = new Identity(2L,"client@mailrop.cc", "password", UserType.CLIENT,new ArrayList<>(), null, null, false);
 
         Client client = new Client(1L, clientIdentity, "Client" , "LClient" , "Novi Sad", "123345", true, 5512D,ClientSigningType.DEFAULT,new HashSet<>(),new HashSet<>(),new HashSet<>(), new HashSet<>(), false,false,"",new Date(),"",false);
-        Set<Client> clients = new HashSet<>();
+        List<Client> clients = new ArrayList<>();
         clients.add(client);
 
         Car car = new Car(1L, CarType.SEDAN, "1234556", null , 123D, 213D , new HashSet<>(), false);
@@ -90,10 +90,10 @@ public class RideServiceTest {
 
         Route route = new Route(1L, null, null ,coordinateList, false);
 
-        Ride ride = new Ride(1L, driver, clients ,new HashSet<>(), RideType.SINGLE, OffsetDateTime.now(), null, null, route, 213D, RideStatus.ON_THE_WAY, new HashSet<>(), false);
+        Ride ride = new Ride(1L, driver, clients ,new HashSet<>(), RideType.SINGLE, OffsetDateTime.now(), null, null, route, 213D, RideStatus.ON_THE_WAY, new HashSet<>(), new HashSet<>(),false);
         client.getRides().add(ride);
         this.validRide = ride;
-        Ride rideCanceled = new Ride(2L, driver, clients ,new HashSet<>(), RideType.SINGLE, OffsetDateTime.now(), null, null, route, 213D, RideStatus.CANCELED, new HashSet<>(), false);
+        Ride rideCanceled = new Ride(2L, driver, clients ,new HashSet<>(), RideType.SINGLE, OffsetDateTime.now(), null, null, route, 213D, RideStatus.CANCELED, new HashSet<>(), new HashSet<>(),false);
         client.getRides().add(rideCanceled);
         this.canceledRide = rideCanceled;
     }
