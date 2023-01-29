@@ -1,4 +1,4 @@
-<div class="clients-preview-div">
+<div class="rides-preview-div">
 
   <div class="table-container">
     <table mat-table [dataSource]="rides" class="mat-elevation-z8">
@@ -38,6 +38,6 @@
     </table>
   </div>
   <div class="paginator">
-    <mat-paginator (page)="handlePageEvent($event)" [length]="length" [pageSize]="pageSize" [pageIndex]="pageIndex" [pageSizeOptions]="pageSizes" aria-label="Select page of Clients search results"></mat-paginator>
+    <mat-paginator (page)="handlePageEvent($event)" [length]="length" [pageSize]="pageSize" [pageIndex]="pageIndex" [pageSizeOptions]="pageSizes" aria-label="Select page of Rides search results"></mat-paginator>
   </div>
 </div>

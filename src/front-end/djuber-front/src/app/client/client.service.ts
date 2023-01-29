@@ -25,8 +25,8 @@ export class ClientService {
     return this.http.put("/api/client/updateLoggedClient",request);
   }
 
-  public getRidesPage(index:number, size:number){
-    return this.http.get(`/api/ride?page=${index.toString()}&size=${size.toString()}`);
+  public getRidesPage(index:number, size:number, filter:string){
+    return this.http.get(`/api/ride?page=${index.toString()}&size=${size.toString()}&filter=${filter}`);
   }
 
   public addLoggedClientFunds(amount:number){

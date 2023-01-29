@@ -1,5 +1,4 @@
 import {Component, OnInit, ViewChild} from '@angular/core';
-import {MatDialog} from '@angular/material/dialog';
 import {ClientService} from '../../client.service';
 import {Ride} from "../../client";
 import {MatPaginator, PageEvent} from "@angular/material/paginator";
@@ -20,12 +19,10 @@ export class ClientRidesComponent implements OnInit {
   rides: Ride[];
   @ViewChild(MatPaginator) paginator: MatPaginator;
   @ViewChild(MatSort) sort: MatSort;
-
-  constructor(private clientService : ClientService, public matDialog: MatDialog) { }
-
+  constructor(private clientService : ClientService) { }
   ngAfterViewInit(): void {
 
-    this.clientService.getRidesPage(0,10).subscribe({
+    this.clientService.getRidesPage(0,10, '').subscribe({
       next: (pageResponse) => {
         this.rides = pageResponse['content'];
         this.pageSize = pageResponse["size"];
@@ -42,7 +39,7 @@ export class ClientRidesComponent implements OnInit {
 
   handlePageEvent(e: PageEvent) {
 
-    this.clientService.getRidesPage(e.pageIndex, e.pageSize).subscribe({
+    this.clientService.getRidesPage(e.pageIndex, e.pageSize, '').subscribe({
       next: (pageResponse) => {
         this.rides = pageResponse['content'];
         this.pageSize = pageResponse["size"];
@@ -58,6 +55,7 @@ export class ClientRidesComponent implements OnInit {
   }
 
   ngOnInit(): void {
+    this.clientService.getRidesPage(0, 10, '')
   }
 
 }

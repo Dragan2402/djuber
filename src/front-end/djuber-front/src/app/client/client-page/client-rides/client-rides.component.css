@@ -1,4 +1,4 @@
-.clients-preview-div{
+.rides-preview-div{
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -14,14 +14,6 @@
   justify-items: center;
 }
 
-.filter{
-  width: 50%;
-  margin-left: auto;
-  margin-right: auto;
-  margin-bottom: 1%;
-  margin-top: 1%;
-}
-
 table {
   width: 100%;
 }
@@ -29,7 +21,7 @@ table {
 .paginator{
   margin-top: auto;
 }
-/* Column Widths */
+
 .mat-column-number,
 .mat-column-state {
   max-width: 64px;

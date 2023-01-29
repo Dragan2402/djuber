@@ -1,5 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
+import {ClientService} from "../client.service";
 
 @Component({
   selector: 'djuber-client-page',
