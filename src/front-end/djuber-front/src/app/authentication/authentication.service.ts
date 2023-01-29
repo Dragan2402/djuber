@@ -79,6 +79,11 @@ export class AuthenticationService {
       this.localStorage.setItem("user-first-name",res.firstName);
       this.localStorage.setItem("user-last-name",res.lastName);
       this.localStorage.setItem("user-picture",res.picture);
+      if(res.role === "DRIVER"){
+        this.activateLoggedDriver().subscribe({error:err=>{
+          console.log(err);
+        }});
+      }
       this.localStorage.setItem("user-role",this.hashService.hashString(res.role));
       this.loggedUserInfo$.next(res);
     })).subscribe();

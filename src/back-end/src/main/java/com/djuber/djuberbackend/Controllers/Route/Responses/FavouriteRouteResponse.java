@@ -16,4 +16,6 @@ public class FavouriteRouteResponse {
     List<String> stopNames;
 
     List<CoordinateResponse> coordinates;
+
+    Double distance;
 }

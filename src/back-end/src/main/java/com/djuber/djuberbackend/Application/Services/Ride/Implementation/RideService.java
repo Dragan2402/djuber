@@ -207,10 +207,9 @@ public class RideService implements IRideService {
 
     @Override
     public CoordinateResponse getDriverStartingLocation(Long rideId) {
-        Ride ride = rideRepository.findById(rideId).orElse(null);
-        if (ride == null) {
+        Ride ride = rideRepository.findById(rideId).orElseThrow(()->{
             throw new EntityNotFoundException("Ride not found.");
-        }
+        });
         CoordinateResponse driverCoordinate = new CoordinateResponse();
         driverCoordinate.setIndex(0);
         driverCoordinate.setLat(ride.getDriver().getCar().getLat());
@@ -221,10 +220,13 @@ public class RideService implements IRideService {
 
     @Override
     public CoordinateResponse getRideStartingLocation(Long rideId) {
-
-        Coordinate startingCoordinate = coordinatesRepository.findFirstCoordinateByRideId(rideId);
+        Ride ride = rideRepository.findById(rideId).orElse(null);
+        if (ride == null) {
+            throw new EntityNotFoundException("Ride not found.");
+        }
+        Coordinate startingCoordinate = coordinatesRepository.findFirstCoordinateByRideId(ride.getId());
         if (startingCoordinate == null) {
-            throw new EntityNotFoundException("Coordinate not found");
+            throw new EntityNotFoundException("Coordinate not found.");
         }
         return new CoordinateResponse(startingCoordinate);
     }
@@ -241,16 +243,11 @@ public class RideService implements IRideService {
             simpMessagingTemplate.convertAndSend("/topic/singleRide/" + rideId, rideUpdateResponse);
             throw new CannotUpdateCanceledRideException("The ride you are trying to update has been canceled.");
         }
-        Car car = carRepository.findById(ride.getDriver().getCar().getId()).orElse(null);
 
-        if (car == null) {
-            throw new EntityNotFoundException("Car not found.");
-        }
+        ride.getDriver().getCar().setLat(request.getLat());
+        ride.getDriver().getCar().setLon(request.getLon());
 
-        car.setLat(request.getLat());
-        car.setLon(request.getLon());
-
-        carRepository.save(car);
+        carRepository.save(ride.getDriver().getCar());
 
         RideUpdateResponse rideUpdateResponse = new RideUpdateResponse(ride.getRideStatus().toString(), request.getLat(),request.getLon());
 
@@ -382,6 +379,9 @@ public class RideService implements IRideService {
         Ride ride = RideMapper.map(rideRequest);
         for (String clientEmail : rideRequest.getClientEmails()) {
             Identity clientIdentity = identityRepository.findByEmail(clientEmail);
+            if(clientIdentity == null){
+                throw new UserNotFoundException("User not found.");
+            }
             Client client = clientRepository.findByIdentityId(clientIdentity.getId());
             ride.getClients().add(client);
         }

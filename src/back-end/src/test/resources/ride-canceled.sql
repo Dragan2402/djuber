@@ -21,19 +21,11 @@ INSERT INTO identity (id, email, user_type, password, deleted)
 VALUES (300000, 'pero@maildrop.cc', 1, '$2a$12$Nd.axxCA/EUTgVpE6JU7yu1m0FbazoNKQSlh2p.b1dy.W1EfUzEwi', false);
 INSERT INTO identity (id, email, user_type, password, deleted)
 VALUES (400000, 'jovo@maildrop.cc', 1, '$2a$12$pW0AC2EKW0sqMgERfj3ojuuD67cSKLwClksdhEOzZrIvdu8JWvqVW', false);
-INSERT INTO identity (id, email, user_type, password, deleted)
-VALUES (300001, 'dejo@maildrop.cc', 1, '$2a$12$Nd.axxCA/EUTgVpE6JU7yu1m0FbazoNKQSlh2p.b1dy.W1EfUzEwi', false);
-INSERT INTO identity (id, email, user_type, password, deleted)
-VALUES (400001, 'sejo@maildrop.cc', 1, '$2a$12$Nd.axxCA/EUTgVpE6JU7yu1m0FbazoNKQSlh2p.b1dy.W1EfUzEwi', false);
 
 INSERT INTO identity_roles(identity_id, roles_id)
 VALUES (300000, 2);
 INSERT INTO identity_roles(identity_id, roles_id)
 VALUES (400000, 2);
-INSERT INTO identity_roles(identity_id, roles_id)
-VALUES (300001, 2);
-INSERT INTO identity_roles(identity_id, roles_id)
-VALUES (400001, 2);
 
 INSERT INTO identity (id, email, user_type, password, deleted)
 VALUES (500000, 'haso@maildrop.cc', 2, '$2a$12$B0M7RM24WZYet.lqGrIVWOGUKEaNCFgTAcT95qMIeua5/M0Tnzc6y', false);
@@ -68,19 +60,6 @@ INSERT INTO client (id, identity_id, first_name, last_name, city, phone_number, 
 VALUES (200000, 400000, 'Jovo', 'Jovic', 'Novi Sad', '067123423', true, 15000, 0, true, false,
         false);
 
-INSERT INTO client (id, identity_id, first_name, last_name, city, phone_number, verified,balance, signing_type, blocked,
-                    in_ride, note,
-                    deleted)
-VALUES (100001, 300001, 'Dejo', 'Dejic', 'Novi Sad', '0691777779', true, 10000, 0, false, false,
-        'Client has been reporting drivers without valid reason.',
-        false);
-
-INSERT INTO client (id, identity_id, first_name, last_name, city, phone_number, verified,balance,  signing_type, blocked,
-                    in_ride,
-                    deleted)
-VALUES (200001, 400001, 'Sejo', 'Sejic', 'Novi Sad', '067123424', true, 15000, 0, false, false,
-        false);
-
 --CARS
 INSERT INTO car (id, car_type, license_plate, lat, lon, deleted)
 VALUES (100000, 0, 'NS24423J', 45.23851423717639, 19.832768440246586, false);
@@ -96,7 +75,7 @@ VALUES (100000, 'pets');
 INSERT INTO driver (id, identity_id, first_name, last_name, city, phone_number, active, car_id,
                     last_activation_time, blocked, in_ride,
                     deleted)
-VALUES (100000, 500000, 'Haso', 'Hasic', 'Novi Sad', '0691777778', false, 100000, '2023-01-27 20:13', false,
+VALUES (100000, 500000, 'Haso', 'Hasic', 'Novi Sad', '0691777778', true, 100000, '2023-01-25 20:13', false,
         false, false);
 
 INSERT INTO driver (id, identity_id, first_name, last_name, city, phone_number, active, car_id,
@@ -145,7 +124,7 @@ VALUES (900000, 2, 'Medicinski Fakultet Novi Sad', 45.25328151383017, 19.8242710
 
 --RIDES
 INSERT INTO ride (id, driver_id, ride_type, start, finish, route_id, price, ride_status, deleted, cancelling_note)
-VALUES (100000, 100000, 0, '2022-10-23 00:00', NULL, 100000, 110, 0, false, NULL );
+VALUES (100000, 100000, 0, '2022-10-23 00:00', NULL, 100000, 110, 1, false, NULL );
 
 INSERT INTO ride (id, driver_id, ride_type, start, finish, route_id, price, ride_status, deleted, cancelling_note)
 VALUES (200000, 100000, 0, '2023-01-25 12:00', '2023-01-25 14:15', 300000, 110, 2, false, NULL );

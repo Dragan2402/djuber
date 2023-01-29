@@ -21,14 +21,15 @@ import {MatDialogModule, MatDialogRef} from '@angular/material/dialog';
 import {ClientRidesComponent} from "./client-page/client-rides/client-rides.component";
 import {MatPaginatorModule} from "@angular/material/paginator";
 import {MatTableModule} from "@angular/material/table";
-
+import { ClientFavouriteRidesDialogComponent } from '../home-page/map/client-favourite-rides-dialog/client-favourite-rides-dialog.component';
 
 @NgModule({
   declarations: [
     ClientPageComponent,
     ClientProfileComponent,
     ClientPaymentComponent,
-    ClientRidesComponent
+    ClientRidesComponent,
+    ClientFavouriteRidesDialogComponent
   ],
   providers:[ClientService ,{
     provide: MatDialogRef,

@@ -33,4 +33,7 @@ public class RideRequest {
 
     @NotEmpty(message = "Email is required.")
     List<String> clientEmails;
+
+    @NotEmpty(message = "Stop names is required.")
+    List<String> stopNames;
 }

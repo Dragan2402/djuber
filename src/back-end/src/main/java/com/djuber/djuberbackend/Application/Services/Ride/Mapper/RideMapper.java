@@ -43,7 +43,7 @@ public class RideMapper {
             ride.getRoute().getCoordinates().add(coordinate);
         }
         ride.getRoute().setDeleted(false);
-
+        ride.getRoute().setStopNames(rideRequest.getStopNames());
         CarType carType = CarType.fromString(rideRequest.getCarType());
 
         double price = carType.getBasePrice() + rideRequest.getDistance() * 120;

@@ -1,5 +1,7 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
+import { firstValueFrom } from 'rxjs';
+import { FavouriteRoute } from 'src/app/ride/favouriteRoute';
 import { AvailableDriver } from './availableDriver';
 import { Coordinate } from './coordinate';
 import { RideRequest } from './rideRequest';
@@ -21,6 +23,12 @@ export class MapService {
 
   searchLocationAsync(address:string){
     return this.http.get("https://api.openrouteservice.org/geocode/search?api_key=5b3ce3597851110001cf62486b80eee7f91341569a61109ec802d68f&text="+address+"&size=1");
+  }
+
+  async getClientLocationName(clientLocation:Coordinate){
+    const result$ = this.http.get(`https://api.openrouteservice.org/geocode/reverse?api_key=5b3ce3597851110001cf62486b80eee7f91341569a61109ec802d68f&point.lon=${clientLocation.lon}&point.lat=${clientLocation.lat}&size=1`).pipe();
+    const response = await firstValueFrom(result$);
+    return response["features"][0]["properties"]["name"];
   }
 
 
@@ -52,5 +60,13 @@ export class MapService {
   checkIfClientsAreBlocked(clientEmails: string[]) {
     const url = "/api/client/checkIfClientsAreBlocked";
     return this.http.post(url, clientEmails);
+  }
+
+  getClientFavouriteRoutes(){
+    return this.http.get<FavouriteRoute[]>("/api/route/loggedClientFavouriteRoutes");
+  }
+
+  deleteFavouriteRoute(id:number){
+    return this.http.delete(`/api/route/favouriteRoute/${id}`);
   }
 }

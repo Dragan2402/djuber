@@ -21,19 +21,11 @@ INSERT INTO identity (id, email, user_type, password, deleted)
 VALUES (300000, 'pero@maildrop.cc', 1, '$2a$12$Nd.axxCA/EUTgVpE6JU7yu1m0FbazoNKQSlh2p.b1dy.W1EfUzEwi', false);
 INSERT INTO identity (id, email, user_type, password, deleted)
 VALUES (400000, 'jovo@maildrop.cc', 1, '$2a$12$pW0AC2EKW0sqMgERfj3ojuuD67cSKLwClksdhEOzZrIvdu8JWvqVW', false);
-INSERT INTO identity (id, email, user_type, password, deleted)
-VALUES (300001, 'dejo@maildrop.cc', 1, '$2a$12$Nd.axxCA/EUTgVpE6JU7yu1m0FbazoNKQSlh2p.b1dy.W1EfUzEwi', false);
-INSERT INTO identity (id, email, user_type, password, deleted)
-VALUES (400001, 'sejo@maildrop.cc', 1, '$2a$12$Nd.axxCA/EUTgVpE6JU7yu1m0FbazoNKQSlh2p.b1dy.W1EfUzEwi', false);
 
 INSERT INTO identity_roles(identity_id, roles_id)
 VALUES (300000, 2);
 INSERT INTO identity_roles(identity_id, roles_id)
 VALUES (400000, 2);
-INSERT INTO identity_roles(identity_id, roles_id)
-VALUES (300001, 2);
-INSERT INTO identity_roles(identity_id, roles_id)
-VALUES (400001, 2);
 
 INSERT INTO identity (id, email, user_type, password, deleted)
 VALUES (500000, 'haso@maildrop.cc', 2, '$2a$12$B0M7RM24WZYet.lqGrIVWOGUKEaNCFgTAcT95qMIeua5/M0Tnzc6y', false);
@@ -68,19 +60,6 @@ INSERT INTO client (id, identity_id, first_name, last_name, city, phone_number, 
 VALUES (200000, 400000, 'Jovo', 'Jovic', 'Novi Sad', '067123423', true, 15000, 0, true, false,
         false);
 
-INSERT INTO client (id, identity_id, first_name, last_name, city, phone_number, verified,balance, signing_type, blocked,
-                    in_ride, note,
-                    deleted)
-VALUES (100001, 300001, 'Dejo', 'Dejic', 'Novi Sad', '0691777779', true, 10000, 0, false, false,
-        'Client has been reporting drivers without valid reason.',
-        false);
-
-INSERT INTO client (id, identity_id, first_name, last_name, city, phone_number, verified,balance,  signing_type, blocked,
-                    in_ride,
-                    deleted)
-VALUES (200001, 400001, 'Sejo', 'Sejic', 'Novi Sad', '067123424', true, 15000, 0, false, false,
-        false);
-
 --CARS
 INSERT INTO car (id, car_type, license_plate, lat, lon, deleted)
 VALUES (100000, 0, 'NS24423J', 45.23851423717639, 19.832768440246586, false);
@@ -96,7 +75,7 @@ VALUES (100000, 'pets');
 INSERT INTO driver (id, identity_id, first_name, last_name, city, phone_number, active, car_id,
                     last_activation_time, blocked, in_ride,
                     deleted)
-VALUES (100000, 500000, 'Haso', 'Hasic', 'Novi Sad', '0691777778', false, 100000, '2023-01-27 20:13', false,
+VALUES (100000, 500000, 'Haso', 'Hasic', 'Novi Sad', '0691777778', true, 100000, '2023-01-25 20:13', false,
         false, false);
 
 INSERT INTO driver (id, identity_id, first_name, last_name, city, phone_number, active, car_id,
@@ -121,12 +100,12 @@ INSERT INTO route (id, deleted)
 VALUES (300000, false);
 
 --COORDINATES
-INSERT INTO coordinate(id, index, location_name, lat, lon, route_id)
-VALUES (100000, 0, 'Promenada', 45.24473173439358, 19.84146283175646, 100000);
-INSERT INTO coordinate(id, index, location_name, lat, lon, route_id)
-VALUES (200000, 1, NULL, 45.2480590388405, 19.839219531462838, 100000);
-INSERT INTO coordinate(id, index, location_name, lat, lon, route_id)
-VALUES (300000, 2, 'Balans Palacinkarnica', 45.25258638691436, 19.83754453391027, 100000);
+-- INSERT INTO coordinate(id, index, location_name, lat, lon, route_id)
+-- VALUES (100000, 0, 'Promenada', 45.24473173439358, 19.84146283175646, 100000);
+-- INSERT INTO coordinate(id, index, location_name, lat, lon, route_id)
+-- VALUES (200000, 1, NULL, 45.2480590388405, 19.839219531462838, 100000);
+-- INSERT INTO coordinate(id, index, location_name, lat, lon, route_id)
+-- VALUES (300000, 2, 'Balans Palacinkarnica', 45.25258638691436, 19.83754453391027, 100000);
 
 
 INSERT INTO coordinate(id, index, location_name, lat, lon, route_id)
