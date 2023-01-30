@@ -65,6 +65,7 @@ import { PasswordChangeComponent } from './password-change/password-change.compo
     //     }
     //   } as SocialAuthServiceConfig,
     // }
-  ]
+  ],
+  exports: [MatStepperModule]
 })
 export class AuthenticationModule { }

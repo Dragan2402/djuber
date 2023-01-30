@@ -38,6 +38,7 @@ import { AcceptRideClientDialogComponent } from './ride/dialogs/accept-ride-clie
 import { RideReviewComponent } from './ride/ride-review/ride-review.component';
 import {MatButtonToggleModule} from '@angular/material/button-toggle';
 import { CancelRideNoteDialogComponent } from './ride/dialogs/cancel-ride-note-dialog/cancel-ride-note-dialog.component';
+import { MatStepperModule } from '@angular/material/stepper';
 
 
 @NgModule({
