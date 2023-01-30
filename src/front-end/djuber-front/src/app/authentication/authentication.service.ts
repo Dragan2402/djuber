@@ -28,7 +28,7 @@ export class AuthenticationService {
     private route: Router,
     private socialAuthService: SocialAuthService,
     private hashService: HashService) {
-      this.socialAuthService.authState.subscribe((user) => {this.socialLogin(user)});
+      // this.socialAuthService.authState.subscribe((user) => {this.socialLogin(user)});
     }
 
   public socialLogin(socialUser: SocialUser){
