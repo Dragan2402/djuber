@@ -11,7 +11,7 @@ import {MatSort} from "@angular/material/sort";
 })
 export class ClientRidesComponent implements OnInit {
 
-  displayedColumns: string[] = ['id', 'route', 'price', 'start', 'finish'];
+  displayedColumns: string[] = ['id', 'startCoordinateName', 'endCoordinateName', 'price', 'start', 'finish'];
   length = 10;
   pageSize = 10;
   pageIndex = 0;
@@ -21,9 +21,9 @@ export class ClientRidesComponent implements OnInit {
   @ViewChild(MatSort) sort: MatSort;
   constructor(private clientService : ClientService) { }
   ngAfterViewInit(): void {
-
-    this.clientService.getRidesPage(0,10, '').subscribe({
+    this.clientService.getRidesPage(0,10).subscribe({
       next: (pageResponse) => {
+        console.log(pageResponse)
         this.rides = pageResponse['content'];
         this.pageSize = pageResponse["size"];
         if(pageResponse['totalElements']%this.pageSize !== 0){
@@ -32,14 +32,12 @@ export class ClientRidesComponent implements OnInit {
           this.length = pageResponse['totalElements']/this.pageSize;
         }
         this.pageIndex = pageResponse["pageable"]["pageNumber"];
-        console.log(pageResponse)
       },
       error: (e) => console.error(e)})
   }
 
   handlePageEvent(e: PageEvent) {
-
-    this.clientService.getRidesPage(e.pageIndex, e.pageSize, '').subscribe({
+    this.clientService.getRidesPage(e.pageIndex, e.pageSize).subscribe({
       next: (pageResponse) => {
         this.rides = pageResponse['content'];
         this.pageSize = pageResponse["size"];
@@ -55,7 +53,6 @@ export class ClientRidesComponent implements OnInit {
   }
 
   ngOnInit(): void {
-    this.clientService.getRidesPage(0, 10, '')
   }
 
 }
