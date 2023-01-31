@@ -32,7 +32,7 @@ export class HeaderBarComponent implements OnInit {
    }
 
   ngOnInit(): void {
-    if(this.loggedUserClient){
+    if(this.loggedUserClient()){
       this.authenticationService.getLoggedClientBalance().subscribe({next:(v) =>{
         this.balance = v["balance"];
       }})
@@ -80,9 +80,11 @@ export class HeaderBarComponent implements OnInit {
   }
 
   loggedClientBalance(){
-    this.authenticationService.getLoggedClientBalance().subscribe({next:(v) =>{
-      this.balance = v["balance"];
-    }})
+    if(this.logged && this.loggedUserClient()){
+      this.authenticationService.getLoggedClientBalance().subscribe({next:(v) =>{
+        this.balance = v["balance"];
+      }})
+    }
   }
 
 

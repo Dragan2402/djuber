@@ -3,7 +3,7 @@ package com.djuber.djuberbackend.Application.Services.Driver;
 import com.djuber.djuberbackend.Application.Services.Driver.Results.DriverResult;
 import com.djuber.djuberbackend.Controllers.Admin.Requests.RegisterDriverRequest;
 import com.djuber.djuberbackend.Controllers.Driver.Requests.UpdateDriverRequest;
-import com.djuber.djuberbackend.Controllers.Driver.Response.AvailableDriverResponse;
+import com.djuber.djuberbackend.Controllers.Driver.Response.DriverLocationResponse;
 import com.djuber.djuberbackend.Controllers.Driver.Response.DriverUpdateResponse;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -41,9 +41,11 @@ public interface IDriverService {
 
     void acceptChangeRequest(long id);
 
-    List<AvailableDriverResponse> getAvailableDrivers();
+    List<DriverLocationResponse> getDriversLocation();
 
     void activateSelf(String email);
 
     void deactivateSelf(String email);
+
+    DriverLocationResponse getLoggedDriverLocation(String email);
 }
