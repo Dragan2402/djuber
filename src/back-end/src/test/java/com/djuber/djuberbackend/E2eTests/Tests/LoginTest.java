@@ -17,6 +17,10 @@ public class LoginTest {
 
     private final String LOGGED_NAME = "Andrej Culjak";
 
+    private final String INVALID_EMAIL_ERROR = "Invalid email";
+
+    private final String LOGIN_PAGE_URL = "http://localhost:4200/authentication/login";
+
 
     @BeforeClass
     public void setUp() {
@@ -40,8 +44,24 @@ public class LoginTest {
 
         homePage.clickLoginButton();
 
-        loginPage.enterEmail();
-        loginPage.enterPassword();
+        loginPage.enterEmailInvalid();
+        loginPage.login();
+        loginPage.clearEmail();
+
+
+        loginPage.enterEmailInvalid();
+        loginPage.login();
+        Assertions.assertEquals(INVALID_EMAIL_ERROR, loginPage.getErrorText());
+        loginPage.clearEmail();
+
+        loginPage.enterWrongEmail();
+        loginPage.enterPasswordValid();
+        loginPage.login();
+
+        Assertions.assertEquals(LOGIN_PAGE_URL, driver.getCurrentUrl());
+
+        loginPage.clearEmail();
+        loginPage.enterEmailValid();
         loginPage.login();
 
         homePage.clickMenuButton();

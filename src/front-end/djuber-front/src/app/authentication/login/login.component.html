@@ -1,7 +1,7 @@
 <div class="login-div">
  <mat-form-field appearance="fill" class="input-field-80">
     <input matInput placeholder="E-mail" [formControl]="email" required id="emailLoginInput">
-    <mat-error *ngIf="email.invalid">{{getEmailErrorMessage()}}</mat-error>
+    <mat-error *ngIf="email.invalid" id="emailError">{{getEmailErrorMessage()}}</mat-error>
   </mat-form-field>
 
   <mat-form-field appearance="fill" class="input-field-80">
