@@ -9,6 +9,7 @@
     <div style="min-width: 200px;">
       <mat-card style="background-color: white;display: flex;flex-direction: column;">
         <mat-card-content style="width: 100%;"><span>Ride status: {{rideStatus}}</span></mat-card-content>
+        <mat-card-content style="width: 100%;"><span>Minutes remaining: {{minutesRemaining}}</span></mat-card-content>
         <mat-card-content style="width: 100%;margin-top: 5%;display: flex; flex-direction: column;">
           <span style="margin-bottom: 1%;">Participants:</span>
           <span *ngFor="let client of ride.clientEmails" style="margin-bottom: 1%;">{{client}}</span>

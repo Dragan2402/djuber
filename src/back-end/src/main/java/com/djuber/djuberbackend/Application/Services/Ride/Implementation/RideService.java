@@ -232,7 +232,7 @@ public class RideService implements IRideService {
             throw new EntityNotFoundException("Ride not found.");
         }
         if(ride.getRideStatus() == RideStatus.CANCELED){
-            RideUpdateResponse rideUpdateResponse = new RideUpdateResponse(ride.getRideStatus().toString(), request.getLat(),request.getLon());
+            RideUpdateResponse rideUpdateResponse = new RideUpdateResponse(ride.getRideStatus().toString(), request.getIndex()/3,request.getLat(),request.getLon());
             simpMessagingTemplate.convertAndSend("/topic/singleRide/" + rideId, rideUpdateResponse);
             throw new CannotUpdateCanceledRideException("The ride you are trying to update has been canceled.");
         }
@@ -242,7 +242,7 @@ public class RideService implements IRideService {
 
         carRepository.save(ride.getDriver().getCar());
 
-        RideUpdateResponse rideUpdateResponse = new RideUpdateResponse(ride.getRideStatus().toString(), request.getLat(),request.getLon());
+        RideUpdateResponse rideUpdateResponse = new RideUpdateResponse(ride.getRideStatus().toString(), request.getIndex()/3,request.getLat(),request.getLon());
 
         simpMessagingTemplate.convertAndSend("/topic/singleRide/" + rideId, rideUpdateResponse);
     }
@@ -258,7 +258,7 @@ public class RideService implements IRideService {
 
         List<Coordinate> coordinates = coordinatesRepository.findByRouteId(ride.getRoute().getId());
 
-        RideUpdateResponse rideUpdateResponse = new RideUpdateResponse(ride.getRideStatus().toString(), coordinates.get(0).getLat(),coordinates.get(0).getLon());
+        RideUpdateResponse rideUpdateResponse = new RideUpdateResponse(ride.getRideStatus().toString(),coordinates.size()/3 ,coordinates.get(0).getLat(),coordinates.get(0).getLon());
 
         simpMessagingTemplate.convertAndSend("/topic/singleRide/" + rideId, rideUpdateResponse);
 
@@ -275,7 +275,7 @@ public class RideService implements IRideService {
         ride.setRideStatus(RideStatus.DONE);
         rideRepository.save(ride);
 
-        simpMessagingTemplate.convertAndSend("/topic/singleRide/" + rideId, new RideUpdateResponse(ride.getRideStatus().toString(),0D,0D));
+        simpMessagingTemplate.convertAndSend("/topic/singleRide/" + rideId, new RideUpdateResponse(ride.getRideStatus().toString(), 0,0D,0D));
     }
 
     @Override

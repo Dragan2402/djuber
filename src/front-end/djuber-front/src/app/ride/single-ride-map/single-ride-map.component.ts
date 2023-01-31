@@ -30,6 +30,7 @@ export class SingleRideMapComponent implements OnInit {
   routePolyLine : L.Polyline;
   finish: L.Marker;
   start: L.Marker;
+  minutesRemaining:number = 0;
 
   map!: L.Map;
 
@@ -128,10 +129,12 @@ export class SingleRideMapComponent implements OnInit {
   private updateRideStatus(rideUpdateResponse:RideUpdateResponse){
     if(rideUpdateResponse.rideStatus === "CANCELED"){
       this.snackBar.openFromComponent(SnackbarComponent,{data:"Ride has been canceled by the driver"});
+      this.minutesRemaining = 0;
       this.router.navigate(["/"]);
     }
     if(rideUpdateResponse.rideStatus==="DONE"){
       if(this.userIsDriver()){
+        this.minutesRemaining = 0;
         this.router.navigate(["/"]);
       }else{
         this.snackBar.openFromComponent(SnackbarComponent,{data:"Thank you for using our services"});
@@ -153,6 +156,7 @@ export class SingleRideMapComponent implements OnInit {
       this.map.panTo([rideUpdateResponse.lat, rideUpdateResponse.lon]);
       this.driverMarker.bindTooltip("Driver");
       this.rideStatus = rideUpdateResponse.rideStatus;
+      this.minutesRemaining = rideUpdateResponse.minutesRemaining;
     }
   }}
 
