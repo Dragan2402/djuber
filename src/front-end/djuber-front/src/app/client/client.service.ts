@@ -29,6 +29,10 @@ export class ClientService {
     return this.http.get(`/api/ride?page=${index.toString()}&size=${size.toString()}`);
   }
 
+  public getRide(id: string){
+    return this.http.get(`/api/ride/${id}`);
+  }
+
   public addLoggedClientFunds(amount:number){
     return this.http.put("/api/client/addLoggedClientFunds",{amount:amount});
   }

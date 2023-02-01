@@ -3,6 +3,8 @@ import {ClientService} from '../../client.service';
 import {Ride} from "../../client";
 import {MatPaginator, PageEvent} from "@angular/material/paginator";
 import {MatSort} from "@angular/material/sort";
+import {ModalComponent} from "../../../components/modal/modal.component";
+import {ModalConfig} from "../../../components/modal/modal.config";
 
 @Component({
   selector: 'djuber-client-rides',
@@ -17,23 +19,31 @@ export class ClientRidesComponent implements OnInit {
   pageIndex = 0;
   pageSizes: number[] = [5,10,20];
   rides: Ride[];
+  ride: any;
+  modalConfig: ModalConfig;
   @ViewChild(MatPaginator) paginator: MatPaginator;
   @ViewChild(MatSort) sort: MatSort;
+  @ViewChild('modal') private modalComponent: ModalComponent
   constructor(private clientService : ClientService) { }
   ngAfterViewInit(): void {
-    this.clientService.getRidesPage(0,10).subscribe({
+    this.clientService.getRidesPage(0, 10).subscribe({
       next: (pageResponse) => {
         console.log(pageResponse)
         this.rides = pageResponse['content'];
         this.pageSize = pageResponse["size"];
-        if(pageResponse['totalElements']%this.pageSize !== 0){
-          this.length = Math.floor(pageResponse['totalElements']/this.pageSize)+1;
-        }else{
-          this.length = pageResponse['totalElements']/this.pageSize;
+        if (pageResponse['totalElements'] % this.pageSize !== 0) {
+          this.length = Math.floor(pageResponse['totalElements'] / this.pageSize) + 1;
+        } else {
+          this.length = pageResponse['totalElements'] / this.pageSize;
         }
         this.pageIndex = pageResponse["pageable"]["pageNumber"];
       },
-      error: (e) => console.error(e)})
+      error: (e) => console.error(e)
+    })
+  }
+
+  openModal() {
+    return this.modalComponent.open();
   }
 
   handlePageEvent(e: PageEvent) {
@@ -53,9 +63,13 @@ export class ClientRidesComponent implements OnInit {
   }
 
   handleClickRow(id: string) {
-    console.log(id)
-  }
+    this.clientService.getRide(id).subscribe({next: (pageResponse) => {
+        this.ride = pageResponse
+        this.modalConfig = {modalTitle: 'Ride details', hideCloseButton(): boolean { return true }, hideDismissButton(): boolean { return true}}
+        this.openModal()
+      }})
 
+  }
   ngOnInit(): void {
   }
 

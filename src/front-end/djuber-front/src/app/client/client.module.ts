@@ -22,7 +22,7 @@ import {ClientRidesComponent} from "./client-page/client-rides/client-rides.comp
 import {MatPaginatorModule} from "@angular/material/paginator";
 import {MatTableModule} from "@angular/material/table";
 import { ClientFavouriteRidesDialogComponent } from '../home-page/map/client-favourite-rides-dialog/client-favourite-rides-dialog.component';
-import {NgbdModalBasic} from "../components/modal/modal-basic";
+import {ModalComponent} from "../components/modal/modal.component";
 
 @NgModule({
   declarations: [
@@ -30,7 +30,8 @@ import {NgbdModalBasic} from "../components/modal/modal-basic";
     ClientProfileComponent,
     ClientPaymentComponent,
     ClientRidesComponent,
-    ClientFavouriteRidesDialogComponent
+    ClientFavouriteRidesDialogComponent,
+    ModalComponent
   ],
   providers:[ClientService ,{
     provide: MatDialogRef,
@@ -53,8 +54,6 @@ import {NgbdModalBasic} from "../components/modal/modal-basic";
         ReactiveFormsModule,
         MatDialogModule,
         MatPaginatorModule,
-        MatTableModule,
-        NgbdModalBasic
-    ]
+        MatTableModule]
 })
 export class ClientModule { }
