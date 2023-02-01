@@ -39,6 +39,7 @@ import { RideReviewComponent } from './ride/ride-review/ride-review.component';
 import {MatButtonToggleModule} from '@angular/material/button-toggle';
 import { CancelRideNoteDialogComponent } from './ride/dialogs/cancel-ride-note-dialog/cancel-ride-note-dialog.component';
 import { MatStepperModule } from '@angular/material/stepper';
+import { RideStartNotificationDialogComponent } from './ride/dialogs/ride-start-notification-dialog/ride-start-notification-dialog.component';
 
 
 @NgModule({
@@ -55,7 +56,8 @@ import { MatStepperModule } from '@angular/material/stepper';
     SingleRideMapComponent,
     AcceptRideClientDialogComponent,
     RideReviewComponent,
-    CancelRideNoteDialogComponent
+    CancelRideNoteDialogComponent,
+    RideStartNotificationDialogComponent
   ],
   imports: [
     BrowserModule,

@@ -9,7 +9,9 @@ import java.util.Optional;
 
 @Repository
 public interface IRideRepository extends JpaRepository<Ride, Long> {
-    @Query("select r from Ride r join fetch r.clients where r.id = ?1")
+    @Query("select r from Ride r " +
+            "join fetch r.clients " +
+            "where r.id = ?1")
     @Override
     Optional<Ride> findById(Long aLong);
 }

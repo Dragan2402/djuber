@@ -45,4 +45,8 @@ export class RideService {
   declineRideClient(rideId:number){
     return this.http.post(`/api/ride/client/decline/${rideId}`, null);
   }
+
+  public getLoggedClientBalance(){
+    return this.http.get("/api/client/loggedClientBalance");
+  }
 }

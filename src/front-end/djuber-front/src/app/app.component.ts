@@ -11,6 +11,7 @@ import { MatSnackBar } from '@angular/material/snack-bar';
 import { SnackbarComponent } from './snackbar/snackbar.component';
 import { AcceptRideClientDialogComponent } from './ride/dialogs/accept-ride-client-dialog/accept-ride-client-dialog.component';
 import { JsonPipe } from '@angular/common';
+import { RideStartNotificationDialogComponent } from './ride/dialogs/ride-start-notification-dialog/ride-start-notification-dialog.component';
 
 @Component({
   selector: 'djuber-root',
@@ -64,8 +65,8 @@ export class AppComponent implements DoCheck{
         '/topic/ride/'+this.identityId ,
         (response) => {
           const rideSocketResponse = JSON.parse(response["body"]) as RideSocketResponse;
-          if(rideSocketResponse.status === "RIDE_DRIVER_OFFER"){
-            this.toggleAcceptRideDriverDialog(rideSocketResponse);
+          if(rideSocketResponse.status === "RIDE_START_NOTIFICATION"){
+            this.toggleRideStartNotificationDialog(rideSocketResponse);
           }
         }
       );
@@ -102,11 +103,18 @@ export class AppComponent implements DoCheck{
         (response) => {
           //func = what to do when client receives data (messages)
           const rideSocketResponse = JSON.parse(response["body"]) as RideSocketResponse;
-          if(rideSocketResponse.status === "RIDE_CLIENT_ACCEPTED"){
-            this.router.navigate(["singleRideMap",rideSocketResponse.rideId]);
-          }else if(rideSocketResponse.status === "RIDE_CLIENT_DECLINED"){
-            this._snackBar.openFromComponent(SnackbarComponent,{data:"Sorry, but we did not manage to find a driver for your ride."});
-          }else if(rideSocketResponse.status === "RIDE_CLIENT_OFFER"){
+
+          if (rideSocketResponse.status === "RIDE_START_NOTIFICATION") {
+            // this.router.navigate(["singleRideMap",rideSocketResponse.rideId]);
+            this.toggleRideStartNotificationDialog(rideSocketResponse);
+
+          } else if (rideSocketResponse.status === "RIDE_NO_DRIVER") {
+            this._snackBar.openFromComponent(SnackbarComponent, { data: "Sorry, but we did not manage to find a driver for your ride." });
+
+          } else if (rideSocketResponse.status === "RIDE_CLIENT_DECLINED") {
+            this._snackBar.openFromComponent(SnackbarComponent, { data: "Sorry, but one of the other client declined to share the ride." });
+            
+          } else if (rideSocketResponse.status === "RIDE_SHARE_RIDE_OFFER") {
            this.toggleAcceptRideClientDialog(rideSocketResponse);
           }
           console.log(response);
@@ -118,14 +126,14 @@ export class AppComponent implements DoCheck{
     });
   }
 
-  private toggleAcceptRideDriverDialog(response : RideSocketResponse){
+  private toggleRideStartNotificationDialog(response : RideSocketResponse){
     const dialogConfig = new MatDialogConfig();
     dialogConfig.disableClose = true;
     dialogConfig.id = "driver-modal";
     dialogConfig.data = {response};
     dialogConfig.height = "20%";
     dialogConfig.width = "20%";
-    this.matDialog.open(AcceptRideDriverDialogComponent, dialogConfig);
+    this.matDialog.open(RideStartNotificationDialogComponent, dialogConfig);
   }
 
   private toggleAcceptRideClientDialog(response : RideSocketResponse){
@@ -133,7 +141,7 @@ export class AppComponent implements DoCheck{
     dialogConfig.disableClose = true;
     dialogConfig.id = "client-modal";
     dialogConfig.data = {response};
-    dialogConfig.height = "20%";
+    // dialogConfig.height = "30%";
     dialogConfig.width = "20%";
     this.matDialog.open(AcceptRideClientDialogComponent, dialogConfig);
   }
