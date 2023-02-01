@@ -129,6 +129,11 @@ public class GlobalExceptionHandler {
         return new ResponseEntity<>(getErrorObject(ex.getMessage(), HttpStatus.EXPECTATION_FAILED), HttpStatus.EXPECTATION_FAILED);
     }
 
+    @ExceptionHandler({NotEnoughFundsException.class})
+    public ResponseEntity<ErrorObject> handleNotEnoughFundsException(NotEnoughFundsException ex, WebRequest request) {
+        return new ResponseEntity<>(getErrorObject(ex.getMessage(), HttpStatus.BAD_REQUEST), HttpStatus.BAD_REQUEST);
+    }
+
     @ResponseStatus(HttpStatus.BAD_REQUEST)
     @ExceptionHandler({MethodArgumentNotValidException.class})
     public ResponseEntity<List<ErrorObject>> handleValidationExceptions(

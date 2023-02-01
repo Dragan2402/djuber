@@ -29,6 +29,6 @@ export class AcceptRideDriverDialogComponent implements OnInit {
   acceptRide(){
     this.rideService.acceptRideDriver(this.dataToDisplay.rideId).subscribe();
     this.dialogRef.close();
-    this.router.navigate(["singleRideMap",this.dataToDisplay.rideId]);
+    // this.router.navigate(["singleRideMap",this.dataToDisplay.rideId]);
   }
 }

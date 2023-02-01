@@ -14,15 +14,14 @@ import java.io.IOException;
 import java.util.List;
 
 public interface IRideService {
-    Page<RideResult> readPageable(Pageable pageable, String clientEmail);
-    void offerSingleRideToDriver(RideRequest rideRequest);
-    void offerSharedRideToClients(RideRequest rideRequest);
-    RideResponse getRideResponse(Long rideId);
-    void acceptRideDriverOffer(Long rideId) throws IOException, InterruptedException;
-    void declineRideDriverOffer(Long rideId);
-    void acceptRideClientOfferAndSendDriverOffer(Long rideId, String clientEmail);
 
-    void declineRideClientOffer(Long rideId);
+    Page<RideResult> readPageable(Pageable pageable, String clientEmail);
+    RideResponse getRideResponse(Long rideId);
+
+    void processRideRequest(RideRequest rideRequest) throws IOException, InterruptedException;
+    void acceptShareRideRequest(Long rideId, String clientEmail) throws IOException, InterruptedException;
+
+    void declineShareRideRequest(Long rideId);
 
     CoordinateResponse getDriverStartingLocation(Long rideId);
 

@@ -30,8 +30,8 @@ public interface IDriverRepository extends JpaRepository<Driver, Long> {
 
     @Query("select d from Driver d " +
             "where d.deleted=false and d.active=true and d.inRide=false and d.blocked=false " +
-            "order by (abs(d.car.lat - :#{#c.lat}) + abs(d.car.lon - :#{#c.lon})) asc")
-    List<Driver> findAvailableDriversSortedByDistanceFromCoordinate(@Param("c") Coordinate coordinate);
+            "order by (abs(d.car.lat - :#{#lat}) + abs(d.car.lon - :#{#lon})) asc")
+    List<Driver> findAvailableDriversSortedByDistanceFromCoordinate(@Param("lat") Double lat, @Param("lon") Double lon);
 
     @Query("select d from Driver d where d.active=true")
     List<Driver> getActiveDrivers();

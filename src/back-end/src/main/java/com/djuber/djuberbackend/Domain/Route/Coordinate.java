@@ -37,4 +37,10 @@ public class Coordinate {
     @ManyToOne
     @JoinColumn(name = "favouriteRouteId")
     FavouriteRoute favouriteRoute;
+
+    public Coordinate(Integer index, Double lat, Double lon) {
+        this.index = index;
+        this.lat = lat;
+        this.lon = lon;
+    }
 }
