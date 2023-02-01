@@ -1,5 +1,7 @@
 package com.djuber.djuberbackend.Application.Services.Ride.Implementation;
 
+import com.djuber.djuberbackend.Application.Services.Client.IClientService;
+import com.djuber.djuberbackend.Application.Services.Client.Results.ClientResult;
 import com.djuber.djuberbackend.Application.Services.Ride.IRideService;
 import com.djuber.djuberbackend.Application.Services.Ride.Mapper.RideMapper;
 import com.djuber.djuberbackend.Application.Services.Ride.Results.RideMessageResult;
@@ -40,6 +42,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.io.IOException;
+import java.security.Principal;
 import java.time.OffsetDateTime;
 import java.util.List;
 import java.util.Set;
@@ -58,7 +61,7 @@ public class RideService implements IRideService {
     final DateCalculator dateCalculator;
     final IReviewRepository reviewRepository;
     @Override
-    public Page<RideResult> readPageable(Pageable pageable) {
+    public Page<RideResult> readPageable(Pageable pageable, String clientEmail) {
         return RideMapper.mapRides(rideRepository.findAll(pageable));
     }
 

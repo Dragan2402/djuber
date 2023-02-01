@@ -22,6 +22,7 @@ import {ClientRidesComponent} from "./client-page/client-rides/client-rides.comp
 import {MatPaginatorModule} from "@angular/material/paginator";
 import {MatTableModule} from "@angular/material/table";
 import { ClientFavouriteRidesDialogComponent } from '../home-page/map/client-favourite-rides-dialog/client-favourite-rides-dialog.component';
+import {NgbdModalBasic} from "../components/modal/modal-basic";
 
 @NgModule({
   declarations: [
@@ -35,24 +36,25 @@ import { ClientFavouriteRidesDialogComponent } from '../home-page/map/client-fav
     provide: MatDialogRef,
     useValue: {}
   },],
-  imports: [
-    CommonModule,
-    ClientRoutingModule,
-    MatSidenavModule,
-    MatToolbarModule,
-    MatIconModule,
-    MatButtonModule,
-    MatListModule,
-    MatDividerModule,
-    MatMenuModule,
-    MatFormFieldModule,
-    MatSelectModule,
-    MatInputModule,
-    FormsModule,
-    ReactiveFormsModule,
-    MatDialogModule,
-    MatPaginatorModule,
-    MatTableModule
-  ]
+    imports: [
+        CommonModule,
+        ClientRoutingModule,
+        MatSidenavModule,
+        MatToolbarModule,
+        MatIconModule,
+        MatButtonModule,
+        MatListModule,
+        MatDividerModule,
+        MatMenuModule,
+        MatFormFieldModule,
+        MatSelectModule,
+        MatInputModule,
+        FormsModule,
+        ReactiveFormsModule,
+        MatDialogModule,
+        MatPaginatorModule,
+        MatTableModule,
+        NgbdModalBasic
+    ]
 })
 export class ClientModule { }

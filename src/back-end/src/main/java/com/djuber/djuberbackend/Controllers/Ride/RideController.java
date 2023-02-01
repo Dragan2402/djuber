@@ -35,7 +35,7 @@ public class RideController {
     @GetMapping
     @PreAuthorize("hasAnyRole('CLIENT')")
     public ResponseEntity<Page<RideResult>> getRides(Principal user, Pageable pageable){
-        return new ResponseEntity<>(rideService.readPageable(pageable), HttpStatus.OK);
+        return new ResponseEntity<>(rideService.readPageable(pageable, user.getName()), HttpStatus.OK);
     }
 
     @PostMapping("/driver")

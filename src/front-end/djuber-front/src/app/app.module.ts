@@ -39,6 +39,7 @@ import { RideReviewComponent } from './ride/ride-review/ride-review.component';
 import {MatButtonToggleModule} from '@angular/material/button-toggle';
 import { CancelRideNoteDialogComponent } from './ride/dialogs/cancel-ride-note-dialog/cancel-ride-note-dialog.component';
 import { MatStepperModule } from '@angular/material/stepper';
+import { NgbModule } from '@ng-bootstrap/ng-bootstrap';
 
 
 @NgModule({
@@ -80,7 +81,8 @@ import { MatStepperModule } from '@angular/material/stepper';
     MatProgressBarModule,
     MatSelectModule,
     MatDialogModule,
-    MatButtonToggleModule
+    MatButtonToggleModule,
+    NgbModule
   ],
   providers: [
     { provide: ErrorHandler, useClass: GlobalErroHandler },

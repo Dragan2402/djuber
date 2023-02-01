@@ -14,7 +14,7 @@ import java.io.IOException;
 import java.util.List;
 
 public interface IRideService {
-    Page<RideResult> readPageable(Pageable pageable);
+    Page<RideResult> readPageable(Pageable pageable, String clientEmail);
     void offerSingleRideToDriver(RideRequest rideRequest);
     void offerSharedRideToClients(RideRequest rideRequest);
     RideResponse getRideResponse(Long rideId);

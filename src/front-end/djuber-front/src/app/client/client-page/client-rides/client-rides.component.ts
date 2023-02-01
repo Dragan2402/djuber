@@ -52,6 +52,10 @@ export class ClientRidesComponent implements OnInit {
       error: (e) => console.error(e)})
   }
 
+  handleClickRow(id: string) {
+    console.log(id)
+  }
+
   ngOnInit(): void {
   }
 
