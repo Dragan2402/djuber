@@ -39,11 +39,35 @@ INSERT INTO identity (id, email, user_type, password, deleted)
 VALUES (500000, 'haso@maildrop.cc', 2, '$2a$12$B0M7RM24WZYet.lqGrIVWOGUKEaNCFgTAcT95qMIeua5/M0Tnzc6y', false);
 INSERT INTO identity (id, email, user_type, password, deleted)
 VALUES (600000, 'mujo@maildrop.cc', 2, '$2a$12$bP24xyfnbEhigBAMI0cKOeJ.hng3f4kBYx/puFYeXzStIrSo5m/JK', false);
+INSERT INTO identity (id, email, user_type, password, deleted)
+VALUES (500001, 'haso1@maildrop.cc', 2, '$2a$12$B0M7RM24WZYet.lqGrIVWOGUKEaNCFgTAcT95qMIeua5/M0Tnzc6y', false);
+INSERT INTO identity (id, email, user_type, password, deleted)
+VALUES (600001, 'mujo1@maildrop.cc', 2, '$2a$12$bP24xyfnbEhigBAMI0cKOeJ.hng3f4kBYx/puFYeXzStIrSo5m/JK', false);
+INSERT INTO identity (id, email, user_type, password, deleted)
+VALUES (500002, 'haso2@maildrop.cc', 2, '$2a$12$B0M7RM24WZYet.lqGrIVWOGUKEaNCFgTAcT95qMIeua5/M0Tnzc6y', false);
+INSERT INTO identity (id, email, user_type, password, deleted)
+VALUES (600002, 'mujo2@maildrop.cc', 2, '$2a$12$bP24xyfnbEhigBAMI0cKOeJ.hng3f4kBYx/puFYeXzStIrSo5m/JK', false);
+INSERT INTO identity (id, email, user_type, password, deleted)
+VALUES (500003, 'haso3@maildrop.cc', 2, '$2a$12$B0M7RM24WZYet.lqGrIVWOGUKEaNCFgTAcT95qMIeua5/M0Tnzc6y', false);
+INSERT INTO identity (id, email, user_type, password, deleted)
+VALUES (600003, 'mujo3@maildrop.cc', 2, '$2a$12$bP24xyfnbEhigBAMI0cKOeJ.hng3f4kBYx/puFYeXzStIrSo5m/JK', false);
 
 INSERT INTO identity_roles(identity_id, roles_id)
 VALUES (500000, 3);
 INSERT INTO identity_roles(identity_id, roles_id)
 VALUES (600000, 3);
+INSERT INTO identity_roles(identity_id, roles_id)
+VALUES (500001, 3);
+INSERT INTO identity_roles(identity_id, roles_id)
+VALUES (600001, 3);
+INSERT INTO identity_roles(identity_id, roles_id)
+VALUES (500002, 3);
+INSERT INTO identity_roles(identity_id, roles_id)
+VALUES (600002, 3);
+INSERT INTO identity_roles(identity_id, roles_id)
+VALUES (500003, 3);
+INSERT INTO identity_roles(identity_id, roles_id)
+VALUES (600003, 3);
 
 --ADMINS
 INSERT INTO admin (id, identity_id, first_name, last_name, city, phone_number, deleted)
@@ -84,26 +108,48 @@ VALUES (200001, 400001, 'Sejo', 'Sejic', 'Novi Sad', '067123424', true, 15000, 0
 --CARS
 INSERT INTO car (id, car_type, license_plate, lat, lon, deleted)
 VALUES (100000, 0, 'NS24423J', 45.23851423717639, 19.832768440246586, false);
-
 INSERT INTO car (id, car_type, license_plate, lat, lon, deleted)
 VALUES (200000, 0, 'NS99892J', 45.24138498327325, 19.846544265747074, false);
+INSERT INTO car (id, car_type, license_plate, lat, lon, deleted)
+VALUES (100001, 0, 'NS24423K', 45.260639, 19.832128, false);
+INSERT INTO car (id, car_type, license_plate, lat, lon, deleted)
+VALUES (200001, 0, 'NS99892K', 45.259850, 19.838841, false);
+INSERT INTO car (id, car_type, license_plate, lat, lon, deleted)
+VALUES (100002, 0, 'NS24423L', 45.253401, 19.843593, false);
+INSERT INTO car (id, car_type, license_plate, lat, lon, deleted)
+VALUES (200002, 0, 'NS99892L', 45.241263, 19.795964, false);
+INSERT INTO car (id, car_type, license_plate, lat, lon, deleted)
+VALUES (100003, 0, 'NS24423M', 45.240245, 19.827054, false);
+INSERT INTO car (id, car_type, license_plate, lat, lon, deleted)
+VALUES (200003, 0, 'NS99892M', 45.247923, 19.817227, false);
 
 
 INSERT INTO CAR_ADDITIONAL_SERVICES (car_id, ADDITIONAL_SERVICES)
 VALUES (100000, 'pets');
+INSERT INTO CAR_ADDITIONAL_SERVICES (car_id, ADDITIONAL_SERVICES)
+VALUES (100001, 'pets');
+INSERT INTO CAR_ADDITIONAL_SERVICES (car_id, ADDITIONAL_SERVICES)
+VALUES (100002, 'pets');
+INSERT INTO CAR_ADDITIONAL_SERVICES (car_id, ADDITIONAL_SERVICES)
+VALUES (100003, 'pets');
 
 --DRIVERS
-INSERT INTO driver (id, identity_id, first_name, last_name, city, phone_number, active, car_id,
-                    last_activation_time, blocked, in_ride,
-                    deleted)
-VALUES (100000, 500000, 'Haso', 'Hasic', 'Novi Sad', '0691777778', false, 100000, '2023-01-27 20:13', false,
-        false, false);
-
-INSERT INTO driver (id, identity_id, first_name, last_name, city, phone_number, active, car_id,
-                    last_activation_time, blocked, in_ride,
-                    deleted)
-VALUES (200000, 600000, 'Mujo', 'Mujic', 'Novi Sad', '067123423', false, 200000, '2023-01-25 14:15', false,
-        false, false);
+INSERT INTO driver (id,     identity_id, first_name, last_name, city,       phone_number, active, car_id, last_activation_time, blocked, in_ride, deleted)
+VALUES             (100000, 500000,      'Haso',     'Hasic',   'Novi Sad', '0691777778', true,   100000, '2023-02-01 15:13',   false,   false,   false);
+INSERT INTO driver (id,     identity_id, first_name, last_name, city,       phone_number, active, car_id, last_activation_time, blocked, in_ride, deleted)
+VALUES             (200000, 600000,      'Mujo',     'Mujic',   'Novi Sad', '067123423',  false,  200000, '2023-02-01 15:15',   false,   false,   false);
+INSERT INTO driver (id,     identity_id, first_name, last_name, city,       phone_number, active, car_id, last_activation_time, blocked, in_ride, deleted)
+VALUES             (100001, 500001,      'Haso1',    'Hasic',   'Novi Sad', '0691777779', false,  100001, '2023-02-01 15:13',   false,   false,   false);
+INSERT INTO driver (id,     identity_id, first_name, last_name, city,       phone_number, active, car_id, last_activation_time, blocked, in_ride, deleted)
+VALUES             (200001, 600001,      'Mujo1',    'Mujic',   'Novi Sad', '067123424',  true,   200001, '2023-02-01 15:15',   false,   false,   false);
+INSERT INTO driver (id,     identity_id, first_name, last_name, city,       phone_number, active, car_id, last_activation_time, blocked, in_ride, deleted)
+VALUES             (100002, 500002,      'Haso2',    'Hasic',   'Novi Sad', '0691777780', true,   100002, '2023-02-01 15:13',   false,   false,   false);
+INSERT INTO driver (id,     identity_id, first_name, last_name, city,       phone_number, active, car_id, last_activation_time, blocked, in_ride, deleted)
+VALUES             (200002, 600002,      'Mujo2',    'Mujic',   'Novi Sad', '067123425',  true,   200002, '2023-02-01 15:15',   false,   false,   false);
+INSERT INTO driver (id,     identity_id, first_name, last_name, city,       phone_number, active, car_id, last_activation_time, blocked, in_ride, deleted)
+VALUES             (100003, 500003,      'Haso3',    'Hasic',   'Novi Sad', '0691777781', true,   100003, '2023-02-01 15:13',   false,   false,   false);
+INSERT INTO driver (id,     identity_id, first_name, last_name, city,       phone_number, active, car_id, last_activation_time, blocked, in_ride, deleted)
+VALUES             (200003, 600003,      'Mujo3',    'Mujic',   'Novi Sad', '067123426',  true,   200003, '2023-02-01 15:15',   false,   false,   false);
 
 -- --DRIVER LOGS
 -- INSERT INTO driver_active_log(id, driver_id, log_start, log_end) VALUES (100000, 100000, '2023-01-24 14:15', '2023-01-24 16:15' );

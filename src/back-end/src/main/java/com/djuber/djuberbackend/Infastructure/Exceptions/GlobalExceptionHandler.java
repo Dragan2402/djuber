@@ -134,6 +134,11 @@ public class GlobalExceptionHandler {
         return new ResponseEntity<>(getErrorObject(ex.getMessage(), HttpStatus.BAD_REQUEST), HttpStatus.BAD_REQUEST);
     }
 
+    @ExceptionHandler({BadRideTypeException.class})
+    public ResponseEntity<ErrorObject> handleBadRideTypeException(BadRideTypeException ex, WebRequest request) {
+        return new ResponseEntity<>(getErrorObject(ex.getMessage(), HttpStatus.BAD_REQUEST), HttpStatus.BAD_REQUEST);
+    }
+
     @ResponseStatus(HttpStatus.BAD_REQUEST)
     @ExceptionHandler({MethodArgumentNotValidException.class})
     public ResponseEntity<List<ErrorObject>> handleValidationExceptions(

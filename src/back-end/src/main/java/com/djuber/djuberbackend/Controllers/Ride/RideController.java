@@ -11,6 +11,7 @@ import com.djuber.djuberbackend.Controllers.Ride.Responses.RideReviewResponse;
 import com.djuber.djuberbackend.Domain.Ride.RideType;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
+import lombok.SneakyThrows;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -31,7 +32,7 @@ public class RideController {
 
     @PostMapping
     @PreAuthorize("hasAnyRole('CLIENT')")
-    public ResponseEntity<Void> createRide(@RequestBody @Valid RideRequest rideRequest) throws InterruptedException, IOException {
+    public ResponseEntity<Void> createRide(@RequestBody @Valid RideRequest rideRequest) throws IOException, InterruptedException {
         rideService.processRideRequest(rideRequest);
         return new ResponseEntity<>(HttpStatus.CREATED);
     }
@@ -49,49 +50,6 @@ public class RideController {
         rideService.declineShareRideRequest(rideId);
         return new ResponseEntity<>(HttpStatus.OK);
     }
-
-//    @PostMapping("/driver")
-//    @PreAuthorize("hasAnyRole('CLIENT')")
-//    public ResponseEntity<Void> offerRideToDriver(@RequestBody @Valid RideRequest rideRequest) {
-//        RideType rideType = RideType.fromString(rideRequest.getRideType());
-//        if (rideType == RideType.SINGLE) {
-//            rideService.offerSingleRideToDriver(rideRequest);
-//        } else {
-//            rideService.offerSharedRideToClients(rideRequest);
-//        }
-//        return new ResponseEntity<>(HttpStatus.OK);
-//    }
-
-//    @PostMapping("/driver/accept/{rideId}")
-//    @PreAuthorize("hasAnyRole('DRIVER')")
-//    public ResponseEntity<Void> acceptRideDriverOffer(@PathVariable("rideId") Long rideId) throws IOException, InterruptedException {
-//        rideService.acceptRideDriverOffer(rideId);
-//        return new ResponseEntity<>(HttpStatus.OK);
-//    }
-
-//    @PostMapping("/driver/decline/{rideId}")
-//    @PreAuthorize("hasAnyRole('DRIVER')")
-//    public ResponseEntity<Void> declineRideDriverOffer(@PathVariable("rideId") Long rideId) {
-//        rideService.declineRideDriverOffer(rideId);
-//        return new ResponseEntity<>(HttpStatus.OK);
-//    }
-
-//    @PostMapping("/client/accept/{rideId}")
-//    @PreAuthorize("hasAnyRole('CLIENT')")
-//    public ResponseEntity<Void> acceptRideClientOffer(@PathVariable("rideId") Long rideId, Principal principal) {
-//        rideService.acceptRideClientOfferAndSendDriverOffer(rideId, principal.getName());
-//        return new ResponseEntity<>(HttpStatus.OK);
-//    }
-
-//    @PostMapping("/client/decline/{rideId}")
-//    @PreAuthorize("hasAnyRole('CLIENT')")
-//    public ResponseEntity<Void> declineRideClientOffer(@PathVariable("rideId") Long rideId) {
-//        rideService.declineRideClientOffer(rideId);
-//        return new ResponseEntity<>(HttpStatus.OK);
-//    }
-
-
-
 
     @PostMapping("/declineAssignedRide/{rideId}")
     @PreAuthorize("hasAnyRole('DRIVER')")
