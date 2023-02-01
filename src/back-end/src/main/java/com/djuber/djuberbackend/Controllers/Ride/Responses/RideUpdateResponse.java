@@ -8,14 +8,16 @@ import lombok.experimental.FieldDefaults;
 @FieldDefaults(level = AccessLevel.PRIVATE)
 public class RideUpdateResponse {
     String rideStatus;
+    int minutesRemaining;
     Double lat;
     Double lon;
 
     public RideUpdateResponse() {
     }
 
-    public RideUpdateResponse(String rideStatus, Double lat, Double lon) {
+    public RideUpdateResponse(String rideStatus, int minutesRemaining, Double lat, Double lon) {
         this.rideStatus = rideStatus;
+        this.minutesRemaining = minutesRemaining;
         this.lat = lat;
         this.lon = lon;
     }

@@ -40,7 +40,7 @@ class QuickstartUser(HttpUser):
         if len(self.coordinates) > 0:
             new_coordinate = self.coordinates.pop(0)
             response = self.client.put(f'/ride/script/updateVehicleLocation/{rideId}',
-                                json={'index': 0, 'lat': new_coordinate[0], 'lon': new_coordinate[1]})
+                                json={'index': len(self.coordinates), 'lat': new_coordinate[0], 'lon': new_coordinate[1]})
 
             if response.status_code != 200:
                 self.end_ride()

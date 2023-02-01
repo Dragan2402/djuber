@@ -2,9 +2,8 @@ package com.djuber.djuberbackend.Controllers.Driver;
 
 import com.djuber.djuberbackend.Application.Services.Driver.IDriverService;
 import com.djuber.djuberbackend.Application.Services.Driver.Results.DriverResult;
-import com.djuber.djuberbackend.Application.Services.LiveChat.Results.MessageResult;
 import com.djuber.djuberbackend.Controllers.Driver.Requests.UpdateDriverRequest;
-import com.djuber.djuberbackend.Controllers.Driver.Response.AvailableDriverResponse;
+import com.djuber.djuberbackend.Controllers.Driver.Response.DriverLocationResponse;
 import com.djuber.djuberbackend.Controllers.Driver.Response.DriverUpdateResponse;
 import com.djuber.djuberbackend.Controllers._Common.Requests.IdRequest;
 import com.djuber.djuberbackend.Controllers._Common.Requests.ImageUpdateRequest;
@@ -18,7 +17,6 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.lang.Nullable;
-import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
@@ -105,7 +103,6 @@ public class DriverController {
         driverService.declineChangeRequest(request.getId());
     }
 
-
     @PutMapping(value = "acceptChange")
     @PreAuthorize("hasAnyRole('ADMIN')")
     public void acceptChange(@RequestBody @Valid IdRequest request){
@@ -124,8 +121,14 @@ public class DriverController {
         this.driverService.submitDriverUpdateRequest(user.getName(),request);
     }
 
-    @GetMapping(value = "availableDrivers")
-    public ResponseEntity<List<AvailableDriverResponse>> getAvailableDrivers(){
-        return new ResponseEntity<>(driverService.getAvailableDrivers(), HttpStatus.OK);
+    @GetMapping(value = "driversLocation")
+    public ResponseEntity<List<DriverLocationResponse>> getDriversLocation(){
+        return new ResponseEntity<>(driverService.getDriversLocation(), HttpStatus.OK);
+    }
+
+    @GetMapping(value = "loggedDriverLocation")
+    @PreAuthorize("hasAnyRole('DRIVER')")
+    public ResponseEntity<DriverLocationResponse> getLoggedDriverLocation(Principal user){
+        return new ResponseEntity<>(driverService.getLoggedDriverLocation(user.getName()), HttpStatus.OK);
     }
 }

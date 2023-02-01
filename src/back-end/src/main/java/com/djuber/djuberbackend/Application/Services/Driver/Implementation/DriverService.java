@@ -4,10 +4,9 @@ import com.djuber.djuberbackend.Application.Services.Driver.IDriverLogService;
 import com.djuber.djuberbackend.Application.Services.Driver.IDriverService;
 import com.djuber.djuberbackend.Application.Services.Driver.Mapper.DriverMapper;
 import com.djuber.djuberbackend.Application.Services.Driver.Results.DriverResult;
-import com.djuber.djuberbackend.Application.Services.LiveChat.Results.MessageResult;
 import com.djuber.djuberbackend.Controllers.Admin.Requests.RegisterDriverRequest;
 import com.djuber.djuberbackend.Controllers.Driver.Requests.UpdateDriverRequest;
-import com.djuber.djuberbackend.Controllers.Driver.Response.AvailableDriverResponse;
+import com.djuber.djuberbackend.Controllers.Driver.Response.DriverLocationResponse;
 import com.djuber.djuberbackend.Controllers.Driver.Response.DriverUpdateResponse;
 import com.djuber.djuberbackend.Domain.Authentication.Identity;
 import com.djuber.djuberbackend.Domain.Authentication.Role;
@@ -29,11 +28,9 @@ import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
-import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
-import java.time.Duration;
 import java.time.OffsetDateTime;
 import java.util.ArrayList;
 import java.util.HashSet;
@@ -290,8 +287,8 @@ public class DriverService implements IDriverService {
     }
 
     @Override
-    public List<AvailableDriverResponse> getAvailableDrivers() {
-        return driverMapper.mapAvailableDrivers(driverRepository.getAvailableDrivers());
+    public List<DriverLocationResponse> getDriversLocation() {
+        return driverMapper.mapDriversLocation(driverRepository.getActiveDrivers());
     }
 
     @Override
@@ -323,6 +320,16 @@ public class DriverService implements IDriverService {
 
         driverLogService.logDriverDeactivation(driver);
         driverRepository.save(driver);
+    }
+
+    @Override
+    public DriverLocationResponse getLoggedDriverLocation(String email) {
+        Identity identity = identityRepository.findByEmail(email);
+        if(identity == null){
+            throw new UserNotFoundException("Driver with provided email does not exist.");
+        }
+        Driver driver = driverRepository.findByIdentityId(identity.getId());
+        return new DriverLocationResponse(driver);
     }
 
     private CarType getCarType(String type){

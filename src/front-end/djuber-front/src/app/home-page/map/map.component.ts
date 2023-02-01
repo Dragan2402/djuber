@@ -4,7 +4,7 @@ import * as L from 'leaflet';
 import { AuthenticationService } from 'src/app/authentication/authentication.service';
 import { SnackbarComponent } from 'src/app/snackbar/snackbar.component';
 import { HashService } from 'src/app/utility/hash-service.service';
-import { AvailableDriver } from './availableDriver';
+import { DriverLocation } from './driverLocation';
 import { MapService } from './map.service';
 import {Coordinate} from "./coordinate";
 import { Route } from './route';
@@ -30,6 +30,8 @@ export class MapComponent implements OnInit {
   desiredLocation : Coordinate;
 
   clientMarker :L.Marker;
+
+  loggedDriverLocation: DriverLocation;
 
   desireMarker : L.Marker = undefined;
 
@@ -88,10 +90,24 @@ export class MapComponent implements OnInit {
 
 
   ngOnInit(): void {
-    if (navigator.geolocation) {
-      navigator.geolocation.getCurrentPosition(this.setGeoLocation.bind(this));
-   }
-   this.setAvailableDrivers();
+    if(this.logged && this.hashService.matchRoles("DRIVER",this.authenticationService.getLoggedUserRole())){
+      this.mapService.getLoggedDriverLocation().subscribe({next:(driver)=>{
+       this.drawMarker({lat:driver.lat, lon: driver.lon, index:0 } as Coordinate,"car","You",true);
+       this.loggedDriverLocation = driver;
+      }})
+    }else{
+      if (navigator.geolocation) {
+        navigator.geolocation.getCurrentPosition(this.setGeoLocation.bind(this));
+     }
+    }
+   this.updateDriversLocation();
+  }
+
+  async updateDriversLocation(){
+    while(true){
+      await new Promise(f => setTimeout(f, 5000));
+      this.setDriversLocation();
+    }
   }
 
   getCoordinates() {
@@ -163,6 +179,8 @@ export class MapComponent implements OnInit {
     this.sharedRideClientEmails.splice(index, 1);
   }
 
+
+
   onValueUpdate(event, index){
     this.routePathAddresses[index]=event.target.value;
   }
@@ -175,7 +193,7 @@ export class MapComponent implements OnInit {
        coords: { latitude, longitude },
     } = position;
     this.clientLocation = {lat:latitude, lon:longitude, index:0} as Coordinate;
-    this.clientMarker = this.drawMarker(this.clientLocation,"person","Your location");
+    this.clientMarker = this.drawMarker(this.clientLocation,"person","Your location", true);
 }
 
 
@@ -201,9 +219,12 @@ export class MapComponent implements OnInit {
     }
   }
 
-  drawAvailableDriverMarker(driver:AvailableDriver){
-
-    this.availableDriversMarkers.push(this.drawMarker({lat:driver.lat, lon: driver.lon, index:0 } as Coordinate,"car","Available driver"));
+  drawDriverLocation(driver:DriverLocation){
+    if(driver.inRide === true){
+      this.availableDriversMarkers.push(this.drawMarker({lat:driver.lat, lon: driver.lon, index:0 } as Coordinate,"carGray","In ride",false));
+    }else{
+      this.availableDriversMarkers.push(this.drawMarker({lat:driver.lat, lon: driver.lon, index:0 } as Coordinate,"car","Available driver", false));
+    }
   }
 
   drawRoute(route:Route){
@@ -233,14 +254,16 @@ export class MapComponent implements OnInit {
     this.knowingEnglish = false;
   }
 
-  setAvailableDrivers(){
-    this.mapService.getAvailableDrivers().subscribe({
+  setDriversLocation(){
+    this.mapService.getDriversLocation().subscribe({
       next:(v) =>{
         this.availableDriversMarkers.forEach(m => {m.remove()});
         this.availableDriversMarkers.splice(0, this.availableDriversMarkers.length);
-        v.forEach(d => {this.drawAvailableDriverMarker(d)});
-      }
-    })
+        v.forEach(d => { if(this.loggedDriverLocation === undefined || this.loggedDriverLocation.id !==d.id){
+          this.drawDriverLocation(d);
+        };
+      })
+    }})
   }
 
   private async getCoordinateFromAddress(address:string, id:number){
@@ -321,7 +344,7 @@ export class MapComponent implements OnInit {
       this.stopNames.push(name);
     }
     this.routePathPoints.push(clientPoint);
-    this.clientMarker = this.drawMarker(clientPoint,"person","Starting location");
+    this.clientMarker = this.drawMarker(clientPoint,"person","Starting location", true);
 
     for(let i = 0 ; i < this.routePathAddresses.length ; i++){
       this.routePathPoints.push(await this.getCoordinateFromAddress(this.routePathAddresses[i], i+1));
@@ -329,7 +352,7 @@ export class MapComponent implements OnInit {
 
     const desiredPoint = await this.getCoordinateFromAddress(this.desiredAddress,9999);
     this.routePathPoints.push(desiredPoint);
-    this.desireMarker = this.drawMarker(desiredPoint, "finish",this.desiredAddress.toUpperCase());
+    this.desireMarker = this.drawMarker(desiredPoint, "finish",this.desiredAddress.toUpperCase(), true);
 
     this.routePathPoints.sort((a, b) => {return a.index - b.index});
 
@@ -337,7 +360,7 @@ export class MapComponent implements OnInit {
     this.getRoutesFromCoordinates(this.routePathPoints, preference);
   }
 
-  private drawMarker(coordinate:Coordinate, iconUrlPart:string, tooltipText:string){
+  private drawMarker(coordinate:Coordinate, iconUrlPart:string, tooltipText:string, panTo:boolean){
     const marker = L.marker([coordinate.lat, coordinate.lon], {
       icon: L.icon({
           iconUrl: 'assets/'+iconUrlPart+'.svg',
@@ -347,7 +370,9 @@ export class MapComponent implements OnInit {
       }),
       title: 'Desired location'
     }).addTo(this.map);
-    this.map.panTo([coordinate.lat, coordinate.lon]);
+    if(panTo){
+      this.map.panTo([coordinate.lat, coordinate.lon]);
+    }
     marker.bindTooltip(tooltipText);
     return marker;
   }
@@ -384,10 +409,8 @@ export class MapComponent implements OnInit {
     const points = this.routes[0].points;
     if(points.length >= 2){
       for(let i = 0; i < points.length ; i++){
-
         coordinates.push({lat:points[i]["lat"], lon:points[i]["lng"],index:i} as Coordinate)
       };
-
       let passengerEmails: string[] = this.sharedRide? [this.authenticationService.getLoggedUserEmail()].concat(clientEmails):[this.authenticationService.getLoggedUserEmail()];
       console.log(passengerEmails);
       const request = {

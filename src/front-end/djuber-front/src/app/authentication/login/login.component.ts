@@ -25,7 +25,7 @@ export class LoginComponent   {
   }
 
   getPasswordErrorMessage() {
-    return this.password.hasError('required') ? '': '';
+    return this.password.hasError('required') ? 'Required': '';
   }
 
   public login():void{

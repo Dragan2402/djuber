@@ -2,7 +2,7 @@ import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { firstValueFrom } from 'rxjs';
 import { FavouriteRoute } from 'src/app/ride/favouriteRoute';
-import { AvailableDriver } from './availableDriver';
+import { DriverLocation } from './driverLocation';
 import { Coordinate } from './coordinate';
 import { RideRequest } from './rideRequest';
 
@@ -13,8 +13,12 @@ export class MapService {
 
   constructor(private http:HttpClient) { }
 
-  getAvailableDrivers(){
-    return this.http.get<AvailableDriver[]>("/api/driver/availableDrivers");
+  getDriversLocation(){
+    return this.http.get<DriverLocation[]>("/api/driver/driversLocation");
+  }
+
+  getLoggedDriverLocation(){
+    return this.http.get<DriverLocation>("/api/driver/loggedDriverLocation");
   }
 
   searchLocation(address:string){

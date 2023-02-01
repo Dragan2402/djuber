@@ -7,20 +7,23 @@ import lombok.experimental.FieldDefaults;
 
 @Data
 @FieldDefaults(level = AccessLevel.PRIVATE)
-public class AvailableDriverResponse {
+public class DriverLocationResponse {
 
-    private long id;
+    long id;
 
-    private Double lat;
+    Double lat;
 
-    private Double lon;
+    Double lon;
 
-    public AvailableDriverResponse() {
+    boolean inRide;
+
+    public DriverLocationResponse() {
     }
 
-    public AvailableDriverResponse(Driver driver){
+    public DriverLocationResponse(Driver driver){
         this.id = driver.getId();
         this.lat = driver.getCar().getLat();
         this.lon = driver.getCar().getLon();
+        this.inRide = driver.getInRide();
     }
 }

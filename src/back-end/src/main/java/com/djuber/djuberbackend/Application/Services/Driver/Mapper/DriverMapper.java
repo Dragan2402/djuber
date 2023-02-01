@@ -1,9 +1,7 @@
 package com.djuber.djuberbackend.Application.Services.Driver.Mapper;
 
-import com.djuber.djuberbackend.Application.Services.Client.Results.ClientResult;
 import com.djuber.djuberbackend.Application.Services.Driver.Results.DriverResult;
-import com.djuber.djuberbackend.Controllers.Driver.Response.AvailableDriverResponse;
-import com.djuber.djuberbackend.Domain.Client.Client;
+import com.djuber.djuberbackend.Controllers.Driver.Response.DriverLocationResponse;
 import com.djuber.djuberbackend.Domain.Driver.Driver;
 import lombok.AllArgsConstructor;
 import org.springframework.data.domain.Page;
@@ -24,10 +22,10 @@ public class DriverMapper {
         return driverResults;
     }
 
-    public List<AvailableDriverResponse> mapAvailableDrivers(List<Driver> drivers){
-        List<AvailableDriverResponse> driverResponses = new ArrayList<>();
+    public List<DriverLocationResponse> mapDriversLocation(List<Driver> drivers){
+        List<DriverLocationResponse> driverResponses = new ArrayList<>();
         for (Driver driver :drivers){
-            driverResponses.add(new AvailableDriverResponse(driver));
+            driverResponses.add(new DriverLocationResponse(driver));
         }
         return driverResponses;
     }

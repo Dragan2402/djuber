@@ -25,17 +25,37 @@ public class LoginPage {
     @FindBy(id = "loginButton")
     WebElement loginButton;
 
+    @FindBy(id = "emailError")
+    WebElement emailError;
+
     public LoginPage(WebDriver driver) {
         this.driver = driver;
         this.action = new Actions(driver);
         PageFactory.initElements(driver, this);
     }
 
-    public void enterEmail(){
+    public void enterEmailValid(){
         (new WebDriverWait(driver, Duration.ofSeconds(10))).until(ExpectedConditions.elementToBeClickable(emailInput)).sendKeys("asi@maildrop.cc");
     }
 
-    public void enterPassword(){
+    public void enterEmailInvalid(){
+        (new WebDriverWait(driver, Duration.ofSeconds(10))).until(ExpectedConditions.elementToBeClickable(emailInput)).sendKeys("asi");
+    }
+
+    public void enterWrongEmail(){
+        (new WebDriverWait(driver, Duration.ofSeconds(10))).until(ExpectedConditions.elementToBeClickable(emailInput)).sendKeys("asi@gg.com");
+    }
+
+    public String getErrorText(){
+        (new WebDriverWait(driver, Duration.ofSeconds(10))).until(ExpectedConditions.textToBePresentInElement(emailError,"Invalid email"));
+        return emailError.getText();
+    }
+
+    public void clearEmail(){
+        emailInput.clear();
+    }
+
+    public void enterPasswordValid(){
         passwordInput.sendKeys("asi123");
     }
 
