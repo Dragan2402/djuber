@@ -40,6 +40,6 @@ export class AcceptRideClientDialogComponent implements OnInit {
     console.log(this.dataToDisplay.rideId);
     this.rideService.acceptRideClient(this.dataToDisplay.rideId).subscribe();
     this.dialogRef.close();
-    this.router.navigate(['singleRideMap', this.dataToDisplay.rideId]);
+    // this.router.navigate(['singleRideMap', this.dataToDisplay.rideId]);
   }
 }

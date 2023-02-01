@@ -31,14 +31,14 @@ public class RideController {
 
     @PostMapping
     @PreAuthorize("hasAnyRole('CLIENT')")
-    public ResponseEntity<Void> createRide(@RequestBody @Valid RideRequest rideRequest) {
+    public ResponseEntity<Void> createRide(@RequestBody @Valid RideRequest rideRequest) throws InterruptedException, IOException {
         rideService.processRideRequest(rideRequest);
         return new ResponseEntity<>(HttpStatus.CREATED);
     }
 
     @PostMapping("/client/accept/{rideId}")
     @PreAuthorize("hasAnyRole('CLIENT')")
-    public ResponseEntity<Void> acceptShareRide(@PathVariable("rideId") Long rideId, Principal principal) {
+    public ResponseEntity<Void> acceptShareRide(@PathVariable("rideId") Long rideId, Principal principal) throws IOException, InterruptedException {
         rideService.acceptShareRideRequest(rideId, principal.getName());
         return new ResponseEntity<>(HttpStatus.OK);
     }

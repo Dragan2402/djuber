@@ -12,8 +12,8 @@ import java.util.List;
 
 public interface IRideService {
 
-    void processRideRequest(RideRequest rideRequest);
-    void acceptShareRideRequest(Long rideId, String clientEmail);
+    void processRideRequest(RideRequest rideRequest) throws IOException, InterruptedException;
+    void acceptShareRideRequest(Long rideId, String clientEmail) throws IOException, InterruptedException;
 
     void declineShareRideRequest(Long rideId);
 

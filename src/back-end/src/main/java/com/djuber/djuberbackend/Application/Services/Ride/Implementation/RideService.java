@@ -35,12 +35,10 @@ import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
 import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
 
 import java.io.IOException;
 import java.time.OffsetDateTime;
 import java.util.List;
-import java.util.Optional;
 import java.util.Set;
 
 @Service
@@ -61,8 +59,8 @@ public class RideService implements IRideService {
 
 
     @Override
-    @Transactional
-    public void processRideRequest(RideRequest rideRequest) {
+//    @Transactional
+    public void processRideRequest(RideRequest rideRequest) throws IOException, InterruptedException {
         Ride ride = createRide(rideRequest); //create ride
 
         ride.getClientsAccepted().add(rideRequest.getClientEmails().get(0));
@@ -108,7 +106,7 @@ public class RideService implements IRideService {
     }
 
     @Override
-    public void acceptShareRideRequest(Long rideId, String clientEmail) {
+    public void acceptShareRideRequest(Long rideId, String clientEmail) throws IOException, InterruptedException {
         Ride ride = rideRepository.findById(rideId).orElse(null);
         if (ride == null) {
             throw new EntityNotFoundException("Ride not found.");
@@ -145,9 +143,16 @@ public class RideService implements IRideService {
     }
 
     private Driver findDriver(Ride ride) {
-        Coordinate startCoordinate = ride.getRoute().getStartCoordinate();
+        List<Coordinate> coordinates = coordinatesRepository.findByRouteId(ride.getRoute().getId());
+        Coordinate startCoordinate = coordinates.get(0);
         List<Driver> sortedAvailableDrivers = driverRepository.findAvailableDriversSortedByDistanceFromCoordinate(startCoordinate.getLat(), startCoordinate.getLon());
-        return getClosestFittingDriver(sortedAvailableDrivers, ride.getCarType(), ride.getRequestedServices());
+
+        Driver driver = getClosestFittingDriver(sortedAvailableDrivers, ride.getCarType(), ride.getRequestedServices());
+        if (driver != null) {
+            driver.setInRide(true);
+            driverRepository.save(driver);
+        }
+        return driver;
     }
 
     private void rejectRide(Ride ride) {
@@ -163,6 +168,9 @@ public class RideService implements IRideService {
         Double clientFare = ride.getPrice() / ride.getClients().size();
         for (Client client : ride.getClients()) {
             if (client.getBalance() < clientFare) {
+                ride.getDriver().setInRide(false);
+                driverRepository.save(ride.getDriver());
+                rideRepository.delete(ride);
                 throw new NotEnoughFundsException("Not enough funds for ride in client balance.");
             }
         }
@@ -172,15 +180,13 @@ public class RideService implements IRideService {
         }
     }
 
-    private void initiateRide(Ride ride) {
+    private void initiateRide(Ride ride) throws IOException, InterruptedException {
         Driver driver = ride.getDriver();
         driver.setInRide(true);
         driverRepository.save(driver);
 
         ride.setRideStatus(RideStatus.ON_THE_WAY);
         ride = rideRepository.save(ride);
-
-        Ride testRide = rideRepository.findById(ride.getId()).orElse(null);
 
         RideMessageResult result = new RideMessageResult(RideMessageStatus.RIDE_START_NOTIFICATION, ride.getId(), ride.getPrice());
         Identity identity = ride.getDriver().getIdentity();
@@ -191,24 +197,8 @@ public class RideService implements IRideService {
             identity = client.getIdentity();
             simpMessagingTemplate.convertAndSend(TOPIC_PATH + identity.getId(), result);
         }
+        this.execute(ride.getId());
     }
-
-//    private void initiateOrRejectRide(Ride ride) {
-//        if (ride.getDriver() == null) {
-//            rideRepository.delete(ride);
-//            RideMessageResult result = new RideMessageResult(RideMessageStatus.RIDE_CLIENT_DECLINED, null);
-//            for (Client client : ride.getClients()) {
-//                simpMessagingTemplate.convertAndSend(TOPIC_PATH + client.getIdentity().getId(), result);
-//            }
-//        }
-//    }
-
-//    //TODO: async method for finding a driver
-//    private Driver findDriver(Ride ride) {
-//        Coordinate startCoordinate = ride.getRoute().getStartCoordinate();
-//        List<Driver> sortedAvailableDrivers = driverRepository.findAvailableDriversSortedByDistanceFromCoordinate(startCoordinate.getLat(), startCoordinate.getLon());
-//        return getClosestFittingDriver(sortedAvailableDrivers, rideRequest.getCarType(), ride.get);
-//    }
 
 //    @Override
 //    @Transactional
