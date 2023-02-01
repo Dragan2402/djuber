@@ -5,6 +5,7 @@ import com.djuber.djuberbackend.Controllers.Ride.Requests.RideRequest;
 import com.djuber.djuberbackend.Controllers.Ride.Responses.CoordinateResponse;
 import com.djuber.djuberbackend.Controllers.Ride.Responses.RideResponse;
 import com.djuber.djuberbackend.Domain.Client.Client;
+import com.djuber.djuberbackend.Domain.Driver.Car;
 import com.djuber.djuberbackend.Domain.Driver.CarType;
 import com.djuber.djuberbackend.Domain.Ride.Ride;
 import com.djuber.djuberbackend.Domain.Ride.RideStatus;
@@ -26,6 +27,8 @@ public class RideMapper {
 
         RideType rideType = RideType.fromString(rideRequest.getRideType());
         ride.setRideType(rideType);
+        CarType carType = CarType.fromString(rideRequest.getCarType());
+        ride.setCarType(carType);
         ride.setRequestedServices(rideRequest.getAdditionalServices());
 
         ride.setRoute(new Route());
@@ -40,7 +43,6 @@ public class RideMapper {
         }
         ride.getRoute().setDeleted(false);
         ride.getRoute().setStopNames(rideRequest.getStopNames());
-        CarType carType = CarType.fromString(rideRequest.getCarType());
 
         double price = carType.getBasePrice() + rideRequest.getDistance() * 120;
         price = Math.round(price * 100);

@@ -1,6 +1,7 @@
 package com.djuber.djuberbackend.Domain.Ride;
 
 import com.djuber.djuberbackend.Domain.Client.Client;
+import com.djuber.djuberbackend.Domain.Driver.CarType;
 import com.djuber.djuberbackend.Domain.Driver.Driver;
 import com.djuber.djuberbackend.Domain.Review.Review;
 import com.djuber.djuberbackend.Domain.Route.Route;
@@ -32,7 +33,7 @@ public class Ride implements Serializable {
     Long id;
 
     @ManyToOne
-    @JoinColumn(name = "driverId", nullable = false)
+    @JoinColumn(name = "driverId")
     Driver driver;
 
     @ManyToMany(fetch = FetchType.LAZY)
@@ -44,6 +45,9 @@ public class Ride implements Serializable {
 
     @Column(name = "rideType", nullable = false)
     RideType rideType;
+
+    @Column(name = "car_type", nullable = false)
+    CarType carType;
 
     @Column(name = "start")
     OffsetDateTime start;

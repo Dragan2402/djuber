@@ -144,11 +144,11 @@ INSERT INTO coordinate(id, index, location_name, lat, lon, route_id)
 VALUES (900000, 2, 'Medicinski Fakultet Novi Sad', 45.25328151383017, 19.824271073957725, 300000);
 
 --RIDES
-INSERT INTO ride (id, driver_id, ride_type, start, finish, route_id, price, ride_status, deleted, cancelling_note)
-VALUES (100000, 100000, 0, '2022-10-23 00:00', NULL, 100000, 110, 0, false, NULL );
+INSERT INTO ride (id, driver_id, ride_type, car_type, start, finish, route_id, price, ride_status, deleted, cancelling_note)
+VALUES (100000, 100000, 0, 0, '2022-10-23 00:00', NULL, 100000, 110, 0, false, NULL );
 
-INSERT INTO ride (id, driver_id, ride_type, start, finish, route_id, price, ride_status, deleted, cancelling_note)
-VALUES (200000, 100000, 0, '2023-01-25 12:00', '2023-01-25 14:15', 300000, 110, 2, false, NULL );
+INSERT INTO ride (id, driver_id, ride_type, car_type, start, finish, route_id, price, ride_status, deleted, cancelling_note)
+VALUES (200000, 100000, 0, 0, '2023-01-25 12:00', '2023-01-25 14:15', 300000, 110, 2, false, NULL );
 
 --REQUESTED_SERVICES
 INSERT INTO RIDE_REQUESTED_SERVICES (ride_id, REQUESTED_SERVICES)

@@ -49,7 +49,7 @@ export class MapService {
 
 
   orderRide(request:RideRequest){
-    return this.http.post("/api/ride/driver", request);
+    return this.http.post("/api/ride", request);
   }
 
   checkIfClientsExist(clientEmails: string[]) {

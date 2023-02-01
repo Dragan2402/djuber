@@ -8,4 +8,11 @@ import lombok.Value;
 public class RideMessageResult {
     RideMessageStatus status;
     Long rideId;
+    Double ridePrice;
+
+    public RideMessageResult(RideMessageStatus status, Long rideId) {
+        this.status = status;
+        this.rideId = rideId;
+        this.ridePrice = null;
+    }
 }
