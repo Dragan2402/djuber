@@ -14,6 +14,7 @@ import { MatSnackBar } from '@angular/material/snack-bar';
 import { SnackbarComponent } from 'src/app/snackbar/snackbar.component';
 import { MatDialog, MatDialogConfig } from '@angular/material/dialog';
 import { CancelRideNoteDialogComponent } from '../dialogs/cancel-ride-note-dialog/cancel-ride-note-dialog.component';
+import { ReportDriverDialogComponent } from '../dialogs/report-driver-dialog/report-driver-dialog.component';
 
 
 
@@ -127,7 +128,14 @@ export class SingleRideMapComponent implements OnInit {
   }
 
   reportDriver(){
-    
+      const dialogConfig = new MatDialogConfig();
+      dialogConfig.disableClose = true;
+      dialogConfig.id = "client-reporting-modal";
+      dialogConfig.data = {data:this.rideId};
+      dialogConfig.height = "40%";
+      dialogConfig.width = "20%";
+      this.matDialog.open(ReportDriverDialogComponent, dialogConfig);
+
   }
 
   private updateRideStatus(rideUpdateResponse:RideUpdateResponse){

@@ -62,7 +62,7 @@ public class RideController {
         return new ResponseEntity<>(HttpStatus.OK);
     }
 
-    @PutMapping("/submitDriverReport/{rideId}")
+    @PostMapping("/submitDriverReport/{rideId}")
     @PreAuthorize("hasAnyRole('CLIENT')")
     public ResponseEntity<Void> submitDriverReport(Principal principal, @PathVariable("rideId") Long rideId, @RequestBody DriverReportRequest request) {
         rideService.submitDriverReport(principal.getName(), rideId, request.getReason());

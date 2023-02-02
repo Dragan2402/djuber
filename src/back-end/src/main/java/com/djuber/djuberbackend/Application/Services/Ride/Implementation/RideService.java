@@ -335,6 +335,12 @@ public class RideService implements IRideService {
         if (ride == null) {
             throw new EntityNotFoundException("Ride not found.");
         }
+        ride.getDriver().setInRide(true);
+        for(Client client : ride.getClients()){
+            client.setInRide(true);
+        }
+        clientRepository.saveAll(ride.getClients());
+        driverRepository.save(ride.getDriver());
         ride.setRideStatus(RideStatus.ACTIVE);
         rideRepository.save(ride);
 
@@ -355,6 +361,12 @@ public class RideService implements IRideService {
         }
         ride.setFinish(OffsetDateTime.now());
         ride.setRideStatus(RideStatus.DONE);
+        ride.getDriver().setInRide(false);
+        for(Client client : ride.getClients()){
+            client.setInRide(false);
+        }
+        clientRepository.saveAll(ride.getClients());
+        driverRepository.save(ride.getDriver());
         rideRepository.save(ride);
 
         simpMessagingTemplate.convertAndSend("/topic/singleRide/" + rideId, new RideUpdateResponse(ride.getRideStatus().toString(), 0,0D,0D));
@@ -464,7 +476,7 @@ public class RideService implements IRideService {
     public void submitDriverReport(String email, Long rideId, String reason) {
         Ride ride = rideRepository.findById(rideId).orElse(null);
         if (ride == null) {
-            throw new EntityNotFoundException("Ride to review not found.");
+            throw new EntityNotFoundException("Ride not found.");
         }
         Identity identity = identityRepository.findByEmail(email);
         if( identity == null){

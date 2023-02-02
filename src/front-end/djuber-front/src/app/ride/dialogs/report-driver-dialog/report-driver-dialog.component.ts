@@ -32,7 +32,6 @@ export class ReportDriverDialogComponent implements OnInit {
       complete:()=>{
         this.snackBar.openFromComponent(SnackbarComponent,{data:"Report successfully saved."});
         this.dialogRef.close();
-        this.router.navigate(["/"]);
       }
     })
   }
