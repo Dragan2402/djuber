@@ -10,6 +10,7 @@ import com.djuber.djuberbackend.Controllers.Ride.Requests.ReviewRideRequest;
 import com.djuber.djuberbackend.Controllers.Ride.Requests.RideRequest;
 import com.djuber.djuberbackend.Controllers.Ride.Requests.*;
 import com.djuber.djuberbackend.Controllers.Ride.Responses.CoordinateResponse;
+import com.djuber.djuberbackend.Controllers.Ride.Responses.RidePreviewResponse;
 import com.djuber.djuberbackend.Controllers.Ride.Responses.RideResponse;
 import com.djuber.djuberbackend.Controllers.Ride.Responses.RideReviewResponse;
 import com.djuber.djuberbackend.Domain.Ride.RideType;
@@ -40,6 +41,12 @@ public class RideController {
     @PreAuthorize("hasAnyRole('CLIENT')")
     public ResponseEntity<Page<RideResult>> getRides(Principal user, Pageable pageable){
         return new ResponseEntity<>(rideService.readPageable(pageable, user.getName()), HttpStatus.OK);
+    }
+
+    @GetMapping(value = "/userRides/{identityId}")
+    @PreAuthorize("hasAnyRole('CLIENT','DRIVER','ADMIN')")
+    public ResponseEntity<Page<RidePreviewResponse>> getUserRides(@PathVariable("identityId") Long identityId, Pageable pageable){
+        return new ResponseEntity<>(rideService.getUserRides(identityId, pageable), HttpStatus.OK);
     }
 
     @GetMapping(value = "/all")

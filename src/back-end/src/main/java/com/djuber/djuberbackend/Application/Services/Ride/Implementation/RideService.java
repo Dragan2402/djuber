@@ -11,11 +11,9 @@ import com.djuber.djuberbackend.Application.Services.Route.Mapper.RouteMapper;
 import com.djuber.djuberbackend.Controllers.Ride.Requests.CoordinateRequest;
 import com.djuber.djuberbackend.Controllers.Ride.Requests.ReviewRideRequest;
 import com.djuber.djuberbackend.Controllers.Ride.Requests.RideRequest;
-import com.djuber.djuberbackend.Controllers.Ride.Responses.CoordinateResponse;
-import com.djuber.djuberbackend.Controllers.Ride.Responses.RideResponse;
-import com.djuber.djuberbackend.Controllers.Ride.Responses.RideReviewResponse;
-import com.djuber.djuberbackend.Controllers.Ride.Responses.RideUpdateResponse;
+import com.djuber.djuberbackend.Controllers.Ride.Responses.*;
 import com.djuber.djuberbackend.Domain.Authentication.Identity;
+import com.djuber.djuberbackend.Domain.Authentication.UserType;
 import com.djuber.djuberbackend.Domain.Client.Client;
 import com.djuber.djuberbackend.Domain.Driver.Car;
 import com.djuber.djuberbackend.Domain.Driver.CarType;
@@ -26,6 +24,7 @@ import com.djuber.djuberbackend.Domain.Ride.Ride;
 import com.djuber.djuberbackend.Domain.Ride.RideStatus;
 import com.djuber.djuberbackend.Domain.Ride.RideType;
 import com.djuber.djuberbackend.Domain.Route.Coordinate;
+import com.djuber.djuberbackend.Domain.Route.Route;
 import com.djuber.djuberbackend.Infastructure.Exceptions.CustomExceptions.*;
 import com.djuber.djuberbackend.Infastructure.Repositories.Authentication.IIdentityRepository;
 import com.djuber.djuberbackend.Infastructure.Repositories.Client.IClientRepository;
@@ -35,6 +34,7 @@ import com.djuber.djuberbackend.Infastructure.Repositories.Review.IReviewReposit
 import com.djuber.djuberbackend.Infastructure.Repositories.Ride.IDriverReportRepository;
 import com.djuber.djuberbackend.Infastructure.Repositories.Ride.IRideRepository;
 import com.djuber.djuberbackend.Infastructure.Repositories.Route.ICoordinatesRepository;
+import com.djuber.djuberbackend.Infastructure.Repositories.Route.IRouteRepository;
 import com.djuber.djuberbackend.Infastructure.Util.DateCalculator;
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
@@ -48,6 +48,7 @@ import org.springframework.stereotype.Service;
 import java.io.IOException;
 import java.security.Principal;
 import java.time.OffsetDateTime;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
 import java.util.concurrent.CompletableFuture;
@@ -65,13 +66,8 @@ public class RideService implements IRideService {
     final ICarRepository carRepository;
     final DateCalculator dateCalculator;
     final IReviewRepository reviewRepository;
-    @Override
-    public Page<RideResult> readPageable(Pageable pageable, String clientEmail) {
-        return RideMapper.mapRides(rideRepository.findAll(pageable));
-    }
-
     final IDriverReportRepository driverReportRepository;
-
+    final IRouteRepository routeRepository;
     private static final String TOPIC_PATH = "/topic/ride/";
 
 
@@ -97,6 +93,11 @@ public class RideService implements IRideService {
                 assignDriver(ride);
             }
         }
+    }
+
+    @Override
+    public Page<RideResult> readPageable(Pageable pageable, String clientEmail) {
+        return RideMapper.mapRides(rideRepository.findAll(pageable));
     }
 
     private Ride createRide(RideRequest rideRequest) {
@@ -519,6 +520,42 @@ public class RideService implements IRideService {
         report.setReason(reason);
         driverReportRepository.save(report);
 
+    }
+
+    @Override
+    public Page<RidePreviewResponse> getUserRides(Long id, Pageable pageable) {
+        Identity identity = identityRepository.findById(id).orElse(null);
+        if(identity == null){
+            throw new UserNotFoundException("User does not exist.");
+        }
+        if(identity.getUserType()== UserType.CLIENT){
+            Client client = clientRepository.findByIdentityId(identity.getId());
+            Page<Ride> page = clientRepository.findClientRides(client.getId(), pageable);
+            return page.map(ride ->{
+
+                Route route = routeRepository.findById(ride.getRoute().getId()).orElse(null);
+                if(route == null){
+                    return new RidePreviewResponse(ride, new ArrayList<>());
+                }else{
+                    return new RidePreviewResponse(ride, route.getStopNames());
+                }
+            }
+            );
+        }
+        else{
+            Driver driver = driverRepository.findByIdentityId(identity.getId());
+            Page<Ride> page = rideRepository.findDriverRides(driver.getId(),pageable);
+            return page.map(ride ->
+                    {
+                        Route route = routeRepository.findById(ride.getRoute().getId()).orElse(null);
+                        if(route == null){
+                            return new RidePreviewResponse(ride, new ArrayList<>());
+                        }else{
+                            return new RidePreviewResponse(ride, route.getStopNames());
+                        }
+                    }
+            );
+        }
     }
 
     private static Driver getClosestFittingDriver(List<Driver> sortedAvailableDrivers, CarType carType, Set<String> additionalServices) {
