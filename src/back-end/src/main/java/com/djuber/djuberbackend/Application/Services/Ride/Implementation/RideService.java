@@ -446,10 +446,16 @@ public class RideService implements IRideService {
         if (ride == null) {
             throw new EntityNotFoundException("Ride to review not found.");
         }
-        if(ride.getRideStatus() == RideStatus.ON_THE_WAY){
-            ride.setRideStatus(RideStatus.CANCELED);
+        if(ride.getRideStatus() != RideStatus.ON_THE_WAY){
+            throw new RideNotOnTheWayException("Ride is not on the way.");
         }
+        ride.setRideStatus(RideStatus.CANCELED);
         ride.getDriver().setInRide(false);
+        for(Client client : ride.getClients()){
+            client.setInRide(false);
+        }
+        clientRepository.saveAll(ride.getClients());
+        driverRepository.save(ride.getDriver());
         processRideRefund(ride);
         rideRepository.save(ride);
     }
