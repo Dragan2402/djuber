@@ -35,4 +35,6 @@ public interface IRideService {
     void declineAssignedRide(Long rideId);
 
     void submitCancellingNote(Long rideId, String note);
+
+    void submitDriverReport(String email, Long rideId, String reason);
 }

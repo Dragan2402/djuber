@@ -35,6 +35,11 @@ public class GlobalExceptionHandler {
         return new ResponseEntity<>(getErrorObject(ex.getMessage(), HttpStatus.BAD_REQUEST), HttpStatus.BAD_REQUEST);
     }
 
+    @ExceptionHandler({RideNotActiveException.class})
+    public ResponseEntity<ErrorObject> handleRideNotActiveException(RideNotActiveException ex, WebRequest request){
+        return new ResponseEntity<>(getErrorObject(ex.getMessage(), HttpStatus.BAD_REQUEST), HttpStatus.BAD_REQUEST);
+    }
+
     @ExceptionHandler({RideReviewTimePassedException.class})
     public ResponseEntity<ErrorObject> handleRideReviewTimePassedException(RideReviewTimePassedException ex, WebRequest request){
         return new ResponseEntity<>(getErrorObject(ex.getMessage(), HttpStatus.BAD_REQUEST), HttpStatus.BAD_REQUEST);

@@ -1,10 +1,7 @@
 package com.djuber.djuberbackend.Controllers.Ride;
 
 import com.djuber.djuberbackend.Application.Services.Ride.IRideService;
-import com.djuber.djuberbackend.Controllers.Ride.Requests.CancellingNoteRequest;
-import com.djuber.djuberbackend.Controllers.Ride.Requests.CoordinateRequest;
-import com.djuber.djuberbackend.Controllers.Ride.Requests.ReviewRideRequest;
-import com.djuber.djuberbackend.Controllers.Ride.Requests.RideRequest;
+import com.djuber.djuberbackend.Controllers.Ride.Requests.*;
 import com.djuber.djuberbackend.Controllers.Ride.Responses.CoordinateResponse;
 import com.djuber.djuberbackend.Controllers.Ride.Responses.RideResponse;
 import com.djuber.djuberbackend.Controllers.Ride.Responses.RideReviewResponse;
@@ -62,6 +59,13 @@ public class RideController {
     @PreAuthorize("hasAnyRole('DRIVER')")
     public ResponseEntity<Void> submitCancellingNote(@PathVariable("rideId") Long rideId, @RequestBody CancellingNoteRequest request) {
         rideService.submitCancellingNote(rideId, request.getNote());
+        return new ResponseEntity<>(HttpStatus.OK);
+    }
+
+    @PutMapping("/submitDriverReport/{rideId}")
+    @PreAuthorize("hasAnyRole('CLIENT')")
+    public ResponseEntity<Void> submitDriverReport(Principal principal, @PathVariable("rideId") Long rideId, @RequestBody DriverReportRequest request) {
+        rideService.submitDriverReport(principal.getName(), rideId, request.getReason());
         return new ResponseEntity<>(HttpStatus.OK);
     }
 

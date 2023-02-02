@@ -17,6 +17,7 @@ import com.djuber.djuberbackend.Domain.Driver.Car;
 import com.djuber.djuberbackend.Domain.Driver.CarType;
 import com.djuber.djuberbackend.Domain.Driver.Driver;
 import com.djuber.djuberbackend.Domain.Review.Review;
+import com.djuber.djuberbackend.Domain.Ride.DriverReport;
 import com.djuber.djuberbackend.Domain.Ride.Ride;
 import com.djuber.djuberbackend.Domain.Ride.RideStatus;
 import com.djuber.djuberbackend.Domain.Ride.RideType;
@@ -27,6 +28,7 @@ import com.djuber.djuberbackend.Infastructure.Repositories.Client.IClientReposit
 import com.djuber.djuberbackend.Infastructure.Repositories.Driver.ICarRepository;
 import com.djuber.djuberbackend.Infastructure.Repositories.Driver.IDriverRepository;
 import com.djuber.djuberbackend.Infastructure.Repositories.Review.IReviewRepository;
+import com.djuber.djuberbackend.Infastructure.Repositories.Ride.IDriverReportRepository;
 import com.djuber.djuberbackend.Infastructure.Repositories.Ride.IRideRepository;
 import com.djuber.djuberbackend.Infastructure.Repositories.Route.ICoordinatesRepository;
 import com.djuber.djuberbackend.Infastructure.Util.DateCalculator;
@@ -56,6 +58,8 @@ public class RideService implements IRideService {
     final ICarRepository carRepository;
     final DateCalculator dateCalculator;
     final IReviewRepository reviewRepository;
+
+    final IDriverReportRepository driverReportRepository;
 
     private static final String TOPIC_PATH = "/topic/ride/";
 
@@ -454,6 +458,33 @@ public class RideService implements IRideService {
         }
         ride.setCancellingNote(note);
         rideRepository.save(ride);
+    }
+
+    @Override
+    public void submitDriverReport(String email, Long rideId, String reason) {
+        Ride ride = rideRepository.findById(rideId).orElse(null);
+        if (ride == null) {
+            throw new EntityNotFoundException("Ride to review not found.");
+        }
+        Identity identity = identityRepository.findByEmail(email);
+        if( identity == null){
+            throw new UserNotFoundException("User with provided email does not exist.");
+        }
+        Client client = clientRepository.findByIdentityId(identity.getId());
+        if( client == null){
+            throw new UserNotFoundException("Client with provided email does not exist.");
+        }
+        if(ride.getRideStatus() != RideStatus.ACTIVE){
+            throw new RideNotActiveException("Ride is not active.");
+        }
+
+        DriverReport report = new DriverReport();
+        report.setRide(ride);
+        report.setClient(client);
+        report.setDriver(ride.getDriver());
+        report.setReason(reason);
+        driverReportRepository.save(report);
+
     }
 
     private static Driver getClosestFittingDriver(List<Driver> sortedAvailableDrivers, CarType carType, Set<String> additionalServices) {

@@ -126,6 +126,10 @@ export class SingleRideMapComponent implements OnInit {
     }});
   }
 
+  reportDriver(){
+    
+  }
+
   private updateRideStatus(rideUpdateResponse:RideUpdateResponse){
     if(rideUpdateResponse.rideStatus === "CANCELED"){
       this.snackBar.openFromComponent(SnackbarComponent,{data:"Ride has been canceled by the driver"});

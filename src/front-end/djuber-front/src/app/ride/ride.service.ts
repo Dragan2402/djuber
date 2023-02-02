@@ -34,6 +34,10 @@ export class RideService {
     return this.http.put(`/api/ride/submitCancellingNote/${rideId}`,{note:note});
   }
 
+  submitDriverReport(rideId:string, reason:string){
+    return this.http.post(`/api/ride/submitDriverReport/${rideId}`,{reason:reason});
+  }
+
   declineRideDriver(rideId:number){
     return this.http.post(`/api/ride/driver/decline/${rideId}`, null);
   }

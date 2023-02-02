@@ -16,3 +16,10 @@
   bottom: 34%;
   right: 3%;
 }
+
+.report-button{
+  position: absolute;
+  z-index: 1;
+  bottom: 34%;
+  right: 3%;
+}
