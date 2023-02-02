@@ -34,7 +34,7 @@
       </ng-container>
 
       <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
-      <tr mat-row *matRowDef="let ride; columns: displayedColumns;" (click)="handleClickRow(ride.id)"></tr>
+      <tr mat-row style="cursor: pointer" *matRowDef="let ride; columns: displayedColumns;" (click)="handleClickRow(ride.id)"></tr>
     </table>
   </div>
   <div class="paginator">
@@ -42,7 +42,18 @@
   </div>
 
   <modal #modal [modalConfig]="modalConfig">
-    <div>{{ride?.price}}</div>
+    <div class="modal-container">
+    <div class="modal-container"><b>Clients:</b>
+      <ul>
+        <li *ngFor="let client of clients">
+          <div>{{client.firstName}} {{client.lastName}}</div>
+        </li>
+      </ul>
+    </div>
+    <div><b>Driver Name:</b> {{ride?.driverName}}</div>
+    <div><b>Price:</b> {{ride?.price}}</div>
+    <div><b>Status:</b> {{ride?.rideStatus}}</div>
+    </div>
   </modal>
 
 </div>

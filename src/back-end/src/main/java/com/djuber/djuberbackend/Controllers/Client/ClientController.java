@@ -48,6 +48,12 @@ public class ClientController {
         }
     }
 
+    @GetMapping(value = "/all")
+    @PreAuthorize("hasAnyRole('CLIENT')")
+    public ResponseEntity<List<ClientResult>> getAllClients() {
+        return new ResponseEntity<>(clientService.readAll(), HttpStatus.OK);
+    }
+
     @GetMapping(value = "getClientNote")
     @PreAuthorize("hasAnyRole('ADMIN')")
     public ResponseEntity<NoteResponse> getClientNote(@RequestParam long id) {

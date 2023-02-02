@@ -1,3 +1,5 @@
+import {Coordinate} from "../home-page/map/coordinate";
+
 export interface Client{
   id: number,
   identityId: number,
@@ -18,3 +20,12 @@ export interface Ride {
   start: Date
   finish: Date
 }
+
+export interface ClientRide {
+  clientEmails: string[]
+  coordinates: Coordinate[]
+  driverName: string
+  price: number
+  rideStatus: string
+}
+

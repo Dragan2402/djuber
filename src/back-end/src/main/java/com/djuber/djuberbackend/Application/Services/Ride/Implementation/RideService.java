@@ -267,6 +267,11 @@ public class RideService implements IRideService {
         return RideMapper.mapResponse(ride, coordinates);
     }
 
+    @Override
+    public List<RideResult> getAllRides() {
+        return RideMapper.mapAllRides(rideRepository.findAll());
+    }
+
 //    @Override
 //    public void acceptRideDriverOffer(Long rideId) throws IOException, InterruptedException {
 //        Ride ride = rideRepository.findById(rideId).orElse(null);

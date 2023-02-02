@@ -1,6 +1,7 @@
 package com.djuber.djuberbackend.Application.Services.Client;
 
 import com.djuber.djuberbackend.Application.Services.Client.Results.ClientResult;
+import com.djuber.djuberbackend.Controllers.Client.ClientController;
 import com.djuber.djuberbackend.Controllers.Client.Requests.UpdateClientRequest;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -17,6 +18,8 @@ public interface IClientService {
     void updateLoggedClient(String email, UpdateClientRequest request);
 
     Page<ClientResult> readPageable(Pageable pageable);
+
+    List<ClientResult> readAll();
 
     Page<ClientResult> readPageableWithFilter(Pageable pageable, String filter);
 

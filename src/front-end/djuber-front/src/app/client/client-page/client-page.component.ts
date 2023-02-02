@@ -36,6 +36,11 @@ export class ClientPageComponent implements OnInit {
     this.router.navigate(['client', {outlets: { co:['rides']} }], {skipLocationChange: true})
   }
 
+  reports(){
+    this.router.navigateByUrl('client')
+    this.router.navigate(['client', {outlets: { co:['reports']} }], {skipLocationChange: true})
+  }
+
   toggleProfilePage(){
     this.router.navigateByUrl('client');
     this.router.navigate(['client',{outlets: { co:['profile']} }],{ skipLocationChange: true });

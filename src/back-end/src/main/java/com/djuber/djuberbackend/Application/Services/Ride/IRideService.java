@@ -18,6 +18,8 @@ public interface IRideService {
     Page<RideResult> readPageable(Pageable pageable, String clientEmail);
     RideResponse getRideResponse(Long rideId);
 
+    List<RideResult> getAllRides();
+
     void processRideRequest(RideRequest rideRequest) throws IOException, InterruptedException;
     void acceptShareRideRequest(Long rideId, String clientEmail) throws IOException, InterruptedException;
 

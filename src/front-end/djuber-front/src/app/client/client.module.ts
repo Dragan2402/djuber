@@ -23,6 +23,8 @@ import {MatPaginatorModule} from "@angular/material/paginator";
 import {MatTableModule} from "@angular/material/table";
 import { ClientFavouriteRidesDialogComponent } from '../home-page/map/client-favourite-rides-dialog/client-favourite-rides-dialog.component';
 import {ModalComponent} from "../components/modal/modal.component";
+import {NgxChartsModule} from "@swimlane/ngx-charts";
+import {ClientReportsComponent} from "./client-page/client-report/client-reports.component";
 
 @NgModule({
   declarations: [
@@ -30,6 +32,7 @@ import {ModalComponent} from "../components/modal/modal.component";
     ClientProfileComponent,
     ClientPaymentComponent,
     ClientRidesComponent,
+    ClientReportsComponent,
     ClientFavouriteRidesDialogComponent,
     ModalComponent
   ],
@@ -37,23 +40,25 @@ import {ModalComponent} from "../components/modal/modal.component";
     provide: MatDialogRef,
     useValue: {}
   },],
-    imports: [
-        CommonModule,
-        ClientRoutingModule,
-        MatSidenavModule,
-        MatToolbarModule,
-        MatIconModule,
-        MatButtonModule,
-        MatListModule,
-        MatDividerModule,
-        MatMenuModule,
-        MatFormFieldModule,
-        MatSelectModule,
-        MatInputModule,
-        FormsModule,
-        ReactiveFormsModule,
-        MatDialogModule,
-        MatPaginatorModule,
-        MatTableModule]
+  imports: [
+    CommonModule,
+    ClientRoutingModule,
+    MatSidenavModule,
+    MatToolbarModule,
+    MatIconModule,
+    MatButtonModule,
+    MatListModule,
+    MatDividerModule,
+    MatMenuModule,
+    MatFormFieldModule,
+    MatSelectModule,
+    MatInputModule,
+    FormsModule,
+    ReactiveFormsModule,
+    MatDialogModule,
+    MatPaginatorModule,
+    MatTableModule,
+    NgxChartsModule
+  ]
 })
 export class ClientModule { }

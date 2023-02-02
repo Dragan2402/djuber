@@ -188,6 +188,11 @@ public class ClientService implements IClientService {
     }
 
     @Override
+    public List<ClientResult> readAll() {
+        return clientMapper.map(clientRepository.findAll());
+    }
+
+    @Override
     public Page<ClientResult> readPageableWithFilter(Pageable pageable, String filter) {
         return clientMapper.map(clientRepository.findAllWithFilter(filter, pageable));
     }

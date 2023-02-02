@@ -1,5 +1,6 @@
 package com.djuber.djuberbackend.Application.Services.Ride.Mapper;
 
+import com.djuber.djuberbackend.Application.Services.Client.Results.ClientResult;
 import com.djuber.djuberbackend.Application.Services.Ride.Results.RideResult;
 import com.djuber.djuberbackend.Controllers.Ride.Requests.CoordinateRequest;
 import com.djuber.djuberbackend.Controllers.Ride.Requests.RideRequest;
@@ -24,6 +25,14 @@ public class RideMapper {
 
     public static Page<RideResult> mapRides(Page<Ride> ridePage) {
         return ridePage.map(RideResult::new);
+    }
+
+    public static List<RideResult> mapAllRides(List<Ride> rides){
+        List<RideResult> rideResults = new ArrayList<>();
+        for(Ride ride : rides){
+            rideResults.add(new RideResult(ride));
+        }
+        return rideResults;
     }
 
     public static Ride map(RideRequest rideRequest) {

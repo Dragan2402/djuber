@@ -1,5 +1,6 @@
 package com.djuber.djuberbackend.Controllers.Ride;
 
+import com.djuber.djuberbackend.Application.Services.Client.Results.ClientResult;
 import com.djuber.djuberbackend.Application.Services.Ride.IRideService;
 import com.djuber.djuberbackend.Application.Services.Ride.Results.RideResult;
 import com.djuber.djuberbackend.Controllers.Ride.Requests.CancellingNoteRequest;
@@ -36,6 +37,12 @@ public class RideController {
     @PreAuthorize("hasAnyRole('CLIENT')")
     public ResponseEntity<Page<RideResult>> getRides(Principal user, Pageable pageable){
         return new ResponseEntity<>(rideService.readPageable(pageable, user.getName()), HttpStatus.OK);
+    }
+
+    @GetMapping(value = "/all")
+    @PreAuthorize("hasAnyRole('CLIENT')")
+    public ResponseEntity<List<RideResult>> getAllRides() {
+        return new ResponseEntity<>(rideService.getAllRides(), HttpStatus.OK);
     }
 
     @PostMapping

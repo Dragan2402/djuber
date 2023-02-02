@@ -33,6 +33,14 @@ export class ClientService {
     return this.http.get(`/api/ride/${id}`);
   }
 
+  public getClients(){
+    return this.http.get(`/api/client/all`);
+  }
+
+  public getRides(){
+    return this.http.get(`/api/ride/all`);
+  }
+
   public addLoggedClientFunds(amount:number){
     return this.http.put("/api/client/addLoggedClientFunds",{amount:amount});
   }

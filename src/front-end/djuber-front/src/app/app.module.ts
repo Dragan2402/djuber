@@ -40,6 +40,7 @@ import {MatButtonToggleModule} from '@angular/material/button-toggle';
 import { CancelRideNoteDialogComponent } from './ride/dialogs/cancel-ride-note-dialog/cancel-ride-note-dialog.component';
 import { NgbModule } from '@ng-bootstrap/ng-bootstrap';
 import { RideStartNotificationDialogComponent } from './ride/dialogs/ride-start-notification-dialog/ride-start-notification-dialog.component';
+import {NgxChartsModule} from "@swimlane/ngx-charts";
 
 
 @NgModule({
@@ -83,7 +84,8 @@ import { RideStartNotificationDialogComponent } from './ride/dialogs/ride-start-
     MatSelectModule,
     MatDialogModule,
     MatButtonToggleModule,
-    NgbModule
+    NgbModule,
+    NgxChartsModule
   ],
   providers: [
     { provide: ErrorHandler, useClass: GlobalErroHandler },
