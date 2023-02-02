@@ -6,7 +6,7 @@
 
   <mat-form-field appearance="fill" class="input-field-80">
     <input matInput placeholder="Password" [formControl]="password" type="password" required id="passwordLoginInput">
-    <mat-error *ngIf="password.invalid">{{getPasswordErrorMessage()}}</mat-error>
+    <mat-error id="passwordError" *ngIf="password.invalid">{{getPasswordErrorMessage()}}</mat-error>
   </mat-form-field>
 
   <button mat-raised-button color="primary" (click)="login()" class="continue-action-button" id="loginButton">Login</button>
