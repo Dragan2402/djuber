@@ -17,6 +17,5 @@ public class RideResponse {
     Double price;
     String rideStatus;
     List<CoordinateResponse> coordinates;
-    List<String> stopNames;
     Long id;
 }
