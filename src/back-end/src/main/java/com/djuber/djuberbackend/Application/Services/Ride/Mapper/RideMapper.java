@@ -27,6 +27,7 @@ public class RideMapper {
         return ridePage.map(RideResult::new);
     }
 
+
     public static List<RideResult> mapAllRides(List<Ride> rides){
         List<RideResult> rideResults = new ArrayList<>();
         for(Ride ride : rides){
@@ -83,6 +84,7 @@ public class RideMapper {
         response.setDriverName(ride.getDriver().getFirstName());
         response.setPrice(ride.getPrice());
         response.setRideStatus(ride.getRideStatus().toString());
+        response.setId(ride.getId());
         response.setClientEmails(new HashSet<>());
         for (Client client : ride.getClients()) {
             response.getClientEmails().add(client.getIdentity().getEmail());

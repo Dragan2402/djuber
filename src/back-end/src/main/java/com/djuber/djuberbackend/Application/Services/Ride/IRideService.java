@@ -5,6 +5,7 @@ import com.djuber.djuberbackend.Controllers.Ride.Requests.CoordinateRequest;
 import com.djuber.djuberbackend.Controllers.Ride.Requests.ReviewRideRequest;
 import com.djuber.djuberbackend.Controllers.Ride.Requests.RideRequest;
 import com.djuber.djuberbackend.Controllers.Ride.Responses.CoordinateResponse;
+import com.djuber.djuberbackend.Controllers.Ride.Responses.RidePreviewResponse;
 import com.djuber.djuberbackend.Controllers.Ride.Responses.RideResponse;
 import com.djuber.djuberbackend.Controllers.Ride.Responses.RideReviewResponse;
 import org.springframework.data.domain.Page;
@@ -41,4 +42,6 @@ public interface IRideService {
     void submitCancellingNote(Long rideId, String note);
 
     void submitDriverReport(String email, Long rideId, String reason);
+
+    Page<RidePreviewResponse> getUserRides(Long id, Pageable pageable);
 }
