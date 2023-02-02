@@ -1,4 +1,4 @@
-import {Component} from '@angular/core';
+import {Component, EventEmitter, Output} from '@angular/core';
 import {NgbCalendar, NgbDate, NgbDatepickerModule} from '@ng-bootstrap/ng-bootstrap';
 import {FormsModule} from '@angular/forms';
 import {JsonPipe} from '@angular/common';
@@ -31,11 +31,12 @@ import {JsonPipe} from '@angular/common';
 		`,
   ],
 })
+
 export class NgbdDatepickerRange {
   hoveredDate: NgbDate | null = null;
-
   fromDate: NgbDate;
   toDate: NgbDate | null = null;
+  @Output() dateSelected = new EventEmitter<{from: NgbDate, to: NgbDate}>();
 
   constructor(calendar: NgbCalendar) {
     this.fromDate = calendar.getToday();
@@ -51,6 +52,7 @@ export class NgbdDatepickerRange {
       this.toDate = null;
       this.fromDate = date;
     }
+  this.dateSelected.emit({from: this.fromDate, to: this.toDate})
   }
 
   isHovered(date: NgbDate) {
