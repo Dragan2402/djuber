@@ -12,7 +12,10 @@ export class ClientReportsComponent implements OnInit {
   priceSum: number
   average: number
   rides: Ride[]
+  startDate: Date
+  endDate: Date
   constructor(private clientService : ClientService) { }
+
   ngOnInit(): void {
 
     this.clientService.getRides().subscribe({next: (pageResponse: Ride[]) => {
