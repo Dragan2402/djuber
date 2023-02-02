@@ -1,6 +1,6 @@
-import { async, ComponentFixture, TestBed } from '@angular/core/testing';
+import { async, ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
 import { LoginComponent } from './login.component';
-import { ReactiveFormsModule } from '@angular/forms';
+import { FormControl, ReactiveFormsModule, Validators } from '@angular/forms';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
 import { MatButtonModule } from '@angular/material/button';
@@ -13,6 +13,7 @@ import { HashService } from '../../utility/hash-service.service';
 import { Observable, of } from 'rxjs';
 import { AuthenticationMockService } from '../authentication.service.mock';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
+import { By } from '@angular/platform-browser';
 
 describe('LoginComponent', () => {
   let component: LoginComponent;
@@ -72,4 +73,16 @@ describe('LoginComponent', () => {
     facebookIcon.click();
     expect(spy).toHaveBeenCalled();
   });
+
+  it('should display the correct error messages when password is invalid', waitForAsync(() => {
+    component.email = new FormControl('', [Validators.required, Validators.email]);
+    component.password = new FormControl('', [Validators.required]);
+    fixture.detectChanges();
+    const email = fixture.debugElement.nativeElement.querySelector('#emailLoginInput');
+    const password = fixture.debugElement.nativeElement.querySelector('#passwordLoginInput');
+    expect(email.validationMessage).toEqual("Please fill out this field.");
+    expect(password.validationMessage).toEqual("Please fill out this field.");
+  }));
+
+
 });
