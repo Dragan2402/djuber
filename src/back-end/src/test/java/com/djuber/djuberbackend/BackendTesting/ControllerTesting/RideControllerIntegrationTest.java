@@ -2,6 +2,9 @@ package com.djuber.djuberbackend.BackendTesting.ControllerTesting;
 
 
 import com.djuber.djuberbackend.Controllers.Ride.Responses.CoordinateResponse;
+import com.djuber.djuberbackend.Infastructure.Security.SecurityConstants;
+import io.jsonwebtoken.Jwts;
+import io.jsonwebtoken.SignatureAlgorithm;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -10,9 +13,9 @@ import org.springframework.boot.test.web.client.TestRestTemplate;
 import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.http.*;
 import org.springframework.test.context.ActiveProfiles;
-import org.springframework.test.context.TestPropertySource;
-import org.springframework.test.context.jdbc.Sql;
 
+import java.util.Calendar;
+import java.util.Date;
 import java.util.List;
 import java.util.Map;
 
@@ -26,6 +29,90 @@ public class RideControllerIntegrationTest {
 
     @Autowired
     private TestRestTemplate restTemplate;
+
+    @Test
+    @DisplayName("Should cancel ride - /api/ride/declineAssignedRide/{rideId}")
+    public void shouldCancelRide() {
+        HttpHeaders headers = new HttpHeaders();
+
+        headers.setContentType(MediaType.APPLICATION_JSON);
+        Calendar calendar = Calendar.getInstance();
+        calendar.add(Calendar.HOUR_OF_DAY, 2);
+
+        String token = Jwts.builder()
+                .setSubject("haso@maildrop.cc")
+                .setIssuedAt(new Date())
+                .setExpiration(calendar.getTime())
+                .signWith(SignatureAlgorithm.HS512, SecurityConstants.JWT_SECRET)
+                .compact();
+
+
+        headers.setBearerAuth(token);
+        ResponseEntity<Object> responseEntity = restTemplate.exchange("/api/ride/declineAssignedRide/200000",
+                HttpMethod.POST, new HttpEntity<>(null, headers),
+                new ParameterizedTypeReference<>() {
+                });
+
+
+        assertEquals(HttpStatus.OK, responseEntity.getStatusCode());
+        assertNull(responseEntity.getBody());
+    }
+
+    @Test
+    @DisplayName("Should return not found instead of cancelling - /api/ride/declineAssignedRide/{rideId}")
+    public void shouldReturnNotFoundInsteadOfCancelling() {
+        HttpHeaders headers = new HttpHeaders();
+
+        headers.setContentType(MediaType.APPLICATION_JSON);
+        Calendar calendar = Calendar.getInstance();
+        calendar.add(Calendar.HOUR_OF_DAY, 2);
+
+        String token = Jwts.builder()
+                .setSubject("haso@maildrop.cc")
+                .setIssuedAt(new Date())
+                .setExpiration(calendar.getTime())
+                .signWith(SignatureAlgorithm.HS512, SecurityConstants.JWT_SECRET)
+                .compact();
+
+
+        headers.setBearerAuth(token);
+        ResponseEntity<Object> responseEntity = restTemplate.exchange("/api/ride/declineAssignedRide/200",
+                HttpMethod.POST, new HttpEntity<>(null, headers),
+                new ParameterizedTypeReference<>() {
+                });
+
+        Map<String,Object> object = (Map<String, Object>) responseEntity.getBody();
+        assertEquals(HttpStatus.NOT_FOUND, responseEntity.getStatusCode());
+        assertEquals(object.get("message"), "Ride to review not found.");
+    }
+
+    @Test
+    @DisplayName("Should return bad request instead of cancelling when ride is not on the way - /api/ride/declineAssignedRide/{rideId}")
+    public void shouldReturnBadRequestInsteadOfCancelling() {
+        HttpHeaders headers = new HttpHeaders();
+
+        headers.setContentType(MediaType.APPLICATION_JSON);
+        Calendar calendar = Calendar.getInstance();
+        calendar.add(Calendar.HOUR_OF_DAY, 2);
+
+        String token = Jwts.builder()
+                .setSubject("haso@maildrop.cc")
+                .setIssuedAt(new Date())
+                .setExpiration(calendar.getTime())
+                .signWith(SignatureAlgorithm.HS512, SecurityConstants.JWT_SECRET)
+                .compact();
+
+
+        headers.setBearerAuth(token);
+        ResponseEntity<Object> responseEntity = restTemplate.exchange("/api/ride/declineAssignedRide/100000",
+                HttpMethod.POST, new HttpEntity<>(null, headers),
+                new ParameterizedTypeReference<>() {
+                });
+
+        Map<String,Object> object = (Map<String, Object>) responseEntity.getBody();
+        assertEquals(HttpStatus.BAD_REQUEST, responseEntity.getStatusCode());
+        assertEquals(object.get("message"), "Ride is not on the way.");
+    }
 
     @Test
     @DisplayName("Should return driver starting location - /api/ride/script/getDriverStartingLocation/{rideId}")
