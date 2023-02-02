@@ -59,6 +59,63 @@ public class RideControllerIntegrationTest {
     }
 
     @Test
+    @DisplayName("Should cancel share ride - /api/ride/client/decline/{rideId}")
+    public void shouldCancelShareRide() {
+        HttpHeaders headers = new HttpHeaders();
+
+        headers.setContentType(MediaType.APPLICATION_JSON);
+        Calendar calendar = Calendar.getInstance();
+        calendar.add(Calendar.HOUR_OF_DAY, 2);
+
+        String token = Jwts.builder()
+                .setSubject("pero@maildrop.cc")
+                .setIssuedAt(new Date())
+                .setExpiration(calendar.getTime())
+                .signWith(SignatureAlgorithm.HS512, SecurityConstants.JWT_SECRET)
+                .compact();
+
+
+        headers.setBearerAuth(token);
+        ResponseEntity<Object> responseEntity = restTemplate.exchange("/api/ride/client/decline/100000",
+                HttpMethod.POST, new HttpEntity<>(null, headers),
+                new ParameterizedTypeReference<>() {
+                });
+
+
+        assertEquals(HttpStatus.OK, responseEntity.getStatusCode());
+        assertNull(responseEntity.getBody());
+    }
+
+    @Test
+    @DisplayName("Should return not found instead of cancelling share ride - /api/ride/client/decline/{rideId}")
+    public void shouldReturnNotFoundInsteadOfCancellingShareRide() {
+        HttpHeaders headers = new HttpHeaders();
+
+        headers.setContentType(MediaType.APPLICATION_JSON);
+        Calendar calendar = Calendar.getInstance();
+        calendar.add(Calendar.HOUR_OF_DAY, 2);
+
+        String token = Jwts.builder()
+                .setSubject("pero@maildrop.cc")
+                .setIssuedAt(new Date())
+                .setExpiration(calendar.getTime())
+                .signWith(SignatureAlgorithm.HS512, SecurityConstants.JWT_SECRET)
+                .compact();
+
+
+        headers.setBearerAuth(token);
+        ResponseEntity<Object> responseEntity = restTemplate.exchange("/api/ride/client/decline/30000",
+                HttpMethod.POST, new HttpEntity<>(null, headers),
+                new ParameterizedTypeReference<>() {
+                });
+
+
+        Map<String,Object> object = (Map<String, Object>) responseEntity.getBody();
+        assertEquals(HttpStatus.NOT_FOUND, responseEntity.getStatusCode());
+        assertEquals(object.get("message"), "Ride not found.");
+    }
+
+    @Test
     @DisplayName("Should return not found instead of cancelling - /api/ride/declineAssignedRide/{rideId}")
     public void shouldReturnNotFoundInsteadOfCancelling() {
         HttpHeaders headers = new HttpHeaders();

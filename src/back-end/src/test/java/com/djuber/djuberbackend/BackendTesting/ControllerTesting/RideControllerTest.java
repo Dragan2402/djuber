@@ -62,6 +62,17 @@ public class RideControllerTest {
     }
 
     @Test
+    @DisplayName("Should decline share ride - /api/ride/client/decline/{rideId}")
+    public void shouldDeclineShareRide() throws Exception {
+
+        Mockito.doNothing().when(rideService).declineShareRideRequest(100000L);
+
+        mockMvc.perform(post("/api/ride/client/decline/100000").contentType(MediaType.APPLICATION_JSON).accept(MediaType.APPLICATION_JSON))
+                .andExpect(status().isOk());
+
+    }
+
+    @Test
     @DisplayName("Should return ride starting location - /api/ride/script/getRideStartingLocation/{rideId}")
     public void shouldReturnRideStartingLocationBy() throws Exception {
 
