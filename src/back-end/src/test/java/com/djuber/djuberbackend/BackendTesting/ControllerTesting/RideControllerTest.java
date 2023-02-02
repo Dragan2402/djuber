@@ -134,7 +134,7 @@ public class RideControllerTest {
     }
 
     @Test
-    @DisplayName("Should update vehicle location - /api/ride/script/updateVehicleLocation/{rideId}")
+    @DisplayName("Should decline ride - /api/ride/script/declineAssignedRide/{rideId}")
     public void shouldDeclineRide() throws Exception {
 
         Mockito.doNothing().when(rideService).declineAssignedRide(100000L);
