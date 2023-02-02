@@ -18,13 +18,25 @@ import com.djuber.djuberbackend.Domain.Route.Coordinate;
 import com.djuber.djuberbackend.Domain.Route.Route;
 import com.djuber.djuberbackend.Infastructure.Exceptions.CustomExceptions.CannotUpdateCanceledRideException;
 import com.djuber.djuberbackend.Infastructure.Exceptions.CustomExceptions.EntityNotFoundException;
+import com.djuber.djuberbackend.Infastructure.Exceptions.CustomExceptions.RideNotOnTheWayException;
+import com.djuber.djuberbackend.Infastructure.Repositories.Authentication.IIdentityRepository;
+import com.djuber.djuberbackend.Infastructure.Repositories.Client.IClientRepository;
 import com.djuber.djuberbackend.Infastructure.Repositories.Driver.ICarRepository;
+import com.djuber.djuberbackend.Infastructure.Repositories.Driver.IDriverRepository;
+import com.djuber.djuberbackend.Infastructure.Repositories.Review.IReviewRepository;
+import com.djuber.djuberbackend.Infastructure.Repositories.Ride.IDriverReportRepository;
 import com.djuber.djuberbackend.Infastructure.Repositories.Ride.IRideRepository;
 import com.djuber.djuberbackend.Infastructure.Repositories.Route.ICoordinatesRepository;
+import com.djuber.djuberbackend.Infastructure.Util.DateCalculator;
 import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.TestInstance;
 
+import org.junit.runner.RunWith;
+import org.mockito.InjectMocks;
+import org.mockito.Mock;
 import org.mockito.Mockito;
+import org.mockito.junit.MockitoJUnitRunner;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
@@ -34,45 +46,51 @@ import org.junit.jupiter.api.Test;
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.eq;
+import static org.mockito.BDDMockito.given;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import java.time.OffsetDateTime;
 import java.util.*;
 
 @SpringBootTest
-@TestInstance(TestInstance.Lifecycle.PER_CLASS)
+@RunWith(MockitoJUnitRunner.class)
 public class RideServiceTest {
-    //updateVehicleLocation
-    //endRide
-    //startRide
-    //getRideStartingLocation
-    //getDriverStartingLocation
 
-    @Autowired
+
+    @InjectMocks
     private RideService rideService;
 
-    @MockBean
-    private SimpMessagingTemplate simpMessagingTemplate;
-
-    @MockBean
+    @Mock
     private IRideRepository rideRepository;
-
-    @MockBean
-    private ICarRepository carRepository;
-
-    @MockBean
+    @Mock
+    private IIdentityRepository identityRepository;
+    @Mock
+    private IClientRepository clientRepository;
+    @Mock
+    private IDriverRepository driverRepository;
+    @Mock
     private ICoordinatesRepository coordinatesRepository;
+    @Mock
+    private SimpMessagingTemplate simpMessagingTemplate;
+    @Mock
+    private ICarRepository carRepository;
+    @Mock
+    private DateCalculator dateCalculator;
+    @Mock
+    private IReviewRepository reviewRepository;
+    @Mock
+    private IDriverReportRepository driverReportRepository;
 
     private Ride validRide;
 
     private Ride canceledRide;
 
-    @BeforeAll
+    @BeforeEach
     public void setup(){
         Identity driverIdentity = new Identity(1L,"driver@mailrop.cc", "password", UserType.DRIVER,new ArrayList<>(), null, null, false);
         Identity clientIdentity = new Identity(2L,"client@mailrop.cc", "password", UserType.CLIENT,new ArrayList<>(), null, null, false);
 
-        Client client = new Client(1L, clientIdentity, "Client" , "LClient" , "Novi Sad", "123345", true, 5512D,ClientSigningType.DEFAULT,new HashSet<>(),new HashSet<>(),new HashSet<>(), new HashSet<>(), false,false,"",new Date(),"",false);
+        Client client = new Client(1L, clientIdentity, "Client" , "LClient" , "Novi Sad", "123345", true, 5512D, ClientSigningType.DEFAULT,new HashSet<>(),new HashSet<>(),new HashSet<>(), new HashSet<>(), false,false,"",new Date(),"",false);
         List<Client> clients = new ArrayList<>();
         clients.add(client);
 
@@ -98,12 +116,11 @@ public class RideServiceTest {
         this.canceledRide = rideCanceled;
     }
 
-
     @Test()
     public void shouldReturnDriverStartingCoordinate(){
         validRide.getDriver().getCar().setLat(123D);
         validRide.getDriver().getCar().setLon(213D);
-        Mockito.when(rideRepository.findById(1L)).thenReturn(Optional.ofNullable(this.validRide));
+        given(rideRepository.findById(1L)).willReturn(Optional.ofNullable(this.validRide));
         CoordinateResponse coordinateResult = this.rideService.getDriverStartingLocation(1L);
         assertEquals(0,coordinateResult.getIndex());
         assertEquals(123D, coordinateResult.getLat());
@@ -113,7 +130,7 @@ public class RideServiceTest {
 
     @Test()
     public void shouldThrowEntityNotFoundExceptionInsteadOfDriverStartingLocationWhenRideIsNotExisting(){
-        Mockito.when(rideRepository.findById(3L)).thenReturn(Optional.empty());
+        given(rideRepository.findById(3L)).willReturn(Optional.empty());
         EntityNotFoundException exception = assertThrows(EntityNotFoundException.class, () -> this.rideService.getDriverStartingLocation(3L));
         assertEquals("Ride not found.", exception.getMessage());
         verify(rideRepository, times(1)).findById(3L);
@@ -121,9 +138,9 @@ public class RideServiceTest {
 
     @Test()
     public void shouldReturnRideStartingCoordinate(){
-        Mockito.when(rideRepository.findById(1L)).thenReturn(Optional.ofNullable(this.validRide));
+        given(rideRepository.findById(1L)).willReturn(Optional.ofNullable(this.validRide));
 
-        Mockito.when(coordinatesRepository.findFirstCoordinateByRideId(1L)).thenReturn(this.validRide.getRoute().getCoordinates().get(0));
+        given(coordinatesRepository.findFirstCoordinateByRideId(1L)).willReturn(this.validRide.getRoute().getCoordinates().get(0));
         CoordinateResponse coordinateResult = this.rideService.getRideStartingLocation(1L);
 
         assertEquals(0,coordinateResult.getIndex());
@@ -135,7 +152,7 @@ public class RideServiceTest {
 
     @Test()
     public void shouldThrowEntityNotFoundExceptionInsteadOfRideStartingLocationWhenRideIsNotExisting(){
-        Mockito.when(rideRepository.findById(3L)).thenReturn(Optional.empty());
+        given(rideRepository.findById(3L)).willReturn(Optional.empty());
         EntityNotFoundException exception = assertThrows(EntityNotFoundException.class, () -> this.rideService.getRideStartingLocation(3L));
         assertEquals("Ride not found.", exception.getMessage());
         verify(rideRepository, times(1)).findById(3L);
@@ -143,8 +160,8 @@ public class RideServiceTest {
 
     @Test()
     public void shouldThrowEntityNotFoundExceptionInsteadOfRideStartingLocationWhenCoordinateIsNotExisting(){
-        Mockito.when(rideRepository.findById(1L)).thenReturn(Optional.of(this.validRide));
-        Mockito.when(coordinatesRepository.findFirstCoordinateByRideId(1L)).thenReturn(null);
+        given(rideRepository.findById(1L)).willReturn(Optional.of(this.validRide));
+        given(coordinatesRepository.findFirstCoordinateByRideId(1L)).willReturn(null);
         EntityNotFoundException exception = assertThrows(EntityNotFoundException.class, () -> this.rideService.getRideStartingLocation(1L));
         assertEquals("Coordinate not found.", exception.getMessage());
         verify(rideRepository, times(1)).findById(1L);
@@ -154,8 +171,8 @@ public class RideServiceTest {
 
     @Test()
     public void shouldReturnRideCoordinatesAndUpdateRideStatus(){
-        Mockito.when(rideRepository.findById(1L)).thenReturn(Optional.ofNullable(this.validRide));
-        Mockito.when(coordinatesRepository.findByRouteId(1L)).thenReturn(this.validRide.getRoute().getCoordinates());
+        given(rideRepository.findById(1L)).willReturn(Optional.ofNullable(this.validRide));
+        given(coordinatesRepository.findByRouteId(1L)).willReturn(this.validRide.getRoute().getCoordinates());
         List<CoordinateResponse> coordinateResponse = this.rideService.startRide(1L);
 
         assertEquals(3,coordinateResponse.size());
@@ -171,7 +188,7 @@ public class RideServiceTest {
 
     @Test()
     public void shouldThrowEntityNotFoundExceptionInsteadOfListOfCoordinatesWhenRideIsNotExisting(){
-        Mockito.when(rideRepository.findById(3L)).thenReturn(Optional.empty());
+        given(rideRepository.findById(3L)).willReturn(Optional.empty());
         EntityNotFoundException exception = assertThrows(EntityNotFoundException.class, () -> this.rideService.startRide(3L));
         assertEquals("Ride not found.", exception.getMessage());
         verify(rideRepository, times(1)).findById(3L);
@@ -179,7 +196,7 @@ public class RideServiceTest {
 
     @Test()
     public void shouldEndRide(){
-        Mockito.when(rideRepository.findById(1L)).thenReturn(Optional.ofNullable(this.validRide));
+        given(rideRepository.findById(1L)).willReturn(Optional.ofNullable(this.validRide));
         rideService.endRide(1L);
         verify(rideRepository, times(1)).findById(1L);
         verify(rideRepository,times(1)).save(Mockito.any(Ride.class));
@@ -188,7 +205,7 @@ public class RideServiceTest {
 
     @Test()
     public void shouldThrowEntityNotFoundExceptionInsteadOfEndingRideWhenRideIsNotExisting(){
-        Mockito.when(rideRepository.findById(3L)).thenReturn(Optional.empty());
+        given(rideRepository.findById(3L)).willReturn(Optional.empty());
         EntityNotFoundException exception = assertThrows(EntityNotFoundException.class, () -> this.rideService.endRide(3L));
         assertEquals("Ride not found.", exception.getMessage());
         verify(rideRepository, times(1)).findById(3L);
@@ -196,7 +213,7 @@ public class RideServiceTest {
 
     @Test()
     public void shouldUpdateVehicleLocation(){
-        Mockito.when(rideRepository.findById(1L)).thenReturn(Optional.ofNullable(this.validRide));
+        given(rideRepository.findById(1L)).willReturn(Optional.ofNullable(this.validRide));
         CoordinateRequest request = new CoordinateRequest();
         request.setLat(23D);
         request.setLon(23D);
@@ -209,7 +226,7 @@ public class RideServiceTest {
 
     @Test()
     public void shouldThrowEntityNotFoundExceptionInsteadOfUpdatingVehicleLocationWhenRideIsNotExisting(){
-        Mockito.when(rideRepository.findById(3L)).thenReturn(Optional.empty());
+        given(rideRepository.findById(3L)).willReturn(Optional.empty());
         CoordinateRequest request = new CoordinateRequest();
         request.setLat(23D);
         request.setLon(23D);
@@ -221,7 +238,7 @@ public class RideServiceTest {
 
     @Test()
     public void shouldThrowCannotUpdateCanceledRideExceptionInsteadOfUpdatingVehicleLocationWhenRideIsCanceled(){
-        Mockito.when(rideRepository.findById(2L)).thenReturn(Optional.of(this.canceledRide));
+        given(rideRepository.findById(2L)).willReturn(Optional.of(this.canceledRide));
         CoordinateRequest request = new CoordinateRequest();
         request.setLat(23D);
         request.setLon(23D);
@@ -230,6 +247,31 @@ public class RideServiceTest {
         assertEquals("The ride you are trying to update has been canceled.", exception.getMessage());
         verify(rideRepository, times(1)).findById(2L);
         verify(simpMessagingTemplate,times(1)).convertAndSend(any(String.class), any(RideUpdateResponse.class));
+    }
+
+    @Test()
+    public void shouldCancelRide(){
+        given(rideRepository.findById(1L)).willReturn(Optional.ofNullable(this.validRide));
+        rideService.declineAssignedRide(1L);
+        assertEquals(RideStatus.CANCELED, this.validRide.getRideStatus());
+        assertEquals(false, this.validRide.getDriver().getInRide());
+        verify(rideRepository, times(1)).save(this.validRide);
+    }
+
+    @Test()
+    public void shouldThrowEntityNotFoundExceptionWhenCancellingRide(){
+        given(rideRepository.findById(3L)).willReturn(Optional.empty());
+        EntityNotFoundException exception = assertThrows(EntityNotFoundException.class, () -> this.rideService.declineAssignedRide(3L));
+        assertEquals("Ride to review not found.", exception.getMessage());
+        verify(rideRepository,times(1)).findById(3L);
+    }
+
+    @Test()
+    public void shouldThrowRideNotOnTheWayExceptionWhenCancellingRide(){
+        given(rideRepository.findById(2L)).willReturn(Optional.ofNullable(this.canceledRide));
+        RideNotOnTheWayException exception = assertThrows(RideNotOnTheWayException.class, () -> this.rideService.declineAssignedRide(2L));
+        assertEquals("Ride is not on the way.", exception.getMessage());
+        verify(rideRepository,times(1)).findById(2L);
     }
 
 }

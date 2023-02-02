@@ -18,8 +18,7 @@ import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 
 import static java.util.Arrays.asList;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.put;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
 
@@ -130,6 +129,17 @@ public class RideControllerTest {
         String body = "{\"index\": 0, \"lat\": 123.3, \"lon\": 1232.3}";
 
         mockMvc.perform(put("/api/ride/script/updateVehicleLocation/100000").content(body).contentType(MediaType.APPLICATION_JSON).accept(MediaType.APPLICATION_JSON))
+                .andExpect(status().isOk());
+
+    }
+
+    @Test
+    @DisplayName("Should update vehicle location - /api/ride/script/updateVehicleLocation/{rideId}")
+    public void shouldDeclineRide() throws Exception {
+
+        Mockito.doNothing().when(rideService).declineAssignedRide(100000L);
+
+        mockMvc.perform(post("/api/ride/declineAssignedRide/100000").contentType(MediaType.APPLICATION_JSON).accept(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk());
 
     }
