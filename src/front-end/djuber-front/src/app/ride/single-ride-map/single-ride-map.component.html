@@ -23,4 +23,9 @@
       <mat-icon>close</mat-icon>
     </button>
   </div>
+  <div class="report-button" *ngIf="!userIsDriver() && rideStatus!==undefined && rideStatus==='ACTIVE'">
+    <button mat-fab color="warn" matTooltip="Report driver" (click)="reportDriver()">
+      <mat-icon>report_problem</mat-icon>
+    </button>
+  </div>
 </div>

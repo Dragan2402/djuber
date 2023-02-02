@@ -17,18 +17,15 @@ public interface IRideService {
 
     Page<RideResult> readPageable(Pageable pageable, String clientEmail);
     RideResponse getRideResponse(Long rideId);
-
     List<RideResult> getAllRides();
-
     void processRideRequest(RideRequest rideRequest) throws IOException, InterruptedException;
+
     void acceptShareRideRequest(Long rideId, String clientEmail) throws IOException, InterruptedException;
 
     void declineShareRideRequest(Long rideId);
-
     CoordinateResponse getDriverStartingLocation(Long rideId);
 
     CoordinateResponse getRideStartingLocation(Long rideId);
-
     void updateVehicleLocation(Long rideId, CoordinateRequest request);
 
     List<CoordinateResponse> startRide(Long rideId);
@@ -42,4 +39,6 @@ public interface IRideService {
     void declineAssignedRide(Long rideId);
 
     void submitCancellingNote(Long rideId, String note);
+
+    void submitDriverReport(String email, Long rideId, String reason);
 }

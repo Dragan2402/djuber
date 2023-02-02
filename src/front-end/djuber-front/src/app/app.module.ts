@@ -41,6 +41,7 @@ import { CancelRideNoteDialogComponent } from './ride/dialogs/cancel-ride-note-d
 import { NgbModule } from '@ng-bootstrap/ng-bootstrap';
 import { RideStartNotificationDialogComponent } from './ride/dialogs/ride-start-notification-dialog/ride-start-notification-dialog.component';
 import {NgxChartsModule} from "@swimlane/ngx-charts";
+import { ReportDriverDialogComponent } from './ride/dialogs/report-driver-dialog/report-driver-dialog.component';
 
 
 @NgModule({
@@ -58,7 +59,8 @@ import {NgxChartsModule} from "@swimlane/ngx-charts";
     AcceptRideClientDialogComponent,
     RideReviewComponent,
     CancelRideNoteDialogComponent,
-    RideStartNotificationDialogComponent
+    RideStartNotificationDialogComponent,
+    ReportDriverDialogComponent
   ],
   imports: [
     BrowserModule,

@@ -2,11 +2,13 @@ package com.djuber.djuberbackend.Controllers.Ride;
 
 import com.djuber.djuberbackend.Application.Services.Client.Results.ClientResult;
 import com.djuber.djuberbackend.Application.Services.Ride.IRideService;
+
 import com.djuber.djuberbackend.Application.Services.Ride.Results.RideResult;
 import com.djuber.djuberbackend.Controllers.Ride.Requests.CancellingNoteRequest;
 import com.djuber.djuberbackend.Controllers.Ride.Requests.CoordinateRequest;
 import com.djuber.djuberbackend.Controllers.Ride.Requests.ReviewRideRequest;
 import com.djuber.djuberbackend.Controllers.Ride.Requests.RideRequest;
+import com.djuber.djuberbackend.Controllers.Ride.Requests.*;
 import com.djuber.djuberbackend.Controllers.Ride.Responses.CoordinateResponse;
 import com.djuber.djuberbackend.Controllers.Ride.Responses.RideResponse;
 import com.djuber.djuberbackend.Controllers.Ride.Responses.RideReviewResponse;
@@ -15,6 +17,7 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import lombok.SneakyThrows;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -47,7 +50,7 @@ public class RideController {
 
     @PostMapping
     @PreAuthorize("hasAnyRole('CLIENT')")
-    public ResponseEntity<Void> createRide(@RequestBody @Valid RideRequest rideRequest) throws InterruptedException, IOException {
+    public ResponseEntity<Void> createRide(@RequestBody @Valid RideRequest rideRequest) throws IOException, InterruptedException {
         rideService.processRideRequest(rideRequest);
         return new ResponseEntity<>(HttpStatus.CREATED);
     }
@@ -66,49 +69,6 @@ public class RideController {
         return new ResponseEntity<>(HttpStatus.OK);
     }
 
-//    @PostMapping("/driver")
-//    @PreAuthorize("hasAnyRole('CLIENT')")
-//    public ResponseEntity<Void> offerRideToDriver(@RequestBody @Valid RideRequest rideRequest) {
-//        RideType rideType = RideType.fromString(rideRequest.getRideType());
-//        if (rideType == RideType.SINGLE) {
-//            rideService.offerSingleRideToDriver(rideRequest);
-//        } else {
-//            rideService.offerSharedRideToClients(rideRequest);
-//        }
-//        return new ResponseEntity<>(HttpStatus.OK);
-//    }
-
-//    @PostMapping("/driver/accept/{rideId}")
-//    @PreAuthorize("hasAnyRole('DRIVER')")
-//    public ResponseEntity<Void> acceptRideDriverOffer(@PathVariable("rideId") Long rideId) throws IOException, InterruptedException {
-//        rideService.acceptRideDriverOffer(rideId);
-//        return new ResponseEntity<>(HttpStatus.OK);
-//    }
-
-//    @PostMapping("/driver/decline/{rideId}")
-//    @PreAuthorize("hasAnyRole('DRIVER')")
-//    public ResponseEntity<Void> declineRideDriverOffer(@PathVariable("rideId") Long rideId) {
-//        rideService.declineRideDriverOffer(rideId);
-//        return new ResponseEntity<>(HttpStatus.OK);
-//    }
-
-//    @PostMapping("/client/accept/{rideId}")
-//    @PreAuthorize("hasAnyRole('CLIENT')")
-//    public ResponseEntity<Void> acceptRideClientOffer(@PathVariable("rideId") Long rideId, Principal principal) {
-//        rideService.acceptRideClientOfferAndSendDriverOffer(rideId, principal.getName());
-//        return new ResponseEntity<>(HttpStatus.OK);
-//    }
-
-//    @PostMapping("/client/decline/{rideId}")
-//    @PreAuthorize("hasAnyRole('CLIENT')")
-//    public ResponseEntity<Void> declineRideClientOffer(@PathVariable("rideId") Long rideId) {
-//        rideService.declineRideClientOffer(rideId);
-//        return new ResponseEntity<>(HttpStatus.OK);
-//    }
-
-
-
-
     @PostMapping("/declineAssignedRide/{rideId}")
     @PreAuthorize("hasAnyRole('DRIVER')")
     public ResponseEntity<Void> declineAssignedRide(@PathVariable("rideId") Long rideId) {
@@ -120,6 +80,13 @@ public class RideController {
     @PreAuthorize("hasAnyRole('DRIVER')")
     public ResponseEntity<Void> submitCancellingNote(@PathVariable("rideId") Long rideId, @RequestBody CancellingNoteRequest request) {
         rideService.submitCancellingNote(rideId, request.getNote());
+        return new ResponseEntity<>(HttpStatus.OK);
+    }
+
+    @PostMapping("/submitDriverReport/{rideId}")
+    @PreAuthorize("hasAnyRole('CLIENT')")
+    public ResponseEntity<Void> submitDriverReport(Principal principal, @PathVariable("rideId") Long rideId, @RequestBody DriverReportRequest request) {
+        rideService.submitDriverReport(principal.getName(), rideId, request.getReason());
         return new ResponseEntity<>(HttpStatus.OK);
     }
 

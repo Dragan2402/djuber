@@ -90,10 +90,10 @@ public class RideServiceTest {
 
         Route route = new Route(1L, null, null ,coordinateList, new ArrayList<>(),false);
 
-        Ride ride = new Ride(1L, driver, clients ,new HashSet<>(), RideType.SINGLE, OffsetDateTime.now(), null, null, route, 213D, RideStatus.ON_THE_WAY, new HashSet<>(), new HashSet<>(),false);
+        Ride ride = new Ride(1L, driver, clients ,new HashSet<>(), RideType.SINGLE, CarType.SEDAN, OffsetDateTime.now(), null, null, route, 213D, RideStatus.ON_THE_WAY, new HashSet<>(), new HashSet<>(),false);
         client.getRides().add(ride);
         this.validRide = ride;
-        Ride rideCanceled = new Ride(2L, driver, clients ,new HashSet<>(), RideType.SINGLE, OffsetDateTime.now(), null, null, route, 213D, RideStatus.CANCELED, new HashSet<>(), new HashSet<>(),false);
+        Ride rideCanceled = new Ride(2L, driver, clients ,new HashSet<>(), RideType.SINGLE,CarType.SEDAN,  OffsetDateTime.now(), null, null, route, 213D, RideStatus.CANCELED, new HashSet<>(), new HashSet<>(),false);
         client.getRides().add(rideCanceled);
         this.canceledRide = rideCanceled;
     }

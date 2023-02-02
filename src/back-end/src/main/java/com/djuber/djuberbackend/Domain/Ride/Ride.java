@@ -26,7 +26,7 @@ import java.util.Set;
 @FieldDefaults(level = AccessLevel.PRIVATE)
 @Where(clause = "deleted = false")
 @SQLDelete(sql = "UPDATE ride SET deleted = true WHERE id = ?")
-public class Ride implements Serializable {
+public class Ride  {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
