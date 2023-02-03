@@ -35,7 +35,11 @@ public class LoginPage {
     }
 
     public void enterEmailValid(){
-        (new WebDriverWait(driver, Duration.ofSeconds(10))).until(ExpectedConditions.elementToBeClickable(emailInput)).sendKeys("asi@maildrop.cc");
+        (new WebDriverWait(driver, Duration.ofSeconds(10))).until(ExpectedConditions.elementToBeClickable(emailInput)).sendKeys("pero@maildrop.cc");
+    }
+
+    public void enterDriverMail(){
+        (new WebDriverWait(driver, Duration.ofSeconds(10))).until(ExpectedConditions.elementToBeClickable(emailInput)).sendKeys("haso@maildrop.cc");
     }
 
     public void enterEmailInvalid(){
@@ -56,7 +60,11 @@ public class LoginPage {
     }
 
     public void enterPasswordValid(){
-        passwordInput.sendKeys("asi123");
+        passwordInput.sendKeys("pero123");
+    }
+
+    public void enterDriverPassword(){
+        passwordInput.sendKeys("haso123");
     }
 
     public void login(){
