@@ -1,4 +1,4 @@
-<div class="drivers-preview-div">
+<div *ngIf="!pickedDriverId" class="drivers-preview-div">
 
   <div class="table-container">
     <div class="filter">
@@ -72,6 +72,13 @@
         </td>
       </ng-container>
 
+      <ng-container matColumnDef="rides">
+        <th mat-header-cell *matHeaderCellDef></th>
+        <td mat-cell *matCellDef="let driver">
+          <button type="button" style="width: 90px;"  mat-raised-button color="primary" (click)="onPickDriver(driver.identityId)">Rides</button>
+        </td>
+      </ng-container>
+
       <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
       <tr mat-row *matRowDef="let driver; columns: displayedColumns;"></tr>
 
@@ -83,4 +90,9 @@
   <div class="paginator">
     <mat-paginator (page)="handlePageEvent($event)" [length]="length" [pageSize]="pageSize" [pageIndex]="pageIndex" [pageSizeOptions]="pageSizes" aria-label="Select page of Drivers search results"></mat-paginator>
   </div>
+</div>
+
+<div *ngIf="!!pickedDriverId" style="display: flex; flex-direction: column; gap: 20px; padding: 20px;">
+  <button type="button" style="width: 90px;"  mat-raised-button color="primary" (click)="onBack()">Back</button>
+  <djuber-driver-rides-admin [driverId]="pickedDriverId"></djuber-driver-rides-admin>
 </div>

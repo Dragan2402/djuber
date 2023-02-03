@@ -51,7 +51,7 @@ export class SingleRideMapComponent implements OnInit {
 
   ngOnInit(): void {
     this.rideId = this.route.snapshot.paramMap.get('id');
-    this.openSocket();
+    // this.openSocket();
     this.rideService.getRideResponse(this.rideId).subscribe({
       next:(response) =>{
         this.ride = response;

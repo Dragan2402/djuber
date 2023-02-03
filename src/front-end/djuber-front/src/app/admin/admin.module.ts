@@ -33,6 +33,7 @@ import { HandleModalComponent } from './admin-page/driver-profile-updates/handle
 import {ClientRidesComponent} from "./admin-page/client-preview/client-rides/client-rides.component";
 import {ClientService} from "../client/client.service";
 import {DriverService} from "../driver/driver.service";
+import {DriverRidesComponent} from "./admin-page/drivers-preview/driver-rides/driver-rides.component";
 
 
 @NgModule({
@@ -46,7 +47,8 @@ import {DriverService} from "../driver/driver.service";
         AdminLiveChatComponent,
         DriverProfileUpdatesComponent,
         HandleModalComponent,
-        ClientRidesComponent
+        ClientRidesComponent,
+        DriverRidesComponent
     ],
   providers: [AdminService, ClientService, DriverService],
   imports: [

@@ -1,14 +1,13 @@
-import {Component, OnInit, ViewChild} from '@angular/core';
+import {Component, Input, OnInit, ViewChild} from '@angular/core';
 import {MatPaginator, PageEvent} from "@angular/material/paginator";
 import {MatSort} from "@angular/material/sort";
 import {ModalComponent} from "../../../../components/modal/modal.component";
 import {Router} from "@angular/router";
 import {Ride} from "../../../../client/client";
-import {DriverService} from "../../driver.service";
-import {Driver} from "../../driver";
+import {DriverService} from "../../../../driver/driver.service";
 
 @Component({
-  selector: 'djuber-driver-rides',
+  selector: 'djuber-driver-rides-admin',
   templateUrl: './driver-rides.component.html',
   styleUrls: ['./driver-rides.component.css']
 })
@@ -19,16 +18,15 @@ export class DriverRidesComponent implements OnInit {
   pageIndex = 0;
   pageSizes: number[] = [5,10,20];
   rides: Ride[];
-  loggedDriverId: number;
+  @Input('driverId') driverId: number;
   @ViewChild(MatPaginator) paginator: MatPaginator;
   @ViewChild(MatSort) sort: MatSort;
   @ViewChild('modal') private modalComponent: ModalComponent
   constructor(private driverService : DriverService, private router: Router) { }
 
   handlePageEvent(e: PageEvent) {
-    this.driverService.getRidesPage(e.pageIndex, e.pageSize, this.loggedDriverId).subscribe({
+    this.driverService.getRidesPage(e.pageIndex, e.pageSize, this.driverId).subscribe({
       next: (pageResponse) => {
-        console.log(pageResponse)
         this.rides = pageResponse['content'];
         this.pageSize = pageResponse["size"];
         if(pageResponse['totalElements']%this.pageSize !== 0){
@@ -46,22 +44,19 @@ export class DriverRidesComponent implements OnInit {
     this.router.navigate(['singleRideMap', id]);
   }
   ngOnInit(): void {
-    this.driverService.getLoggedDriver().subscribe({ next: (response: Driver) => {
-        this.loggedDriverId = response.identityId
-        this.driverService.getRidesPage(0, 10, response.identityId).subscribe({
-          next: (pageResponse) => {
-            this.rides = pageResponse['content'];
-            this.pageSize = pageResponse["size"];
-            if (pageResponse['totalElements'] % this.pageSize !== 0) {
-              this.length = Math.floor(pageResponse['totalElements'] / this.pageSize) + 1;
-            } else {
-              this.length = pageResponse['totalElements'] / this.pageSize;
-            }
-            this.pageIndex = pageResponse["pageable"]["pageNumber"];
-          },
-          error: (e) => console.error(e)
-        })
-      }})
+    this.driverService.getRidesPage(0, 10, this.driverId).subscribe({
+      next: (pageResponse) => {
+        this.rides = pageResponse['content'];
+        this.pageSize = pageResponse["size"];
+        if (pageResponse['totalElements'] % this.pageSize !== 0) {
+          this.length = Math.floor(pageResponse['totalElements'] / this.pageSize) + 1;
+        } else {
+          this.length = pageResponse['totalElements'] / this.pageSize;
+        }
+        this.pageIndex = pageResponse["pageable"]["pageNumber"];
+      },
+      error: (e) => console.error(e)
+    })
     }
 
 }

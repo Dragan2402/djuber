@@ -15,7 +15,7 @@ import { NoteModalComponent } from '../note-modal/note-modal.component';
 })
 export class DriversPreviewComponent implements OnInit, AfterViewInit {
 
-  displayedColumns: string[] = ['id', 'firstName', 'lastName', 'email', 'city', 'carType' , 'licensePlate','note','block'];
+  displayedColumns: string[] = ['id', 'firstName', 'lastName', 'email', 'city', 'carType' , 'licensePlate','note','block', 'rides'];
 
   length = 10;
   pageSize = 10;
@@ -26,11 +26,21 @@ export class DriversPreviewComponent implements OnInit, AfterViewInit {
   drivers:Driver[];
 
   filterValue:string='';
+  pickedDriverId: number
+
 
   @ViewChild(MatPaginator) paginator: MatPaginator;
   @ViewChild(MatSort) sort: MatSort;
 
   constructor(private adminService : AdminService, public matDialog: MatDialog) { }
+
+  onPickDriver(id: number) {
+    this.pickedDriverId = id
+  }
+
+  onBack() {
+    this.pickedDriverId = null
+  }
 
   ngAfterViewInit(): void {
 
