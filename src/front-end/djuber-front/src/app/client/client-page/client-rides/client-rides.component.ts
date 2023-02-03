@@ -5,6 +5,7 @@ import {MatPaginator, PageEvent} from "@angular/material/paginator";
 import {MatSort} from "@angular/material/sort";
 import {ModalComponent} from "../../../components/modal/modal.component";
 import {ModalConfig} from "../../../components/modal/modal.config";
+import {Router} from "@angular/router";
 
 @Component({
   selector: 'djuber-client-rides',
@@ -12,7 +13,7 @@ import {ModalConfig} from "../../../components/modal/modal.config";
   styleUrls: ['./client-rides.component.css']
 })
 export class ClientRidesComponent implements OnInit {
-  displayedColumns: string[] = ['id', 'startCoordinateName', 'endCoordinateName', 'price', 'start', 'finish'];
+  displayedColumns: string[] = ['id', 'startName', 'endName', 'price', 'start', 'end'];
   length = 10;
   pageSize = 10;
   pageIndex = 0;
@@ -21,33 +22,14 @@ export class ClientRidesComponent implements OnInit {
   ride: ClientRide;
   clients: Client[];
   modalConfig: ModalConfig;
+  loggedClientId: number;
   @ViewChild(MatPaginator) paginator: MatPaginator;
   @ViewChild(MatSort) sort: MatSort;
   @ViewChild('modal') private modalComponent: ModalComponent
-  constructor(private clientService : ClientService) { }
-  ngAfterViewInit(): void {
-    this.clientService.getRidesPage(0, 10).subscribe({
-      next: (pageResponse) => {
-        console.log(pageResponse)
-        this.rides = pageResponse['content'];
-        this.pageSize = pageResponse["size"];
-        if (pageResponse['totalElements'] % this.pageSize !== 0) {
-          this.length = Math.floor(pageResponse['totalElements'] / this.pageSize) + 1;
-        } else {
-          this.length = pageResponse['totalElements'] / this.pageSize;
-        }
-        this.pageIndex = pageResponse["pageable"]["pageNumber"];
-      },
-      error: (e) => console.error(e)
-    })
-  }
-
-  openModal() {
-    return this.modalComponent.open();
-  }
+  constructor(private clientService : ClientService, private router: Router) { }
 
   handlePageEvent(e: PageEvent) {
-    this.clientService.getRidesPage(e.pageIndex, e.pageSize).subscribe({
+    this.clientService.getRidesPage(e.pageIndex, e.pageSize, this.loggedClientId).subscribe({
       next: (pageResponse) => {
         this.rides = pageResponse['content'];
         this.pageSize = pageResponse["size"];
@@ -63,19 +45,26 @@ export class ClientRidesComponent implements OnInit {
   }
 
   handleClickRow(id: string) {
-
-    this.clientService.getRide(id).subscribe({next: (pageResponse: ClientRide) => {
-        this.ride = pageResponse;
-        this.clientService.getClients().subscribe({next: (pageResponse: Client[]) => {
-            this.clients = pageResponse.filter(client => this.ride.clientEmails.includes(client.email))
-            this.modalConfig = {modalTitle: 'Ride details', hideCloseButton(): boolean { return true }, hideDismissButton(): boolean { return true}}
-            this.openModal()
-          }})
-      }})
-
-
+    this.router.navigate(['singleRideMap', id]);
   }
   ngOnInit(): void {
-  }
+    this.clientService.getLoggedClient().subscribe({ next: (response: Client) => {
+        this.loggedClientId = response.identityId
+        this.clientService.getRidesPage(0, 10, response.identityId).subscribe({
+          next: (pageResponse) => {
+            console.log(pageResponse)
+            this.rides = pageResponse['content'];
+            this.pageSize = pageResponse["size"];
+            if (pageResponse['totalElements'] % this.pageSize !== 0) {
+              this.length = Math.floor(pageResponse['totalElements'] / this.pageSize) + 1;
+            } else {
+              this.length = pageResponse['totalElements'] / this.pageSize;
+            }
+            this.pageIndex = pageResponse["pageable"]["pageNumber"];
+          },
+          error: (e) => console.error(e)
+        })
+      }})
+    }
 
 }

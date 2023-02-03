@@ -19,9 +19,7 @@ export class ClientReportsComponent implements OnInit {
   ngOnInit(): void {
 
     this.clientService.getRides().subscribe({next: (pageResponse: Ride[]) => {
-        console.log(pageResponse)
         const rides = pageResponse.filter(ride => this.isValidDate(new Date(ride.start)))
-        console.log(rides)
         const dateList: string[] = [...new Set(rides.map(ride => new Date(ride.start).toLocaleDateString()))]
         const countMap = new Map()
         for (const date of dateList) countMap.set(date, 0)
@@ -46,7 +44,6 @@ export class ClientReportsComponent implements OnInit {
   }
 
   isValidDate(value: Date) {
-    console.log(this.startDate.toLocaleDateString() ,value.toLocaleDateString(),this.endDate.toLocaleDateString())
     return (this.startDate?.getTime() < value.getTime() && value.getTime() < this.endDate?.getTime())
   }
 

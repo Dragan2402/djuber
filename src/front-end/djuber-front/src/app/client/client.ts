@@ -14,11 +14,11 @@ export interface Client{
 
 export interface Ride {
   id: number
-  startCoordinateName: string
-  endCoordinateName: string
   price: number
   start: Date
-  finish: Date
+  end: Date
+  stopNames: string[]
+
 }
 
 export interface ClientRide {

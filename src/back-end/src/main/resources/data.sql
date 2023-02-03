@@ -166,6 +166,13 @@ VALUES (200000, false);
 INSERT INTO route (id, deleted)
 VALUES (300000, false);
 
+INSERT INTO route_stop_names  (route_id, stop_names)VALUES (100000, 'Brcko');
+INSERT INTO route_stop_names  (route_id, stop_names)VALUES (100000, 'Pariz');
+INSERT INTO route_stop_names  (route_id, stop_names)VALUES (200000, 'London');
+INSERT INTO route_stop_names  (route_id, stop_names)VALUES (200000, 'Lisabon');
+INSERT INTO route_stop_names  (route_id, stop_names)VALUES (300000, 'Keln');
+INSERT INTO route_stop_names  (route_id, stop_names)VALUES (300000, 'Munih');
+
 --COORDINATES
 INSERT INTO coordinate(id, index, location_name, lat, lon, route_id)
 VALUES (100000, 0, 'Promenada', 45.24473173439358, 19.84146283175646, 100000);
