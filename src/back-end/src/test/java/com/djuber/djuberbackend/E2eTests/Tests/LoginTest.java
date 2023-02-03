@@ -15,7 +15,7 @@ public class LoginTest {
 
     private final String TITLE = "DJUBER";
 
-    private final String LOGGED_NAME = "Andrej Culjak";
+    private final String LOGGED_NAME = "Pero Peric";
 
     private final String INVALID_EMAIL_ERROR = "Invalid email";
 

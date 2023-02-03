@@ -15,6 +15,9 @@ import { HashService } from '../utility/hash-service.service';
   providedIn: 'root'
 })
 export class AuthenticationService {
+  static login(login: any) {
+    throw new Error('Method not implemented.');
+  }
 
 
   loading$ = new BehaviorSubject<boolean>(false);
