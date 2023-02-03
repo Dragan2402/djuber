@@ -2,6 +2,7 @@ package com.djuber.djuberbackend.E2eTests.Tests;
 
 import com.djuber.djuberbackend.E2eTests.Pages.HomePage;
 import com.djuber.djuberbackend.E2eTests.Pages.LoginPage;
+import com.djuber.djuberbackend.E2eTests.Pages.RideReviewPage;
 import org.junit.jupiter.api.Assertions;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.chrome.ChromeDriver;
@@ -17,6 +18,7 @@ public class RideCreationTest {
 
     private final String TITLE = "DJUBER";
 
+    private final String HOME_PAGE_URL = "http://localhost:4200/homePage";
 
     private final String SINGLE_RIDE_URL = "http://localhost:4200/singleRideMap/1";
 
@@ -41,6 +43,7 @@ public class RideCreationTest {
     public void rideCreationTest() {
         HomePage homePage = new HomePage(driver);
         LoginPage loginPage = new LoginPage(driver);
+        RideReviewPage rideReviewPage = new RideReviewPage(driver);
 
         HomePage homePageDriver = new HomePage(driverDriver);
         LoginPage loginPageDriver = new LoginPage(driverDriver);
@@ -53,8 +56,8 @@ public class RideCreationTest {
 
         homePage.clickLoginButton();
 
-        loginPage.enterPasswordValid();
         loginPage.enterEmailValid();
+        loginPage.enterPasswordValid();
         loginPage.login();
 
         homePage.clickOrderRadioButton();
@@ -67,5 +70,14 @@ public class RideCreationTest {
         homePageDriver.clickShowOnMapButton();
         Assertions.assertEquals(SINGLE_RIDE_URL, driver.getCurrentUrl());
         Assertions.assertEquals(SINGLE_RIDE_URL, driverDriver.getCurrentUrl());
+
+        rideReviewPage.clickCarRatingOption();
+        rideReviewPage.clickDriverRatingOption();
+        rideReviewPage.enterComment();
+        rideReviewPage.clickSubmitReview();
+
+        Assertions.assertEquals(TITLE, homePage.getTitleContent());
+        Assertions.assertEquals(HOME_PAGE_URL, driver.getCurrentUrl());
+        Assertions.assertEquals(HOME_PAGE_URL, driverDriver.getCurrentUrl());
     }
 }
