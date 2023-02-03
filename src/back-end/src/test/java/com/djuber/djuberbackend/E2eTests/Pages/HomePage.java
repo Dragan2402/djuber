@@ -28,6 +28,27 @@ public class HomePage {
     @FindBy(id = "userName")
     WebElement loggedUserName;
 
+    @FindBy(id = "orderRadio")
+    WebElement orderRadioButton;
+
+    @FindBy(id = "differentRide")
+    WebElement differentRideCheckBox;
+
+    @FindBy(id = "startAddressInput")
+    WebElement startAddressInput;
+
+    @FindBy(id = "desiredAddressInput")
+    WebElement desiredAddressInput;
+
+    @FindBy(id = "createRouteButton")
+    WebElement createRouteButton;
+
+    @FindBy(id = "orderRideButton")
+    WebElement orderRideButton;
+
+    @FindBy(id = "showOnMapButton")
+    WebElement showOnMapButton;
+
     private static String PAGE_URL="http://localhost:4200/homePage";
 
     public HomePage(WebDriver driver) {
@@ -51,5 +72,33 @@ public class HomePage {
 
     public String getLoggedUserName(){
         return (new WebDriverWait(driver, Duration.ofSeconds(10))).until(ExpectedConditions.elementToBeClickable(loggedUserName)).getText();
+    }
+
+    public void clickOrderRadioButton(){
+        (new WebDriverWait(driver, Duration.ofSeconds(10))).until(ExpectedConditions.elementToBeClickable(orderRadioButton)).click();
+    }
+
+    public void enterStartingAddress(){
+        (new WebDriverWait(driver, Duration.ofSeconds(10))).until(ExpectedConditions.elementToBeClickable(startAddressInput)).sendKeys("Hopovska 4 Novi Sad");
+    }
+
+    public void enterDesiredAddress(){
+        (new WebDriverWait(driver, Duration.ofSeconds(10))).until(ExpectedConditions.elementToBeClickable(desiredAddressInput)).sendKeys("Balans palacinke");
+    }
+
+    public void clickDifferentRideCheckBox(){
+        (new WebDriverWait(driver, Duration.ofSeconds(10))).until(ExpectedConditions.elementToBeClickable(differentRideCheckBox)).click();
+    }
+
+    public void clickCreateRideButton(){
+        (new WebDriverWait(driver, Duration.ofSeconds(10))).until(ExpectedConditions.elementToBeClickable(createRouteButton)).click();
+    }
+
+    public void clickOrderRideButton(){
+        (new WebDriverWait(driver, Duration.ofSeconds(10))).until(ExpectedConditions.elementToBeClickable(orderRideButton)).click();
+    }
+
+    public void clickShowOnMapButton(){
+        (new WebDriverWait(driver, Duration.ofMinutes(3))).until(ExpectedConditions.elementToBeClickable(showOnMapButton)).click();
     }
 }
