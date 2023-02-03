@@ -44,4 +44,6 @@ public interface IRideService {
     void submitDriverReport(String email, Long rideId, String reason);
 
     Page<RidePreviewResponse> getUserRides(Long id, Pageable pageable);
+
+    void createRideFromRideId(Long rideId, String email) throws InterruptedException;
 }

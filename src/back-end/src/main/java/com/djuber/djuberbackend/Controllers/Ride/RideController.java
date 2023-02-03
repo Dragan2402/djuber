@@ -62,6 +62,13 @@ public class RideController {
         return new ResponseEntity<>(HttpStatus.CREATED);
     }
 
+    @PostMapping(value = "/createRideFromRideId/{rideId}")
+    @PreAuthorize("hasAnyRole('CLIENT')")
+    public ResponseEntity<Void> createRideFromRideId(@PathVariable("rideId") Long rideId, Principal principal) throws IOException, InterruptedException {
+        rideService.createRideFromRideId(rideId, principal.getName());
+        return new ResponseEntity<>(HttpStatus.CREATED);
+    }
+
     @PostMapping("/client/accept/{rideId}")
     @PreAuthorize("hasAnyRole('CLIENT')")
     public ResponseEntity<Void> acceptShareRide(@PathVariable("rideId") Long rideId, Principal principal) throws IOException, InterruptedException {

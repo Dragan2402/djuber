@@ -558,6 +558,37 @@ public class RideService implements IRideService {
         }
     }
 
+    @Override
+    public void createRideFromRideId(Long rideId, String email) throws InterruptedException {
+        Ride ride = rideRepository.findById(rideId).orElse(null);
+        if (ride == null) {
+            throw new EntityNotFoundException("Ride not found.");
+        }
+        RideRequest request = new RideRequest();
+        request.setAdditionalServices(ride.getRequestedServices());
+        request.setCarType(ride.getCarType().toString());
+        request.setRideType(RideType.SINGLE.toString());
+        List<CoordinateRequest> coordinateRequests = new ArrayList<>();
+        for(Coordinate coordinate : coordinatesRepository.findByRouteId(ride.getRoute().getId())){
+            CoordinateRequest newRequest = new CoordinateRequest();
+            newRequest.setIndex(coordinate.getIndex());
+            newRequest.setLat(coordinate.getLat());
+            newRequest.setLon(coordinate.getLon());
+            coordinateRequests.add(newRequest);
+        }
+        request.setCoordinates(coordinateRequests);
+        double distance = (ride.getPrice() - ride.getCarType().getBasePrice())/120;
+        distance = Math.round(distance * 100);
+        distance = distance/100;
+        request.setDistance(distance);
+        List<String> mails = new ArrayList<>();
+        mails.add(email);
+        request.setClientEmails(mails);
+        request.setStopNames(routeRepository.findRouteStopNames(ride.getRoute().getId()).getStopNames());
+
+        processRideRequest(request);
+    }
+
     private static Driver getClosestFittingDriver(List<Driver> sortedAvailableDrivers, CarType carType, Set<String> additionalServices) {
         if (sortedAvailableDrivers == null) {
             return null;

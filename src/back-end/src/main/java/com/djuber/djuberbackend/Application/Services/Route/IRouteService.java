@@ -12,4 +12,6 @@ public interface IRouteService {
     List<FavouriteRouteResponse> getFavouriteRoutesByEmail(String email);
 
     void deleteFavouriteRouteById(Long routeId);
+
+    void createFavouriteRouteFromRide(String email, Long rideId);
 }
