@@ -135,7 +135,7 @@ VALUES (100003, 'pets');
 
 --DRIVERS
 INSERT INTO driver (id,     identity_id, first_name, last_name, city,       phone_number, active, car_id, last_activation_time, blocked, in_ride, deleted)
-VALUES             (100000, 500000,      'Haso',     'Hasic',   'Novi Sad', '0691777778', true,   100000, '2023-02-01 15:13',   false,   false,   false);
+VALUES             (100000, 500000,      'Haso',     'Hasic',   'Novi Sad', '0691777778', true,   100000, '2023-02-03 22:13',   false,   false,   false);
 INSERT INTO driver (id,     identity_id, first_name, last_name, city,       phone_number, active, car_id, last_activation_time, blocked, in_ride, deleted)
 VALUES             (200000, 600000,      'Mujo',     'Mujic',   'Novi Sad', '067123423',  false,  200000, '2023-02-01 15:15',   false,   false,   false);
 INSERT INTO driver (id,     identity_id, first_name, last_name, city,       phone_number, active, car_id, last_activation_time, blocked, in_ride, deleted)

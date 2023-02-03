@@ -356,6 +356,7 @@ public class RideService implements IRideService {
         for(Client client : ride.getClients()){
             client.setInRide(true);
         }
+        ride.setStart(OffsetDateTime.now());
         clientRepository.saveAll(ride.getClients());
         driverRepository.save(ride.getDriver());
         ride.setRideStatus(RideStatus.ACTIVE);
@@ -584,7 +585,11 @@ public class RideService implements IRideService {
         List<String> mails = new ArrayList<>();
         mails.add(email);
         request.setClientEmails(mails);
-        request.setStopNames(routeRepository.findRouteStopNames(ride.getRoute().getId()).getStopNames());
+        List<String> stopNames = new ArrayList<>();
+        for(String stopName : routeRepository.findRouteStopNames(ride.getRoute().getId()).getStopNames()){
+            stopNames.add(stopName);
+        }
+        request.setStopNames(stopNames);
 
         processRideRequest(request);
     }
