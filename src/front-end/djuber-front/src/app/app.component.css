@@ -1,0 +1,10 @@
+.main-div{
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+}
+
+.content-div{
+  flex-grow: 25;
+
+}

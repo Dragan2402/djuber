@@ -1,0 +1,69 @@
+.profile-div{
+  display: flex;
+  flex-direction: row;
+  justify-content: space-evenly;
+  height: 100%;
+}
+
+
+.driver-info{
+  display: flex;
+  align-self: center;
+  flex-direction: column;
+
+}
+
+.cancel-save-buttons-div{
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+}
+
+.picture-div{
+  margin-top: 5%;
+  width: 25%;
+}
+
+.profile-picture-div{
+  display: flex;
+  flex-direction: column;
+}
+
+.image-upload-div{
+  margin-top: 5%;
+}
+
+.form-things-div{
+  display: flex;
+  flex-direction: column;
+}
+
+
+.edit-button{
+  display: flex;
+  flex-direction: row;
+  width: 100%;
+  justify-content: flex-end;
+}
+
+.image-upload-div{
+  display: flex;
+  flex-direction: row;
+  margin-left: auto;
+  margin-right: 10%;
+}
+
+.car-info{
+  display: flex;
+  flex-direction: row;
+}
+.checkbox-option{
+  width: 15px;
+  height: 15px;
+  margin-right: 5%;
+}
+
+.checkboxes-div{
+  width: 200px;
+  margin-left: 5%;
+}

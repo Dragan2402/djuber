@@ -1,0 +1,58 @@
+<div class="main-chat-div">
+  <mat-card class="main-card" color="primary">
+    <mat-card-header style="width: 100%;" >
+      <mat-card-title style="margin-bottom: 5px;">
+        <div style="display: flex;flex-direction: row;justify-content: space-between;align-items: center;">
+          <div style="display: flex;flex-direction: row;align-items: center;">
+            <span>
+              Admin support
+            </span>
+          </div>
+        </div>
+      </mat-card-title>
+    </mat-card-header>
+    <mat-divider></mat-divider>
+    <div class="single-chat-text-div">
+      <div *ngFor="let message of selectedChatMessages" >
+        <div *ngIf="message.fromAdmin">
+          <div class="my-message">
+            <mat-card class="text-card">
+              <mat-card-header style="margin-left: 15%;font-size: 4px;">
+                <mat-card-subtitle>{{message.time | date:"short"}}</mat-card-subtitle>
+              </mat-card-header>
+              <mat-card-content>
+                {{message.content}}
+                <mat-divider></mat-divider>
+              </mat-card-content>
+            </mat-card>
+          </div>
+        </div>
+        <div *ngIf="!message.fromAdmin">
+          <div class="else-message">
+              <mat-card class="text-card">
+                <mat-card-header>
+                  <mat-card-subtitle>{{message.time | date:"medium"}}</mat-card-subtitle>
+                </mat-card-header>
+                <mat-card-content>
+                  {{message.content}}
+                  <mat-divider></mat-divider>
+                </mat-card-content>
+              </mat-card>
+          </div>
+        </div>
+      </div>
+    </div>
+    <mat-divider></mat-divider>
+    <div class="single-chat-write-div">
+      <div class="send-message-div">
+        <mat-form-field style="width: 100%;margin-top: 4%;height: 100%;">
+          <mat-label>Message</mat-label>
+          <input matInput type="text" placeholder="Write a message..." [(ngModel)]="messageToSend" [maxLength]="255" (keyup.enter)="sendMessage()"/>
+        </mat-form-field>
+        <button  mat-raised-button color="primary" style="margin-left:1%;width:5%" (click)="sendMessage()" >
+          <mat-icon>send</mat-icon>
+        </button>
+      </div>
+    </div>
+  </mat-card>
+</div>

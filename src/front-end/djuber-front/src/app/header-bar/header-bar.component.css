@@ -1,0 +1,55 @@
+.nav-bar-row{
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  width: 100%;
+}
+
+.login-div{
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+}
+
+.home-div{
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  cursor: pointer;
+}
+
+.djuber-title-div{
+  display: flex;
+  cursor: default;
+  flex-direction: row;
+  font-family: Lobster;
+  font-size: 150%;
+  justify-self: center;
+  align-self: center;
+  align-content: center;
+  justify-content: center;
+  text-decoration: underline;
+}
+
+.djuber-title-div:hover .djuber-icon{
+  margin-left: 28%;
+}
+
+
+
+
+.djuber-icon{
+  height: 35px;
+  width: 35px;
+  margin-left: 15%;
+}
+
+.nav-bar-div{
+  flex-shrink: 2;
+}
+
+.user-info-div{
+  display: flex;
+  flex-direction: column;
+}
+

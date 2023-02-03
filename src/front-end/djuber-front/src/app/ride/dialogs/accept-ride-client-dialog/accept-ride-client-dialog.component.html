@@ -1,0 +1,13 @@
+<div class="main-div">
+  <div style="margin-top: 2%; width: 100%;margin-left: auto;margin-right: auto;">
+    <h3>You have been invited to share a ride!</h3>
+  </div>
+  <div>
+    <p>Your share of the fare is {{dataToDisplay.ridePrice}}RSD.</p>
+    <p>Your balance is <span [ngStyle]="{'color': balance < dataToDisplay.ridePrice ? 'red' : 'green'}">{{balance}}RSD</span>.</p>
+  </div>
+  <div style="display: flex;flex-direction: row;justify-content: space-evenly;margin-top: auto;margin-bottom: 5%; width: 100%;">
+    <button style="margin-top: 15px;" mat-raised-button color="primary" [disabled]="balance < dataToDisplay.ridePrice" (click)="acceptRide()">Accept</button>
+    <button style="margin-top: 15px;" mat-raised-button color="warn" (click)="declineRide()">Decline</button>
+  </div>
+</div>

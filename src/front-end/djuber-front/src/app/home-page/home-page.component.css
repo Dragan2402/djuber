@@ -1,0 +1,28 @@
+.main-div{
+  height: 100%;
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+}
+
+
+.map-div{
+  width: 100%;
+  height: 600px;
+  z-index: 0;
+}
+
+
+
+.chat-support{
+  position: fixed;
+  bottom: 20px;
+  right: 20px;
+  width: max-content;
+  z-index: 1;
+}
+.chat-div{
+  display: flex;
+  flex-direction: column;
+  width: 600px;
+}

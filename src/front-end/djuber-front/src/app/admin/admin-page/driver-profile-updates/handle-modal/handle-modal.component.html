@@ -1,0 +1,17 @@
+<div class="main-div">
+  <div>
+    <mat-list role="list" *ngIf="driver!==undefined">
+      <mat-list-item role="listitem">First name: {{driver.newFirstName}}</mat-list-item>
+      <mat-list-item role="listitem">Last name: {{driver.newLastName}}</mat-list-item>
+      <mat-list-item role="listitem">City: {{driver.newCity}}</mat-list-item>
+      <mat-list-item role="listitem">Phone number: {{driver.newPhoneNumber}}</mat-list-item>
+      <mat-list-item role="listitem">Car type: {{driver.newCarType}}</mat-list-item>
+      <mat-list-item role="listitem">License plate: {{driver.newLicensePlate}}</mat-list-item>
+      <mat-list-item role="listitem">Services: {{driver.newAdditionalServices}}</mat-list-item>
+    </mat-list>
+  </div>
+  <div class="buttons">
+    <button mat-raised-button color="primary" (click)="accept()">Accept</button>
+    <button mat-raised-button color="warn" (click)="decline()">Decline</button>
+  </div>
+</div>

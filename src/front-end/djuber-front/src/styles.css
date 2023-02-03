@@ -1,0 +1,13 @@
+/* You can add global styles to this file, and also import other style files */
+@import "~leaflet/dist/leaflet.css";
+html, body { height: 100%; }
+body { margin: 0; font-family: Roboto, "Helvetica Neue", sans-serif; }
+.snackbar{
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
+  align-content: center;
+  background: white;
+  border: 1px solid lightgray;
+  text-align: center;
+}

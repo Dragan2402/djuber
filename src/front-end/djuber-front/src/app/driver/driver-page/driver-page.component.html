@@ -1,0 +1,31 @@
+<div class="driver-page-div">
+  <mat-drawer-container class="example-container" autosize>
+    <mat-drawer #drawer class="example-sidenav" mode="side">
+      <div class="options-content">
+        <button (click)="toggleProfilePage()" mat-menu-item>
+          Profile
+        </button>
+        <mat-divider></mat-divider>
+        <button (click)="changePassword()" mat-menu-item>
+          Change password
+        </button>
+        <mat-divider></mat-divider>
+        <button (click)="rides()" mat-menu-item>
+          Ride History
+        </button>
+      </div>
+    </mat-drawer>
+
+    <div class="sidenav-content">
+      <div class="main-content">
+        <router-outlet name="co"></router-outlet>
+      </div>
+      <div class="toggle-button">
+        <button type="button" mat-raised-button color="primary" (click)="drawer.toggle()" (click)="toggleChange()">
+          {{directionToToggle}}
+        </button>
+      </div>
+    </div>
+
+  </mat-drawer-container>
+</div>

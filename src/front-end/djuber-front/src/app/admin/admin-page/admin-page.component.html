@@ -1,0 +1,49 @@
+<div class="admin-page-div">
+  <mat-drawer-container class="example-container" autosize>
+    <mat-drawer #drawer class="example-sidenav" mode="side">
+      <div class="options-content">
+        <button (click)="toggleProfilePage()" mat-menu-item>
+          Profile
+        </button>
+        <mat-divider></mat-divider>
+        <button (click)="toggleRegisterNewDriverPage()" mat-menu-item>
+          Register a new driver
+        </button>
+        <mat-divider></mat-divider>
+        <button (click)="toggleDriversPreview()" mat-menu-item>
+          Preview drivers
+        </button>
+        <mat-divider></mat-divider>
+        <button (click)="toggleDriverProfileUpdates()" mat-menu-item>
+          Driver profile updates
+        </button>
+        <mat-divider></mat-divider>
+        <button (click)="toggleClientsPreview()" mat-menu-item>
+          Preview clients
+        </button>
+        <mat-divider></mat-divider>
+        <button (click)="toggleCustomerSupport()" mat-menu-item>
+          <span matBadgeOverlap="false"  [matBadge]="numberOfActiveChats" matBadgeColor="warn">
+            Customer live support
+          </span>
+        </button>
+        <mat-divider></mat-divider>
+        <button (click)="changePassword()" mat-menu-item>
+          Change password
+        </button>
+      </div>
+    </mat-drawer>
+
+    <div class="sidenav-content">
+      <div class="main-content">
+        <router-outlet name="ao"></router-outlet>
+      </div>
+      <div class="toggle-button">
+        <button type="button" mat-raised-button color="primary" (click)="drawer.toggle()" (click)="toggleChange()">
+          {{directionToToggle}}
+        </button>
+      </div>
+    </div>
+
+  </mat-drawer-container>
+</div>
