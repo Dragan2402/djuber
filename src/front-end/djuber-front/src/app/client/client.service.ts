@@ -13,6 +13,10 @@ export class ClientService {
     return this.http.get<Client>("/api/client/loggedClient");
   }
 
+  public orderRide(id: number){
+    return this.http.post(`/api/ride/createRideFromRideId/${id}`, {});
+  }
+
   public getLoggedClientPicture(){
     return this.http.get<string>("/api/client/loggedClientPicture");
   }

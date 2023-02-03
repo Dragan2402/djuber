@@ -6,6 +6,8 @@ import {MatSort} from "@angular/material/sort";
 import {ModalComponent} from "../../../components/modal/modal.component";
 import {ModalConfig} from "../../../components/modal/modal.config";
 import {Router} from "@angular/router";
+import {MatSnackBar} from "@angular/material/snack-bar";
+import {SnackbarComponent} from "../../../snackbar/snackbar.component";
 
 @Component({
   selector: 'djuber-client-rides',
@@ -24,7 +26,8 @@ export class ClientRidesComponent implements OnInit {
   @ViewChild(MatPaginator) paginator: MatPaginator;
   @ViewChild(MatSort) sort: MatSort;
   @ViewChild('modal') private modalComponent: ModalComponent
-  constructor(private clientService : ClientService, private router: Router) { }
+
+  constructor(private clientService : ClientService, private router: Router, private _snackBar: MatSnackBar) { }
 
   handlePageEvent(e: PageEvent) {
     this.clientService.getRidesPage(e.pageIndex, e.pageSize, this.loggedClientId).subscribe({
@@ -42,8 +45,9 @@ export class ClientRidesComponent implements OnInit {
       error: (e) => console.error(e)})
   }
 
-  order(id: string) {
-    console.log(id)
+  order(id: number) {
+    this.clientService.orderRide(id).subscribe()
+    this._snackBar.openFromComponent(SnackbarComponent, {data:"Your ride is ordered"})
   }
 
   handleClickRow(id: string) {
