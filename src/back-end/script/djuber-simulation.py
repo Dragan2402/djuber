@@ -65,6 +65,7 @@ class QuickstartUser(HttpUser):
     def get_coordinates(self):
         response = requests.get(
             f'https://graphhopper.com/api/1/route?point={self.starting_point["lat"]},{self.starting_point["lon"]}&point={self.driver_location["lat"]},{self.driver_location["lon"]}&points_encoded=false&alternative_route.max_paths=5&alternative_route.max_weight_factor=2000&key=7682fe6b-4550-4ee9-a316-9a4c1a083109')
+        # new key: 319e1df1-2730-443c-8589-46bea5337e94
         self.routeGeoJSON = response.json()
         self.coordinates = []
         for step in self.routeGeoJSON['paths'][0]["points"]["coordinates"]:
