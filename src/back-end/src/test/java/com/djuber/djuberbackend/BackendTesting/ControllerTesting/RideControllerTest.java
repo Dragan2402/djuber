@@ -6,6 +6,7 @@ import com.djuber.djuberbackend.Controllers.Ride.Requests.RideRequest;
 import com.djuber.djuberbackend.Controllers.Ride.Responses.CoordinateResponse;
 import com.djuber.djuberbackend.Controllers.Ride.Responses.RideResponse;
 import com.djuber.djuberbackend.Controllers.Ride.RideController;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import org.hamcrest.Matchers;
 import org.junit.Before;
 import org.junit.Test;
@@ -21,6 +22,7 @@ import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 
 import java.io.IOException;
+import java.security.Principal;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashSet;
@@ -46,9 +48,12 @@ public class RideControllerTest {
 
     private MockMvc mockMvc;
 
+    private ObjectMapper mapper;
+
     @Before
     public void setup() {
         mockMvc = MockMvcBuilders.standaloneSetup(rideController).build();
+        mapper = new ObjectMapper();
     }
 
     @Test
@@ -156,39 +161,67 @@ public class RideControllerTest {
     }
 
     @Test
-    @DisplayName("Should create new ride - /api/ride")
+    @DisplayName("Should create new ride and return status 201 created - /api/ride")
     public void shouldCreateRide() throws Exception {
-        CoordinateRequest coordinateRequest1 = new CoordinateRequest();
-        coordinateRequest1.setIndex(0);
-        coordinateRequest1.setLat(45.5);
-        coordinateRequest1.setLon(19.5);
-        CoordinateRequest coordinateRequest2 = new CoordinateRequest();
-        coordinateRequest2.setIndex(1);
-        coordinateRequest2.setLat(45.6);
-        coordinateRequest2.setLon(19.6);
-
-        List<CoordinateRequest> coordinates = new ArrayList<>();
-        coordinates.add(coordinateRequest1);
-        coordinates.add(coordinateRequest2);
-
-        List<String> clientEmails = new ArrayList<>();
-        clientEmails.add("client@maildrop.cc");
-
-        List<String> stopNames = new ArrayList<>();
-        stopNames.add("start");
-        stopNames.add("end");
+        CoordinateRequest coordinateRequest = new CoordinateRequest();
+        coordinateRequest.setIndex(0);
+        coordinateRequest.setLat(45.5);
+        coordinateRequest.setLon(19.5);
 
         RideRequest rideRequest = new RideRequest();
-        rideRequest.setCoordinates(coordinates);
+        rideRequest.setCoordinates(Arrays.asList(coordinateRequest));
         rideRequest.setCarType("Sedan");
         rideRequest.setRideType("Single");
         rideRequest.setDistance(1.0);
         rideRequest.setAdditionalServices(new HashSet<>());
-        rideRequest.setClientEmails(clientEmails);
-        rideRequest.setStopNames(stopNames);
+        rideRequest.setClientEmails(Arrays.asList("client@maildrop.cc"));
+        rideRequest.setStopNames(Arrays.asList("Stop"));
 
-        doNothing().when(rideService).processRideRequest(rideRequest);
-        mockMvc.perform(post("/api/ride").contentType(MediaType.APPLICATION_JSON).accept(MediaType.APPLICATION_JSON))
+        doNothing().when(rideService).processRideRequest(any());
+
+        mockMvc.perform(post("/api/ride")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .accept(MediaType.APPLICATION_JSON)
+                        .content(mapper.writeValueAsString(rideRequest)))
                 .andExpect(status().isCreated());
+    }
+
+    @Test
+    @DisplayName("Should not create a new ride and return status 400 bad request - /api/ride")
+    public void shouldNotCreateRide() throws Exception {
+        RideRequest rideRequest = new RideRequest();
+
+        doNothing().when(rideService).processRideRequest(any());
+
+        mockMvc.perform(post("/api/ride")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .accept(MediaType.APPLICATION_JSON)
+                        .content(mapper.writeValueAsString(rideRequest)))
+                .andExpect(status().isBadRequest());
+    }
+
+    @Test
+    @DisplayName("Should accept ride and return status 200 ok - /api/ride/client/accept/{rideId}")
+    public void shouldAcceptShareRide() throws Exception {
+        Principal principal = () -> "client@maildrop.cc";
+
+        doNothing().when(rideService).acceptShareRideRequest(1L, principal.getName());
+
+        mockMvc.perform(post("/api/ride/client/accept/1")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .accept(MediaType.APPLICATION_JSON)
+                        .principal(principal))
+                .andExpect(status().isOk());
+    }
+
+    @Test
+    @DisplayName("Should decline ride and return status 200 ok - /api/ride/client/decline/{rideId}")
+    public void shouldDeclineShareRide() throws Exception {
+        doNothing().when(rideService).declineShareRideRequest(1L);
+
+        mockMvc.perform(post("/api/ride/client/decline/1")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .accept(MediaType.APPLICATION_JSON))
+                .andExpect(status().isOk());
     }
 }
