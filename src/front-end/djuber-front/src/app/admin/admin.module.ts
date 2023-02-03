@@ -30,21 +30,25 @@ import {MatCardModule} from '@angular/material/card';
 import {MatBadgeModule} from '@angular/material/badge';
 import { DriverProfileUpdatesComponent } from './admin-page/driver-profile-updates/driver-profile-updates.component';
 import { HandleModalComponent } from './admin-page/driver-profile-updates/handle-modal/handle-modal.component';
+import {ClientRidesComponent} from "./admin-page/client-preview/client-rides/client-rides.component";
+import {ClientService} from "../client/client.service";
+import {DriverService} from "../driver/driver.service";
 
 
 @NgModule({
-  declarations: [
-    AdminPageComponent,
-    AdminProfileComponent,
-    RegisterDriverComponent,
-    DriversPreviewComponent,
-    ClientPreviewComponent,
-    NoteModalComponent,
-    AdminLiveChatComponent,
-    DriverProfileUpdatesComponent,
-    HandleModalComponent
-  ],
-  providers: [AdminService],
+    declarations: [
+        AdminPageComponent,
+        AdminProfileComponent,
+        RegisterDriverComponent,
+        DriversPreviewComponent,
+        ClientPreviewComponent,
+        NoteModalComponent,
+        AdminLiveChatComponent,
+        DriverProfileUpdatesComponent,
+        HandleModalComponent,
+        ClientRidesComponent
+    ],
+  providers: [AdminService, ClientService, DriverService],
   imports: [
     CommonModule,
     AdminRoutingModule,

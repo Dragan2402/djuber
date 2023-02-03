@@ -12,7 +12,7 @@ import { NoteModalComponent } from '../note-modal/note-modal.component';
   styleUrls: ['./client-preview.component.css']
 })
 export class ClientPreviewComponent implements OnInit {
-  displayedColumns: string[] = ['id', 'firstName', 'lastName', 'email', 'city', 'note', 'block'];
+  displayedColumns: string[] = ['id', 'firstName', 'lastName', 'email', 'city', 'note', 'block', 'rides'];
 
   length = 10;
   pageSize = 10;
@@ -24,10 +24,20 @@ export class ClientPreviewComponent implements OnInit {
 
   filterValue:string='';
 
+  pickedClientId: number
+
   @ViewChild(MatPaginator) paginator: MatPaginator;
   @ViewChild(MatSort) sort: MatSort;
 
   constructor(private adminService : AdminService, public matDialog: MatDialog) { }
+
+  onPickClient(id: number) {
+    this.pickedClientId = id
+  }
+
+  onBack() {
+    this.pickedClientId = null
+  }
 
   ngAfterViewInit(): void {
 

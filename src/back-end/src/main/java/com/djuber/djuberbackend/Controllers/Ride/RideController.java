@@ -105,7 +105,7 @@ public class RideController {
     }
 
     @GetMapping("/{rideId}")
-    @PreAuthorize("hasAnyRole('CLIENT', 'DRIVER')")
+    @PreAuthorize("hasAnyRole('CLIENT', 'DRIVER', 'ADMIN')")
     public ResponseEntity<RideResponse> getRide(@PathVariable("rideId") Long rideId) {
         return new ResponseEntity<>(rideService.getRideResponse(rideId), HttpStatus.OK);
     }
