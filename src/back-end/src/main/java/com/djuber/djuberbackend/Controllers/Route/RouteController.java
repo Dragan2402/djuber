@@ -31,6 +31,11 @@ public class RouteController {
         return new ResponseEntity<>(new IdResponse(routeService.createFavouriteRoute(principal.getName(), request)), HttpStatus.CREATED);
     }
 
+    @PutMapping("/favouriteRoute/{rideId}")
+    public void createFavouriteRouteFromRide(Principal principal, @PathVariable("rideId") Long rideId){
+        routeService.createFavouriteRouteFromRide(principal.getName(), rideId);
+    }
+
     @GetMapping(value = "/loggedClientFavouriteRoutes")
     @PreAuthorize("hasAnyRole('CLIENT')")
     public ResponseEntity<List<FavouriteRouteResponse>> getLoggedClientFavouriteRoutes(Principal principal){

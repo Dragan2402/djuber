@@ -7,13 +7,16 @@ import com.djuber.djuberbackend.Controllers.Route.Requests.CreateFavouriteRouteR
 import com.djuber.djuberbackend.Controllers.Route.Responses.FavouriteRouteResponse;
 import com.djuber.djuberbackend.Domain.Authentication.Identity;
 import com.djuber.djuberbackend.Domain.Client.Client;
+import com.djuber.djuberbackend.Domain.Ride.Ride;
 import com.djuber.djuberbackend.Domain.Route.FavouriteRoute;
 import com.djuber.djuberbackend.Infastructure.Exceptions.CustomExceptions.EntityNotFoundException;
 import com.djuber.djuberbackend.Infastructure.Exceptions.CustomExceptions.UserNotFoundException;
 import com.djuber.djuberbackend.Infastructure.Repositories.Authentication.IIdentityRepository;
 import com.djuber.djuberbackend.Infastructure.Repositories.Client.IClientRepository;
+import com.djuber.djuberbackend.Infastructure.Repositories.Ride.IRideRepository;
 import com.djuber.djuberbackend.Infastructure.Repositories.Route.ICoordinatesRepository;
 import com.djuber.djuberbackend.Infastructure.Repositories.Route.IFavouriteRouteRepository;
+import com.djuber.djuberbackend.Infastructure.Repositories.Route.IRouteRepository;
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
@@ -34,6 +37,11 @@ public class RouteService implements IRouteService {
     final IClientRepository clientRepository;
 
     final ICoordinatesRepository coordinatesRepository;
+
+    final IRideRepository rideRepository;
+
+    final IRouteRepository routeRepository;
+
 
     @Override
     public Long createFavouriteRoute(String email, CreateFavouriteRouteRequest request) {
@@ -79,5 +87,29 @@ public class RouteService implements IRouteService {
             throw new EntityNotFoundException("Favourite route was not found.");
         }
         favouriteRouteRepository.delete(favouriteRoute);
+    }
+
+    @Override
+    public void createFavouriteRouteFromRide(String email, Long rideId) {
+        Identity identity = identityRepository.findByEmail(email);
+        if(identity == null){
+            throw new UserNotFoundException("Client with provided email does not exist.");
+        }
+        Client client = clientRepository.findByIdentityId(identity.getId());
+        Ride ride = rideRepository.findById(rideId).orElse(null);
+        if(ride == null){
+            throw new EntityNotFoundException("Ride does not exist.");
+        }
+        FavouriteRoute newRoute = new FavouriteRoute();
+        double price = (ride.getPrice() - ride.getCarType().getBasePrice())/120;
+        price = Math.round(price * 100);
+        price = price/100;
+        newRoute.setDistance(price);
+        newRoute.setClient(client);
+        newRoute.setStopNames(routeRepository.findRouteStopNames(ride.getRoute().getId()).getStopNames());
+        newRoute.setCoordinates(coordinatesRepository.findByRouteId(ride.getRoute().getId()));
+
+        favouriteRouteRepository.save(newRoute);
+
     }
 }
