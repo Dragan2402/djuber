@@ -103,6 +103,9 @@ public class RideService implements IRideService {
                 throw new UserNotFoundException("User not found.");
             }
             Client client = clientRepository.findByIdentityId(clientIdentity.getId());
+            if(client == null) {
+                throw new UserNotFoundException("Client not found.");
+            }
             ride.getClients().add(client);
         }
         return ride;
@@ -194,7 +197,7 @@ public class RideService implements IRideService {
             }
 
             List<Driver> drivers = findFreeAdequateActiveDrivers(carType, startCoordinate, requestedServices);
-            if (drivers != null && !drivers.isEmpty()) { // if some are free, get closest
+            if (drivers != null && !drivers.isEmpty()) {
                 return CompletableFuture.completedFuture(drivers.get(0));
             }
 
@@ -287,7 +290,6 @@ public class RideService implements IRideService {
 
         Process process = pb.start();
 
-        process.waitFor();
         return true;
     }
 

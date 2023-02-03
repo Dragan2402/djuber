@@ -1,7 +1,10 @@
 package com.djuber.djuberbackend.BackendTesting.ControllerTesting;
 
 import com.djuber.djuberbackend.Application.Services.Ride.IRideService;
+import com.djuber.djuberbackend.Controllers.Ride.Requests.CoordinateRequest;
+import com.djuber.djuberbackend.Controllers.Ride.Requests.RideRequest;
 import com.djuber.djuberbackend.Controllers.Ride.Responses.CoordinateResponse;
+import com.djuber.djuberbackend.Controllers.Ride.Responses.RideResponse;
 import com.djuber.djuberbackend.Controllers.Ride.RideController;
 import org.hamcrest.Matchers;
 import org.junit.Before;
@@ -17,7 +20,15 @@ import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.HashSet;
+import java.util.List;
+
 import static java.util.Arrays.asList;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.Mockito.doNothing;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
@@ -114,7 +125,7 @@ public class RideControllerTest {
     @Test
     @DisplayName("Should end ride - /api/ride/script/endRide/{rideId}")
     public void shouldEndRide() throws Exception {
-        Mockito.doNothing().when(rideService).endRide(100000L);
+        doNothing().when(rideService).endRide(100000L);
 
         mockMvc.perform(put("/api/ride/script/endRide/100000"))
                 .andExpect(status().isOk());
@@ -125,7 +136,7 @@ public class RideControllerTest {
     @DisplayName("Should update vehicle location - /api/ride/script/updateVehicleLocation/{rideId}")
     public void shouldUpdateVehicleLocation() throws Exception {
 
-        Mockito.doNothing().when(rideService).endRide(100000L);
+        doNothing().when(rideService).endRide(100000L);
         String body = "{\"index\": 0, \"lat\": 123.3, \"lon\": 1232.3}";
 
         mockMvc.perform(put("/api/ride/script/updateVehicleLocation/100000").content(body).contentType(MediaType.APPLICATION_JSON).accept(MediaType.APPLICATION_JSON))
@@ -137,11 +148,47 @@ public class RideControllerTest {
     @DisplayName("Should update vehicle location - /api/ride/script/updateVehicleLocation/{rideId}")
     public void shouldDeclineRide() throws Exception {
 
-        Mockito.doNothing().when(rideService).declineAssignedRide(100000L);
+        doNothing().when(rideService).declineAssignedRide(100000L);
 
         mockMvc.perform(post("/api/ride/declineAssignedRide/100000").contentType(MediaType.APPLICATION_JSON).accept(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk());
 
     }
 
+    @Test
+    @DisplayName("Should create new ride - /api/ride")
+    public void shouldCreateRide() throws Exception {
+        CoordinateRequest coordinateRequest1 = new CoordinateRequest();
+        coordinateRequest1.setIndex(0);
+        coordinateRequest1.setLat(45.5);
+        coordinateRequest1.setLon(19.5);
+        CoordinateRequest coordinateRequest2 = new CoordinateRequest();
+        coordinateRequest2.setIndex(1);
+        coordinateRequest2.setLat(45.6);
+        coordinateRequest2.setLon(19.6);
+
+        List<CoordinateRequest> coordinates = new ArrayList<>();
+        coordinates.add(coordinateRequest1);
+        coordinates.add(coordinateRequest2);
+
+        List<String> clientEmails = new ArrayList<>();
+        clientEmails.add("client@maildrop.cc");
+
+        List<String> stopNames = new ArrayList<>();
+        stopNames.add("start");
+        stopNames.add("end");
+
+        RideRequest rideRequest = new RideRequest();
+        rideRequest.setCoordinates(coordinates);
+        rideRequest.setCarType("Sedan");
+        rideRequest.setRideType("Single");
+        rideRequest.setDistance(1.0);
+        rideRequest.setAdditionalServices(new HashSet<>());
+        rideRequest.setClientEmails(clientEmails);
+        rideRequest.setStopNames(stopNames);
+
+        doNothing().when(rideService).processRideRequest(rideRequest);
+        mockMvc.perform(post("/api/ride").contentType(MediaType.APPLICATION_JSON).accept(MediaType.APPLICATION_JSON))
+                .andExpect(status().isCreated());
+    }
 }
