@@ -5,8 +5,7 @@ import { AdminService } from '../../admin.service';
 import {Driver} from '../../../driver/driver';
 import { MatTableDataSource } from '@angular/material/table';
 import { MatDialog, MatDialogConfig } from '@angular/material/dialog';
-import { NoteModalComponent } from '../note-modal/note-modal.component';
-
+import { NoteModalComponent } from '../note-modal/note-modal.component'
 
 @Component({
   selector: 'djuber-drivers-preview',
