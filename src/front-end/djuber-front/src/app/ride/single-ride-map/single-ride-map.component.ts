@@ -51,7 +51,7 @@ export class SingleRideMapComponent implements OnInit {
 
   ngOnInit(): void {
     this.rideId = this.route.snapshot.paramMap.get('id');
-    // this.openSocket();
+    this.openSocket();
     this.rideService.getRideResponse(this.rideId).subscribe({
       next:(response) =>{
         this.ride = response;
@@ -97,6 +97,7 @@ export class SingleRideMapComponent implements OnInit {
   }
 
   private drawMarker(coordinate:CoordinateResponse, iconUrlPart:string, tooltipText:string){
+    console.log("COORDINATE",coordinate)
     const marker = L.marker([coordinate.lat, coordinate.lon], {
       icon: L.icon({
           iconUrl: 'assets/'+iconUrlPart+'.svg',
