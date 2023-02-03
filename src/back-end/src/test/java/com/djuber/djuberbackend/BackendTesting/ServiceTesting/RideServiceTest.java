@@ -1,6 +1,7 @@
 package com.djuber.djuberbackend.BackendTesting.ServiceTesting;
 import com.djuber.djuberbackend.Application.Services.Ride.Implementation.RideService;
 import com.djuber.djuberbackend.Controllers.Ride.Requests.CoordinateRequest;
+import com.djuber.djuberbackend.Controllers.Ride.Requests.RideRequest;
 import com.djuber.djuberbackend.Controllers.Ride.Responses.CoordinateResponse;
 import com.djuber.djuberbackend.Controllers.Ride.Responses.RideUpdateResponse;
 import com.djuber.djuberbackend.Domain.Authentication.Identity;
@@ -19,6 +20,7 @@ import com.djuber.djuberbackend.Domain.Route.Route;
 import com.djuber.djuberbackend.Infastructure.Exceptions.CustomExceptions.CannotUpdateCanceledRideException;
 import com.djuber.djuberbackend.Infastructure.Exceptions.CustomExceptions.EntityNotFoundException;
 import com.djuber.djuberbackend.Infastructure.Exceptions.CustomExceptions.RideNotOnTheWayException;
+import com.djuber.djuberbackend.Infastructure.Exceptions.CustomExceptions.UserNotFoundException;
 import com.djuber.djuberbackend.Infastructure.Repositories.Authentication.IIdentityRepository;
 import com.djuber.djuberbackend.Infastructure.Repositories.Client.IClientRepository;
 import com.djuber.djuberbackend.Infastructure.Repositories.Driver.ICarRepository;
@@ -47,8 +49,8 @@ import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.BDDMockito.given;
-import static org.mockito.Mockito.times;
-import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.*;
+
 import java.time.OffsetDateTime;
 import java.util.*;
 
@@ -85,6 +87,8 @@ public class RideServiceTest {
 
     private Ride canceledRide;
 
+    private RideRequest rideRequest;
+
     @BeforeEach
     public void setup(){
         Identity driverIdentity = new Identity(1L,"driver@mailrop.cc", "password", UserType.DRIVER,new ArrayList<>(), null, null, false);
@@ -114,6 +118,18 @@ public class RideServiceTest {
         Ride rideCanceled = new Ride(2L, driver, clients ,new HashSet<>(), RideType.SINGLE,CarType.SEDAN,  OffsetDateTime.now(), null, null, route, 213D, RideStatus.CANCELED, new HashSet<>(), new HashSet<>(),false);
         client.getRides().add(rideCanceled);
         this.canceledRide = rideCanceled;
+
+        rideRequest = new RideRequest();
+        rideRequest.setCoordinates(List.of(
+                new CoordinateRequest(0, 45.5, 19.5),
+                new CoordinateRequest(1, 45.6, 19.6)
+        ));
+        rideRequest.setCarType("Sedan");
+        rideRequest.setRideType("Single");
+        rideRequest.setDistance(1.0);
+        rideRequest.setAdditionalServices(Set.of());
+        rideRequest.setClientEmails(List.of("abc@maildrop.cc"));
+        rideRequest.setStopNames(List.of("first", "last"));
     }
 
     @Test()
@@ -274,4 +290,14 @@ public class RideServiceTest {
         verify(rideRepository,times(1)).findById(2L);
     }
 
+    @Test
+    void shouldThrowUserNotFoundWhenCreatingRide() {
+        given(identityRepository.findByEmail("abc@maildrop.cc"))
+                .willReturn(null);
+
+        assertThrows(UserNotFoundException.class,
+                () -> rideService.processRideRequest(this.rideRequest));
+        verify(identityRepository, times(1)).findByEmail(any());
+        verifyNoMoreInteractions(identityRepository);
+    }
 }

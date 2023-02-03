@@ -1,13 +1,10 @@
 package com.djuber.djuberbackend.Application.Services.Ride.Implementation;
 
-import com.djuber.djuberbackend.Application.Services.Client.IClientService;
-import com.djuber.djuberbackend.Application.Services.Client.Results.ClientResult;
 import com.djuber.djuberbackend.Application.Services.Ride.IRideService;
 import com.djuber.djuberbackend.Application.Services.Ride.Mapper.RideMapper;
 import com.djuber.djuberbackend.Application.Services.Ride.Results.RideMessageResult;
 import com.djuber.djuberbackend.Application.Services.Ride.Results.RideMessageStatus;
 import com.djuber.djuberbackend.Application.Services.Ride.Results.RideResult;
-import com.djuber.djuberbackend.Application.Services.Route.Mapper.RouteMapper;
 import com.djuber.djuberbackend.Controllers.Ride.Requests.CoordinateRequest;
 import com.djuber.djuberbackend.Controllers.Ride.Requests.ReviewRideRequest;
 import com.djuber.djuberbackend.Controllers.Ride.Requests.RideRequest;
@@ -44,9 +41,9 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.io.IOException;
-import java.security.Principal;
 import java.time.OffsetDateTime;
 import java.util.List;
 import java.util.Set;
@@ -65,18 +62,17 @@ public class RideService implements IRideService {
     final ICarRepository carRepository;
     final DateCalculator dateCalculator;
     final IReviewRepository reviewRepository;
+    final IDriverReportRepository driverReportRepository;
+
+    private static final String TOPIC_PATH = "/topic/ride/";
+
     @Override
     public Page<RideResult> readPageable(Pageable pageable, String clientEmail) {
         return RideMapper.mapRides(rideRepository.findAll(pageable));
     }
 
-    final IDriverReportRepository driverReportRepository;
-
-    private static final String TOPIC_PATH = "/topic/ride/";
-
-
     @Override
-//    @Transactional
+    @Transactional
     public void processRideRequest(RideRequest rideRequest) throws InterruptedException {
         Ride ride = createRide(rideRequest); //create ride
 
@@ -85,17 +81,17 @@ public class RideService implements IRideService {
         coordinatesRepository.saveAll(ride.getRoute().getCoordinates());
 
         if (ride.getRideType() == RideType.SHARE_RIDE) { //send requests to clients
+
             if (rideRequest.getClientEmails().size() < 2) {
                 throw new BadRideTypeException("Selected 'Share ride' but there are less than 2 clients.");
-            } else {
-                sendShareRideMessages(ride);
             }
+            sendShareRideMessages(ride);
         } else {
+
             if (rideRequest.getClientEmails().size() != 1) {
                 throw new BadRideTypeException("Selected 'Single' but there are more than 1 clients.");
-            } else {
-                assignDriver(ride);
             }
+            assignDriver(ride);
         }
     }
 
@@ -191,7 +187,6 @@ public class RideService implements IRideService {
         Coordinate startCoordinate = coordinates.get(0);
 
         Ride updatedRide = rideRepository.findById(ride.getId()).orElse(null);
-//        List<Driver> adequateActiveDrivers = driverRepository.getAdequateActiveDrivers(carType, requestedServices);
 
         while (updatedRide != null && !updatedRide.getRideStatus().equals(RideStatus.CANCELED)) {
             if (countAdequateActiveDrivers(carType, requestedServices) == 0L) {
