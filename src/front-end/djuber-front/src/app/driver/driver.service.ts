@@ -12,6 +12,10 @@ export class DriverService {
     return this.http.get<Driver>("/api/driver/loggedDriver");
   }
 
+  public getRidesPage(index: number, size: number, id: number){
+    return this.http.get(`/api/ride/userRides/${id}?page=${index.toString()}&size=${size.toString()}`);
+  }
+
   public getLoggedDriverPicture(){
     return this.http.get<string>("/api/driver/loggedDriverPicture");
   }

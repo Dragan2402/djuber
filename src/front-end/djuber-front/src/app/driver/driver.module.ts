@@ -16,11 +16,16 @@ import {MatButtonModule} from '@angular/material/button';
 import {MatListModule} from '@angular/material/list';
 import {MatDividerModule} from '@angular/material/divider';
 import {MatMenuModule} from '@angular/material/menu';
+import {DriverRidesComponent} from "./driver-page/driver-rides/driver-rides.component";
+import {MatTableModule} from "@angular/material/table";
+import {MatSortModule} from "@angular/material/sort";
+import {MatPaginatorModule} from "@angular/material/paginator";
 
 @NgModule({
   declarations: [
     DriverPageComponent,
-    DriverProfileComponent
+    DriverProfileComponent,
+    DriverRidesComponent
   ],
   providers: [DriverService],
   imports: [
@@ -37,7 +42,10 @@ import {MatMenuModule} from '@angular/material/menu';
     MatSelectModule,
     MatInputModule,
     FormsModule,
-    ReactiveFormsModule
+    ReactiveFormsModule,
+    MatTableModule,
+    MatSortModule,
+    MatPaginatorModule
   ]
 })
 export class DriverModule { }

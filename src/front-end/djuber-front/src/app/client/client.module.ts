@@ -30,6 +30,7 @@ import {ClientReportsComponent} from "./client-page/client-report/client-reports
 import {MatDatepickerModule} from "@angular/material/datepicker";
 import {NgbDatepickerModule} from "@ng-bootstrap/ng-bootstrap";
 import {NgbdDatepickerRange} from "../components/datepicker/datepicker-range";
+import {MatSortModule} from "@angular/material/sort";
 
 @NgModule({
   declarations: [
@@ -66,7 +67,8 @@ import {NgbdDatepickerRange} from "../components/datepicker/datepicker-range";
     NgxChartsModule,
     MatDatepickerModule,
     NgbDatepickerModule,
-    NgbdDatepickerRange
+    NgbdDatepickerRange,
+    MatSortModule
   ]
 })
 export class ClientModule { }

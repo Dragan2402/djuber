@@ -30,6 +30,11 @@ export class DriverPageComponent implements OnInit {
     this.router.navigate(['driver',{outlets: { co:['profile']} }],{ skipLocationChange: true });
   }
 
+  rides(){
+    this.router.navigateByUrl('driver')
+    this.router.navigate(['driver', {outlets: { co:['rides']} }], {skipLocationChange: true})
+  }
+
   toggleChange(){
     if(this.directionToToggle===">>"){
       this.directionToToggle= "<<";
