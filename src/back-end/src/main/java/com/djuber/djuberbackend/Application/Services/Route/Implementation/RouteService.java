@@ -101,10 +101,10 @@ public class RouteService implements IRouteService {
             throw new EntityNotFoundException("Ride does not exist.");
         }
         FavouriteRoute newRoute = new FavouriteRoute();
-        double price = (ride.getPrice() - ride.getCarType().getBasePrice())/120;
-        price = Math.round(price * 100);
-        price = price/100;
-        newRoute.setDistance(price);
+        double distance = (ride.getPrice() - ride.getCarType().getBasePrice())/120;
+        distance = Math.round(distance * 100);
+        distance = distance/100;
+        newRoute.setDistance(distance);
         newRoute.setClient(client);
         newRoute.setStopNames(routeRepository.findRouteStopNames(ride.getRoute().getId()).getStopNames());
         newRoute.setCoordinates(coordinatesRepository.findByRouteId(ride.getRoute().getId()));
