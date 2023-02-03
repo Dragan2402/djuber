@@ -16,4 +16,10 @@ public interface IRideRepository extends JpaRepository<Ride, Long> {
             "where r.id = ?1")
     @Override
     Optional<Ride> findById(Long aLong);
+
+    @Query( value="select r from Ride r  where r.driver.id = ?1",
+            countQuery = "select count(r) from Ride r where r.driver.id = ?1")
+    Page<Ride> findDriverRides(Long id, Pageable pageable);
+
+
 }

@@ -2,6 +2,7 @@ package com.djuber.djuberbackend.Infastructure.Repositories.Client;
 
 
 import com.djuber.djuberbackend.Domain.Client.Client;
+import com.djuber.djuberbackend.Domain.Ride.Ride;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
@@ -22,4 +23,8 @@ public interface IClientRepository extends JpaRepository<Client, Long> {
             "or lower(c.identity.email) like lower(concat('%', ?1,'%') ) " +
             "or lower(c.city) like lower(concat('%', ?1,'%') ) ")
     Page<Client> findAllWithFilter(String filter, Pageable pageable);
+
+    @Query(value="select c.rides from Client c where c.id = ?1",
+            countQuery = "select count(c.rides) from Client c where c.id = ?1")
+    Page<Ride> findClientRides(Long id, Pageable pageable);
 }
