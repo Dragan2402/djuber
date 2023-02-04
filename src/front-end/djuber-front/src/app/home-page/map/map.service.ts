@@ -57,7 +57,7 @@ export class MapService {
     return this.http.post("/api/ride", request);
   }
 
-  makeReservation(reservationRequest:ReservationRequest) {
+  makeReservation(reservationRequest) {
     const url = "/api/reservation/create";
     return this.http.post(url, reservationRequest);
   }

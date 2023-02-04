@@ -98,8 +98,7 @@ export class MapComponent implements OnInit {
 
   ngOnInit(): void {
     let currentTime = new Date();
-    this.time.hour = currentTime.getHours();
-    this.time.minute = currentTime.getMinutes();
+    this.time = {hour: currentTime.getHours(), minute: currentTime.getMinutes()}
     if(this.logged && this.hashService.matchRoles("DRIVER",this.authenticationService.getLoggedUserRole())){
       this.mapService.getLoggedDriverLocation().subscribe({next:(driver)=>{
        this.drawMarker({lat:driver.lat, lon: driver.lon, index:0 } as Coordinate,"car","You",true);
