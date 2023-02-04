@@ -50,6 +50,10 @@ export class RequestInterceptor implements HttpInterceptor {
       return this.handleDriverRequests(request, next);
     }
 
+    if(request.url.includes("api/reservation")){
+      return this.handleDriverRequests(request, next);
+    }
+
     if(request.url.includes("api/auth")){
       return this.handleAuthenticationRequests(request, next);
     }
