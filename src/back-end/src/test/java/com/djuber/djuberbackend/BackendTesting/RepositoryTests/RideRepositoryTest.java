@@ -1,5 +1,6 @@
 package com.djuber.djuberbackend.BackendTesting.RepositoryTests;
 
+import com.djuber.djuberbackend.Domain.Driver.CarType;
 import com.djuber.djuberbackend.Domain.Ride.Ride;
 import com.djuber.djuberbackend.Domain.Ride.RideStatus;
 import com.djuber.djuberbackend.Domain.Ride.RideType;
@@ -30,16 +31,20 @@ public class RideRepositoryTest {
     @Test
     public void shouldSaveRide(){
         Ride ride = new Ride();
+        ride.setDriver(driverRepository.findById(100000L).orElse(null));
         ride.setRideType(RideType.SINGLE);
-        ride.setRideStatus(RideStatus.PENDING);
+        ride.setCarType(CarType.SEDAN);
         ride.setStart(OffsetDateTime.now());
-        ride.setDeleted(false);
-        ride.setPrice(123D);
+
         Route route = new Route();
         route.setDeleted(false);
         route.setRide(ride);
         ride.setRoute(route);
-        ride.setDriver(driverRepository.findById(100000L).orElse(null));
+
+        ride.setPrice(123D);
+        ride.setRideStatus(RideStatus.PENDING);
+        ride.setDeleted(false);
+
         Ride rideSaved = rideRepository.save(ride);
 
         assertThat(rideSaved).usingRecursiveComparison().ignoringFields("id").isEqualTo(ride);

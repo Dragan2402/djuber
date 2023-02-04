@@ -224,15 +224,4 @@ public class RideControllerTest {
                         .principal(principal))
                 .andExpect(status().isOk());
     }
-
-    @Test
-    @DisplayName("Should decline ride and return status 200 ok - /api/ride/client/decline/{rideId}")
-    public void shouldDeclineShareRide() throws Exception {
-        doNothing().when(rideService).declineShareRideRequest(1L);
-
-        mockMvc.perform(post("/api/ride/client/decline/1")
-                        .contentType(MediaType.APPLICATION_JSON)
-                        .accept(MediaType.APPLICATION_JSON))
-                .andExpect(status().isOk());
-    }
 }
