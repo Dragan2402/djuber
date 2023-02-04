@@ -465,7 +465,7 @@ export class MapComponent implements OnInit {
             this._snackBar.openFromComponent(SnackbarComponent,{data:"Error while trying to make ride reservation."});
             this.orderStatus = 0;
           }});
-          this._snackBar.openFromComponent(SnackbarComponent,{data:"Waiting for driver."});
+          this._snackBar.openFromComponent(SnackbarComponent,{data:"Reservation successfully made."});
         }
       }
       
