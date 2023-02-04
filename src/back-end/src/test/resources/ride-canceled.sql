@@ -140,8 +140,8 @@ INSERT INTO clients_rides (client_id, ride_id)
 VALUES (100000, 200000);
 
 --RESERVATIONS
-INSERT INTO reservation (id, ride_type, start, route_id, price, deleted)
-VALUES (100000, 1, '2023-01-26 15:23', 200000, 40, false);
+INSERT INTO reservation (id, ride_type, car_type, start, route_id, price, deleted)
+VALUES (100000, 1, 0, '2023-01-26 15:23', 200000, 40, false);
 
 INSERT INTO clients_reservations (RESERVATION_ID, CLIENT_ID)
 VALUES (100000, 200000);

@@ -5,6 +5,7 @@ import { FavouriteRoute } from 'src/app/ride/favouriteRoute';
 import { DriverLocation } from './driverLocation';
 import { Coordinate } from './coordinate';
 import { RideRequest } from './rideRequest';
+import { ReservationRequest } from './reservationRequest';
 
 @Injectable({
   providedIn: 'root'
@@ -54,6 +55,11 @@ export class MapService {
 
   orderRide(request:RideRequest){
     return this.http.post("/api/ride", request);
+  }
+
+  makeReservation(reservationRequest) {
+    const url = "/api/reservation/create";
+    return this.http.post(url, reservationRequest);
   }
 
   checkIfClientsExist(clientEmails: string[]) {

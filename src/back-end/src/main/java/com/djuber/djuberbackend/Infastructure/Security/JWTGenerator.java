@@ -54,7 +54,8 @@ public class JWTGenerator {
             Jwts.parser().setSigningKey(SecurityConstants.JWT_SECRET).parseClaimsJws(token).getBody();
             return true;
         } catch (Exception ex) {
-            throw new TokenExpiredException("JWT was expired or incorrect");
+//            throw new TokenExpiredException("JWT was expired or incorrect");
+            return false;
         }
     }
 

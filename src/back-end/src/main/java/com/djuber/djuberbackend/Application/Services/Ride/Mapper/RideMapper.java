@@ -9,6 +9,7 @@ import com.djuber.djuberbackend.Controllers.Ride.Responses.RideResponse;
 import com.djuber.djuberbackend.Domain.Client.Client;
 import com.djuber.djuberbackend.Domain.Driver.Car;
 import com.djuber.djuberbackend.Domain.Driver.CarType;
+import com.djuber.djuberbackend.Domain.Ride.Reservation;
 import com.djuber.djuberbackend.Domain.Ride.Ride;
 import com.djuber.djuberbackend.Domain.Ride.RideStatus;
 import com.djuber.djuberbackend.Domain.Ride.RideType;
@@ -101,5 +102,34 @@ public class RideMapper {
         }
 
         return response;
+    }
+
+    public static RideRequest mapReservationToRideRequest(Reservation reservation) {
+        RideRequest rideRequest = new RideRequest();
+
+        rideRequest.setCoordinates(new ArrayList<>());
+        List<Coordinate> coordinates = reservation.getRoute().getCoordinates();
+        for (Coordinate coordinate : coordinates) {
+            CoordinateRequest coordinateRequest = new CoordinateRequest();
+            coordinateRequest.setIndex(coordinate.getIndex());
+            coordinateRequest.setLat(coordinate.getLat());
+            coordinateRequest.setLon(coordinate.getLon());
+            rideRequest.getCoordinates().add(coordinateRequest);
+        }
+
+        CarType carType = reservation.getCarType() == null ? CarType.SEDAN : reservation.getCarType();
+        rideRequest.setCarType(carType.toString());
+        rideRequest.setRideType(reservation.getRideType().toString());
+        rideRequest.setDistance((reservation.getPrice() - carType.getBasePrice()) / 120.0);
+        rideRequest.setAdditionalServices(reservation.getRequestedServices());
+
+        rideRequest.setClientEmails(new ArrayList<>());
+        for (Client client : reservation.getClients()) {
+            rideRequest.getClientEmails().add(client.getIdentity().getEmail());
+        }
+
+        rideRequest.setStopNames(reservation.getRoute().getStopNames());
+
+        return rideRequest;
     }
 }

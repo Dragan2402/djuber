@@ -24,8 +24,8 @@ public class ReservationController {
 
     final IReservationService reservationService;
 
-    @PostMapping
-    @PreAuthorize("hasAnyRole('CLIENT')")
+    @PostMapping(value = "/create")
+    @PreAuthorize("hasAnyRole('CLIENT', 'DRIVER', 'ADMIN')")
     public ResponseEntity<IdResponse> createReservation(@RequestBody @Valid CreateReservationRequest request){
         return new ResponseEntity<>(new IdResponse(reservationService.createReservation(request)), HttpStatus.CREATED);
     }

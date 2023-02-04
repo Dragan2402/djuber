@@ -60,6 +60,7 @@ public class ReservationService implements IReservationService {
 
         Reservation reservation = new Reservation();
         reservation.setRideType(RideType.fromString(request.getRideType()));
+        reservation.setCarType(CarType.fromString(request.getCarType()));
         reservation.setRequestedServices(request.getAdditionalServices());
         reservation.setRoute(new Route());
         for (CoordinateRequest cr : request.getCoordinates()) {
@@ -72,7 +73,7 @@ public class ReservationService implements IReservationService {
             reservation.getRoute().getCoordinates().add(coordinate);
         }
         reservation.getRoute().setDeleted(false);
-
+        reservation.getRoute().setStopNames(request.getStopNames());
 
         CarType carType = CarType.fromString(request.getCarType());
 
