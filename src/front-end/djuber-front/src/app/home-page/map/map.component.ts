@@ -13,6 +13,9 @@ import { RideRequest } from './rideRequest';
 import { Validators, FormControl } from '@angular/forms';
 import { MatDialog, MatDialogConfig } from '@angular/material/dialog';
 import { ClientFavouriteRidesDialogComponent } from 'src/app/home-page/map/client-favourite-rides-dialog/client-favourite-rides-dialog.component';
+import { NgbDate } from '@ng-bootstrap/ng-bootstrap';
+import { NgbTime } from '@ng-bootstrap/ng-bootstrap/timepicker/ngb-time';
+import { ReservationRequest } from './reservationRequest';
 
 @Component({
   selector: 'djuber-map',
@@ -41,7 +44,7 @@ export class MapComponent implements OnInit {
 
   availableDriversMarkers : L.Marker[] = [];
 
-  checkPrice:number = 2;
+  checkPrice:string = '2';
 
   differentStartingPoint: boolean = false;
 
@@ -56,6 +59,8 @@ export class MapComponent implements OnInit {
   orderStatus:number = 0;
 
   sharedRide: boolean = false;
+
+  reservation: boolean = false;
 
   sharedRideClientEmails: string[] = [];
 
@@ -82,6 +87,8 @@ export class MapComponent implements OnInit {
 
   firstSharedRideClient: string = '';
 
+  time;
+
   constructor(private mapService:MapService, private _snackBar: MatSnackBar, private authenticationService : AuthenticationService, private hashService:HashService, public matDialog: MatDialog) {
     this.authenticationService.logged$.subscribe((attr:boolean) =>{
       this.logged = attr;
@@ -90,6 +97,9 @@ export class MapComponent implements OnInit {
 
 
   ngOnInit(): void {
+    let currentTime = new Date();
+    this.time.hour = currentTime.getHours();
+    this.time.minute = currentTime.getMinutes();
     if(this.logged && this.hashService.matchRoles("DRIVER",this.authenticationService.getLoggedUserRole())){
       this.mapService.getLoggedDriverLocation().subscribe({next:(driver)=>{
        this.drawMarker({lat:driver.lat, lon: driver.lon, index:0 } as Coordinate,"car","You",true);
@@ -242,7 +252,7 @@ export class MapComponent implements OnInit {
     this.routes.splice(0,this.routes.length);
     this.routeLines.forEach(line => line.remove());
     this.routeLines.splice(0, this.routeLines.length);
-    this.checkPrice = 2;
+    this.checkPrice = '2';
     this.routePathAddresses.splice(0, this.routePathAddresses.length);
     this.routePathPoints.splice(0, this.routePathPoints.length);
     this.stopNames.splice(0, this.stopNames.length);
@@ -396,7 +406,7 @@ export class MapComponent implements OnInit {
 
   }
 
-  async orderRide(){
+  async orderRide() {
     let clientEmails: string[] = [this.firstSharedRideClient].concat(this.sharedRideClientEmails);
     if (this.sharedRide) {
       let valid = await this.areSharedRideClientsValid(clientEmails);
@@ -413,22 +423,54 @@ export class MapComponent implements OnInit {
       };
       let passengerEmails: string[] = this.sharedRide? [this.authenticationService.getLoggedUserEmail()].concat(clientEmails):[this.authenticationService.getLoggedUserEmail()];
       console.log(passengerEmails);
-      const request = {
-        clientEmails: passengerEmails,
-        distance: this.routes[0].distance,
-        carType: this.selectedCarType,
-        additionalServices: this.getAdditionalServices(),
-        coordinates: coordinates,
-        rideType: this.sharedRide ? "Share ride" : "Single",
-        stopNames:this.stopNames
-      } as RideRequest;
-      console.log(request);
-      this.mapService.orderRide(request).subscribe({error:(err)=>{
-        this._snackBar.openFromComponent(SnackbarComponent,{data:"Error while trying to order ride."});
-        this.orderStatus = 0;
-      }});
-      this.orderStatus = 1;
-      this._snackBar.openFromComponent(SnackbarComponent,{data:"Waiting for driver."});
+
+      if(!this.reservation) {
+        const request = {
+          clientEmails: passengerEmails,
+          distance: this.routes[0].distance,
+          carType: this.selectedCarType,
+          additionalServices: this.getAdditionalServices(),
+          coordinates: coordinates,
+          rideType: this.sharedRide ? "Share ride" : "Single",
+          stopNames:this.stopNames
+        } as RideRequest;
+        console.log(request);
+        this.mapService.orderRide(request).subscribe({error:(err)=>{
+          this._snackBar.openFromComponent(SnackbarComponent,{data:"Error while trying to order ride."});
+          this.orderStatus = 0;
+        }});
+        this._snackBar.openFromComponent(SnackbarComponent,{data:"Waiting for driver."});
+      } else {
+        if (!this.reservationTimeValid()) {
+          this._snackBar.openFromComponent(SnackbarComponent, {
+            data: `Reservation must be made within the next 5 hours.`
+          });
+        } else {
+          let requestTime = new Date();
+          requestTime.setHours(this.time.hour);
+          requestTime.setMinutes(this.time.minute);
+
+          const request = {
+            clientEmails: passengerEmails,
+            distance: this.routes[0].distance,
+            carType: this.selectedCarType,
+            additionalServices: this.getAdditionalServices(),
+            coordinates: coordinates,
+            rideType: this.sharedRide ? "Share ride" : "Single",
+            stopNames:this.stopNames,
+            start: requestTime
+          } as ReservationRequest;
+          
+          this.mapService.makeReservation(request).subscribe({error:(err)=>{
+            console.log(err);
+            this._snackBar.openFromComponent(SnackbarComponent,{data:"Error while trying to make ride reservation."});
+            this.orderStatus = 0;
+          }});
+          this._snackBar.openFromComponent(SnackbarComponent,{data:"Waiting for driver."});
+        }
+      }
+      
+      this.orderStatus = 0;
     }
   }
 
@@ -470,6 +512,29 @@ export class MapComponent implements OnInit {
     }
 
     return true;
+  }
+
+  reservationTimeValid() {
+    let currentTime = new Date();
+    let reservationTime = new Date();
+    reservationTime.setHours(this.time.hour);
+    reservationTime.setMinutes(this.time.minute);
+
+    if (reservationTime.getTime() < currentTime.getTime()) {
+      reservationTime.setDate(reservationTime.getDate() + 1);
+    }
+
+    let difference = reservationTime.getTime() - currentTime.getTime();
+    difference = difference / 1000 //seconds
+    difference = difference / 60 //minutes
+    difference = difference / 60 //hours
+    console.log(difference);
+    console.log("End method");
+    if (difference < 5) {
+      return true;
+    } else {
+      return false;
+    }
   }
 }
 

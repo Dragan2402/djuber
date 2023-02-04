@@ -2,6 +2,7 @@ package com.djuber.djuberbackend.Domain.Ride;
 
 
 import com.djuber.djuberbackend.Domain.Client.Client;
+import com.djuber.djuberbackend.Domain.Driver.CarType;
 import com.djuber.djuberbackend.Domain.Driver.Driver;
 import com.djuber.djuberbackend.Domain.Route.Route;
 import lombok.*;
@@ -29,6 +30,9 @@ public class Reservation {
 
     @Column(name = "rideType", nullable = false)
     RideType rideType;
+
+    @Column(name = "car_type")
+    CarType carType;
 
     @ManyToMany(fetch = FetchType.EAGER)
     @JoinTable(name = "clients_reservations",joinColumns = @JoinColumn(name = "reservation_id", referencedColumnName = "id"), inverseJoinColumns = @JoinColumn(name = "client_id", referencedColumnName = "id"))

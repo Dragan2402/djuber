@@ -1,8 +1,11 @@
 package com.djuber.djuberbackend.Infastructure.Util;
 
 import com.djuber.djuberbackend.Application.Services.Driver.IDriverLogService;
+import com.djuber.djuberbackend.Application.Services.Ride.IRideService;
+import com.djuber.djuberbackend.Application.Services.Ride.Mapper.RideMapper;
 import com.djuber.djuberbackend.Application.Services.Ride.Results.RideMessageResult;
 import com.djuber.djuberbackend.Application.Services.Ride.Results.RideMessageStatus;
+import com.djuber.djuberbackend.Controllers.Ride.Requests.RideRequest;
 import com.djuber.djuberbackend.Domain.Client.Client;
 import com.djuber.djuberbackend.Domain.Driver.Driver;
 import com.djuber.djuberbackend.Domain.Ride.Reservation;
@@ -19,6 +22,7 @@ import org.springframework.scheduling.annotation.EnableScheduling;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.scheduling.concurrent.ThreadPoolTaskScheduler;
 
+import java.io.IOException;
 import java.time.Duration;
 import java.time.OffsetDateTime;
 
@@ -31,6 +35,8 @@ public class Scheduler {
     final IDriverRepository driverRepository;
 
     final IDriverLogService driverLogService;
+
+    final IRideService rideService;
 
     final SimpMessagingTemplate simpMessagingTemplate;
 
@@ -59,7 +65,7 @@ public class Scheduler {
 
     @Scheduled(fixedDelay = 60000, initialDelay = 5000)
     @Async("threadPoolTaskScheduler")
-    public void scheduleReservationTask() {
+    public void scheduleReservationTask() throws IOException, InterruptedException {
         System.out.println("Djuber system scheduler-- checking reservations.");
         OffsetDateTime now = OffsetDateTime.now();
         OffsetDateTime fifteenMinutesFromNow = now.plusMinutes(15);
@@ -88,7 +94,8 @@ public class Scheduler {
                 for(Client client : reservation.getClients()){
                     simpMessagingTemplate.convertAndSend("/topic/ride/" + client.getIdentity().getId(), result);
                 }
-                System.out.println("ADD HERE LOGIC");
+                RideRequest rideRequest = RideMapper.mapReservationToRideRequest(reservation);
+                rideService.processRideRequest(rideRequest);
             }
         }
     }
