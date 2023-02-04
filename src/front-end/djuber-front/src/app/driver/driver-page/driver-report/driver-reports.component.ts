@@ -1,25 +1,26 @@
 import {Component, OnInit} from '@angular/core';
-import {ClientService} from '../../client.service';
-import {Client, Ride} from "../../client";
 import {NgbDate} from "@ng-bootstrap/ng-bootstrap";
+import {Ride} from "../../../client/client";
+import {DriverService} from "../../driver.service";
+import {Driver} from "../../driver";
 
 @Component({
-  selector: 'djuber-client-reports',
-  templateUrl: './client-reports.component.html',
-  styleUrls: ['./client-reports.component.css']
+  selector: 'djuber-driver-reports',
+  templateUrl: './driver-reports.component.html',
+  styleUrls: ['./driver-reports.component.css']
 })
-export class ClientReportsComponent implements OnInit {
+export class DriverReportsComponent implements OnInit {
   data: {name: string, series: {value: number, name: string}[]}[]
   priceSum: number
   average: number
   rides: Ride[]
   startDate: Date
   endDate: Date
-  constructor(private clientService : ClientService) { }
+  constructor(private driverService : DriverService) { }
   ngOnInit(): void {
 
-    this.clientService.getLoggedClient().subscribe({ next: (response: Client) => {
-        this.clientService.getRidesPage(0, 9999, response.identityId).subscribe({next: (pageResponse: Ride[]) => {
+    this.driverService.getLoggedDriver().subscribe({ next: (response) => {
+        this.driverService.getRidesPage(0, 9999, response.identityId).subscribe({next: (pageResponse) => {
             const rides = pageResponse['content'].filter(ride => this.isValidDate(new Date(ride.start)))
             const dateList = [...new Set(rides.map(ride => new Date(ride.start).toLocaleDateString()))]
             const countMap = new Map()
@@ -42,6 +43,7 @@ export class ClientReportsComponent implements OnInit {
           },
           error: (e) => console.error(e)})
       }})
+
   }
 
   isValidDate(value: Date) {

@@ -1,0 +1,56 @@
+import {Component, OnInit} from '@angular/core';
+import {NgbDate} from "@ng-bootstrap/ng-bootstrap";
+import {ClientService} from "../../../client/client.service";
+import {Ride} from "../../../client/client";
+
+@Component({
+  selector: 'djuber-admin-reports',
+  templateUrl: './admin-reports.component.html',
+  styleUrls: ['./admin-reports.component.css']
+})
+export class AdminReportsComponent implements OnInit {
+  data: {name: string, series: {value: number, name: string}[]}[]
+  priceSum: number
+  average: number
+  rides: Ride[]
+  startDate: Date
+  endDate: Date
+  constructor(private clientService : ClientService) { }
+  ngOnInit(): void {
+    this.clientService.getRides().subscribe({next: (pageResponse: Ride[]) => {
+        const rides = pageResponse.filter(ride => this.isValidDate(new Date(ride.start)))
+        const dateList: string[] = [...new Set(rides.map(ride => new Date(ride.start).toLocaleDateString()))]
+        const countMap = new Map()
+        for (const date of dateList) countMap.set(date, 0)
+        for (const ride of rides) {
+          const dateString = new Date(ride.start).toLocaleDateString()
+          if (dateList.includes(dateString)) countMap.set(dateString, countMap.get(dateString) + 1)
+        }
+        const data: {name: string, series: {value: number, name: string}[]}[] = [{name: "Rides", series: []}]
+        countMap.forEach((value, key) => data[0].series.push({value, name: key}))
+        this.data = data
+
+        let priceSum = 0
+        for (const ride of rides) {
+          priceSum += ride.price
+        }
+        this.priceSum = priceSum
+        this.average = priceSum / rides.length
+
+      },
+      error: (e) => console.error(e)})
+  }
+
+  isValidDate(value: Date) {
+    return (this.startDate?.getTime() < value.getTime() && value.getTime() < this.endDate?.getTime())
+  }
+
+  handleDateSelected(value: {from: NgbDate, to: NgbDate}) {
+    const from = value.from
+    const to = value.to
+    if (!from || !to) return
+    this.startDate = new Date(from.year, from.month-1, from.day)
+    this.endDate = new Date(to.year, to.month-1, to.day)
+    this.ngOnInit()
+  }
+}

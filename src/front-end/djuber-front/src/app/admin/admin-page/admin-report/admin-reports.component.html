@@ -1,0 +1,25 @@
+<div style="padding: 24px;">
+  <h2>Rides Report</h2>
+</div>
+<div style="padding: 16px; display: flex; flex-direction: row; gap: 20px;">
+  <div style="padding: 16px; display: flex; flex-direction: column; gap: 20px;">
+    <ngbd-datepicker-range (dateSelected)="handleDateSelected($event)"></ngbd-datepicker-range>
+    <div style="display: flex; flex-direction: column; gap: 10px;">
+      <div><b>Sum: </b>{{priceSum}}</div>
+      <div><b>Average: </b>{{average}}</div>
+    </div>
+  </div>
+  <ngx-charts-line-chart
+    [view]="[1000,400]"
+    [results]="data"
+    [xAxisLabel]="'Date'"
+    [yAxisLabel]="'Ride'"
+    [showXAxisLabel]="true"
+    [showYAxisLabel]="true"
+    [xAxis]="true"
+    [yAxis]="true"
+    [gradient]="true">
+    >
+  </ngx-charts-line-chart>
+</div>
+

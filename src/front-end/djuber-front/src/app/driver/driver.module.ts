@@ -20,12 +20,16 @@ import {DriverRidesComponent} from "./driver-page/driver-rides/driver-rides.comp
 import {MatTableModule} from "@angular/material/table";
 import {MatSortModule} from "@angular/material/sort";
 import {MatPaginatorModule} from "@angular/material/paginator";
+import {DriverReportsComponent} from "./driver-page/driver-report/driver-reports.component";
+import {NgbdDatepickerRange} from "../components/datepicker/datepicker-range";
+import {NgxChartsModule} from "@swimlane/ngx-charts";
 
 @NgModule({
   declarations: [
     DriverPageComponent,
     DriverProfileComponent,
-    DriverRidesComponent
+    DriverRidesComponent,
+    DriverReportsComponent
   ],
   providers: [DriverService],
   imports: [
@@ -45,7 +49,9 @@ import {MatPaginatorModule} from "@angular/material/paginator";
     ReactiveFormsModule,
     MatTableModule,
     MatSortModule,
-    MatPaginatorModule
+    MatPaginatorModule,
+    NgbdDatepickerRange,
+    NgxChartsModule
   ]
 })
 export class DriverModule { }

@@ -50,7 +50,7 @@ public class RideController {
     }
 
     @GetMapping(value = "/all")
-    @PreAuthorize("hasAnyRole('CLIENT')")
+    @PreAuthorize("hasAnyRole('ADMIN')")
     public ResponseEntity<List<RideResult>> getAllRides() {
         return new ResponseEntity<>(rideService.getAllRides(), HttpStatus.OK);
     }

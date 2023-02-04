@@ -43,4 +43,8 @@ export class DriverPageComponent implements OnInit {
     }
   }
 
+  reports(){
+    this.router.navigateByUrl('driver')
+    this.router.navigate(['driver', {outlets: { co:['reports']} }], {skipLocationChange: true})
+  }
 }

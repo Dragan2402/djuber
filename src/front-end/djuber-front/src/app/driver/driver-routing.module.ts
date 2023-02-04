@@ -3,11 +3,14 @@ import {RouterModule, Routes} from '@angular/router';
 import {DriverPageComponent} from './driver-page/driver-page.component';
 import {DriverProfileComponent} from './driver-page/driver-profile/driver-profile.component';
 import {DriverRidesComponent} from "./driver-page/driver-rides/driver-rides.component";
+import {DriverReportsComponent} from "./driver-page/driver-report/driver-reports.component";
 
 const routes: Routes = [
   {path:'', component:DriverPageComponent ,children:[
       {path:"profile",  component:DriverProfileComponent, outlet:"co", data: {role:"DRIVER"}},
-      {path:"rides", title:'driver-rides', component:DriverRidesComponent, outlet:"co", data: {role:"DRIVER"}}
+      {path:"rides", title:'driver-rides', component:DriverRidesComponent, outlet:"co", data: {role:"DRIVER"}},
+      {path:"reports", title:'driver-reports', component:DriverReportsComponent, outlet:"co", data: {role:"DRIVER"}},
+
 ]}
 ];
 

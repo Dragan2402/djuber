@@ -34,6 +34,9 @@ import {ClientRidesComponent} from "./admin-page/client-preview/client-rides/cli
 import {ClientService} from "../client/client.service";
 import {DriverService} from "../driver/driver.service";
 import {DriverRidesComponent} from "./admin-page/drivers-preview/driver-rides/driver-rides.component";
+import {AdminReportsComponent} from "./admin-page/admin-report/admin-reports.component";
+import {NgbdDatepickerRange} from "../components/datepicker/datepicker-range";
+import {NgxChartsModule} from "@swimlane/ngx-charts";
 
 
 @NgModule({
@@ -48,7 +51,8 @@ import {DriverRidesComponent} from "./admin-page/drivers-preview/driver-rides/dr
         DriverProfileUpdatesComponent,
         HandleModalComponent,
         ClientRidesComponent,
-        DriverRidesComponent
+        DriverRidesComponent,
+        AdminReportsComponent
     ],
   providers: [AdminService, ClientService, DriverService],
   imports: [
@@ -72,7 +76,9 @@ import {DriverRidesComponent} from "./admin-page/drivers-preview/driver-rides/dr
     MatPaginatorModule,
     MatDialogModule,
     MatCardModule,
-    MatBadgeModule
+    MatBadgeModule,
+    NgbdDatepickerRange,
+    NgxChartsModule
   ]
 })
 export class AdminModule { }

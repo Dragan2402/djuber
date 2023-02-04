@@ -73,6 +73,10 @@ export class AdminPageComponent implements  OnInit {
     this.router.navigate(['admin',{outlets: { ao:['profile']} }],{ skipLocationChange: true });
   }
 
+  reports(){
+    this.router.navigateByUrl('admin')
+    this.router.navigate(['admin',{outlets: { ao:['reports']} }],{ skipLocationChange: true });  }
+
   toggleChange(){
     if(this.directionToToggle===">>"){
       this.directionToToggle= "<<";
@@ -111,7 +115,6 @@ export class AdminPageComponent implements  OnInit {
       });
 
   }
-
 }
 
 
